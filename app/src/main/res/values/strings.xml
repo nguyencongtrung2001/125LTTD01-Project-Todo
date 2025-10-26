@@ -51,6 +51,56 @@
     <string name="nav_calendar">Lịch</string>
     <string name="nav_statistics">Thống kê</string>
     <string name="nav_settings">Cài đặt</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Add Task Screen -->
+    <string name="add_task_title">Thêm công việc</string>
+    <string name="back_button">Back</string>
+    <string name="task_title_hint">Nộp báo cáo công việc</string>
+    <string name="task_description_hint">Mô tả công việc</string>
+    <string name="group_label">Nhóm</string>
+    <string name="add_new_group">+ Tạo nhóm mới</string>
+    <string name="deadline_label">Deadline</string>
+    <string name="deadline_placeholder">16:00 20/09/2025</string>
+    <string name="calendar_icon">Calendar</string>
+    <string name="reminder_label">Nhắc nhở</string>
+    <string name="reminder_none">Không</string>
+    <string name="reminder_5p">5p</string>
+    <string name="reminder_10p">10p</string>
+    <string name="reminder_1h">1h</string>
+    <string name="reminder_custom">Tùy chỉnh</string>
+    <string name="priority_label">Ưu tiên</string>
+    <string name="priority_low">Thấp</string>
+    <string name="priority_medium">Trung bình</string>
+    <string name="priority_high">Cao</string>
+    <string name="color_label">Màu</string>
+    <string name="cancel_button">Hủy</string>
+    <string name="create_button">Tạo</string>
+    <string name="error_empty_task_title">Vui lòng nhập tiêu đề công việc</string>
+    <string name="task_created_success">Tạo công việc thành công!</string>
+
+    <!-- Select Group Dialog -->
+    <string name="select_group_title">Chọn nhóm</string>
+    <string name="group_grocery">Grocery</string>
+    <string name="group_work">Work</string>
+    <string name="group_sport">Sport</string>
+    <string name="group_design">Design</string>
+    <string name="group_university">University</string>
+    <string name="group_social">Social</string>
+    <string name="group_music">Music</string>
+    <string name="group_health">Health</string>
+    <string name="group_movie">Movie</string>
+    <string name="group_home">Home</string>
+    <string name="create_new_group">Tạo mới</string>
+    <string name="add_group_button">Thêm nhóm</string>
+    <string name="add_icon">Add icon</string>
+
+
+    <!-- Create Group Dialog -->
+    <string name="create_new_group_title">Tạo nhóm mới</string>
+    <string name="group_name_label">Tên nhóm</string>
+    <string name="group_name_hint">Nhập tên nhóm</string>
+    <string name="select_color_label">Chọn màu</string>
+    <string name="create_group_button">Tạo nhóm</string>
+    <string name="hello_blank_fragment">Hello Blank Fragment</string>
+
 </resources>
