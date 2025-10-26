@@ -1,5 +1,7 @@
 package com.example.projecttodo;
 
+
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -29,15 +31,20 @@ public class AddTaskActivity extends AppCompatActivity {
     private EditText etTaskTitle, etTaskDescription;
     private Spinner spinnerGroup;
     private TextView tvAddGroup, tvDeadline;
-    private LinearLayout layoutDeadline;
+    private LinearLayout layoutDeadline, layoutTaskColors;
     private ChipGroup chipGroupReminder, chipGroupPriority;
-    private View colorYellow, colorGreen, colorTeal, colorBlue, colorLightBlue, colorOrange, colorPurple, colorPink;
     private Button btnCancel, btnCreate;
 
     private Calendar deadlineCalendar;
     private String selectedColor = "#CCDD22"; // Default yellow
     private String selectedReminder = "10p"; // Default 10p
     private String selectedPriority = "Cao"; // Default high
+
+    // Array of colors for task
+    private static final String[] TASK_COLORS = {
+            "#CCDD22", "#66DD66", "#22DDBB", "#4499DD",
+            "#44BBEE", "#EE9944", "#BB66DD", "#EE5599"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         initViews();
         setupSpinner();
+        populateTaskColors();
         setupListeners();
         deadlineCalendar = Calendar.getInstance();
     }
@@ -58,20 +66,49 @@ public class AddTaskActivity extends AppCompatActivity {
         tvAddGroup = findViewById(R.id.tvAddGroup);
         tvDeadline = findViewById(R.id.tvDeadline);
         layoutDeadline = findViewById(R.id.layoutDeadline);
+        layoutTaskColors = findViewById(R.id.layoutTaskColors);
         chipGroupReminder = findViewById(R.id.chipGroupReminder);
         chipGroupPriority = findViewById(R.id.chipGroupPriority);
 
-        colorYellow = findViewById(R.id.colorYellow);
-        colorGreen = findViewById(R.id.colorGreen);
-        colorTeal = findViewById(R.id.colorTeal);
-        colorBlue = findViewById(R.id.colorBlue);
-        colorLightBlue = findViewById(R.id.colorLightBlue);
-        colorOrange = findViewById(R.id.colorOrange);
-        colorPurple = findViewById(R.id.colorPurple);
-        colorPink = findViewById(R.id.colorPink);
-
         btnCancel = findViewById(R.id.btnCancel);
         btnCreate = findViewById(R.id.btnCreate);
+    }
+
+    private void populateTaskColors() {
+        for (int i = 0; i < TASK_COLORS.length; i++) {
+            String color = TASK_COLORS[i];
+            View colorView = new View(this);
+
+            // Set layout params
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    dpToPx(40), dpToPx(40)
+            );
+            params.setMarginEnd(dpToPx(12));
+            colorView.setLayoutParams(params);
+
+            // Set color
+            colorView.setBackgroundResource(R.drawable.bg_color_circle);
+            colorView.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                    android.graphics.Color.parseColor(color)
+            ));
+
+            // Set content description for accessibility
+            colorView.setContentDescription("Color option " + (i + 1));
+
+            // Set click listener
+            colorView.setOnClickListener(v -> selectColor(color));
+
+            // Make clickable
+            colorView.setClickable(true);
+            colorView.setFocusable(true);
+
+            layoutTaskColors.addView(colorView);
+        }
+    }
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
     }
 
     private void setupSpinner() {
@@ -117,16 +154,6 @@ public class AddTaskActivity extends AppCompatActivity {
                 selectedPriority = "Cao";
             }
         });
-
-        // Color selection
-        colorYellow.setOnClickListener(v -> selectColor("#CCDD22"));
-        colorGreen.setOnClickListener(v -> selectColor("#66DD66"));
-        colorTeal.setOnClickListener(v -> selectColor("#22DDBB"));
-        colorBlue.setOnClickListener(v -> selectColor("#4499DD"));
-        colorLightBlue.setOnClickListener(v -> selectColor("#44BBEE"));
-        colorOrange.setOnClickListener(v -> selectColor("#EE9944"));
-        colorPurple.setOnClickListener(v -> selectColor("#BB66DD"));
-        colorPink.setOnClickListener(v -> selectColor("#EE5599"));
 
         // Open Select Group Dialog when clicking "Tạo nhóm mới"
         tvAddGroup.setOnClickListener(v -> showSelectGroupDialog());
