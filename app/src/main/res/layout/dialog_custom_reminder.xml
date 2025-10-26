@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog"
+    android:padding="24dp">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/custom_reminder_title"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Reminder Before Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reminder_before_label"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Time Input Grid -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <!-- Days -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/days_label"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etDays"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_border"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="3" />
+
+        </LinearLayout>
+
+        <!-- Hours -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hours_label"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etHours"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_border"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="2" />
+
+        </LinearLayout>
+
+        <!-- Minutes -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minutes_label"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etMinutes"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_border"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="2" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Common Time Options Label -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_time_label"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Common Time Options Grid - Dynamic -->
+    <GridLayout
+        android:id="@+id/gridCommonTimes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Bottom Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnCancelReminder"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="@string/cancel_button"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_button_transparent"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnSaveReminder"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="@string/save_button"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_button_primary"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
