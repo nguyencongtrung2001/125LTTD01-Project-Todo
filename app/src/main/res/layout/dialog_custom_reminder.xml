@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
-                android:text="1"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:gravity="center"
@@ -119,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
-                android:text="1"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:gravity="center"
@@ -139,13 +139,123 @@
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Common Time Options Grid - Dynamic -->
+    <!-- Common Time Options Grid -->
     <GridLayout
-        android:id="@+id/gridCommonTimes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="24dp"
+        android:rowCount="3">
+
+        <Button
+            android:id="@+id/btn5Minutes"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_5_minutes"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn10Minutes"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_10_minutes"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn15Minutes"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_15_minutes"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn30Minutes"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_30_minutes"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn1Hour"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_1_hour"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn2Hours"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_2_hours"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn1Day"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_1_day"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn3Days"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_3_days"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+        <Button
+            android:id="@+id/btn1Week"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:text="@string/time_1_week"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_input_border" />
+
+    </GridLayout>
 
     <!-- Bottom Buttons -->
     <LinearLayout

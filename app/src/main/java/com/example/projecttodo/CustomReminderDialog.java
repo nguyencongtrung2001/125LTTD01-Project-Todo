@@ -1,7 +1,5 @@
 package com.example.projecttodo;
 
-package com.example.myapp;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;

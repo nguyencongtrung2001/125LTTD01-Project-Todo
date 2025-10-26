@@ -47,6 +47,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Xử lý đăng nhập ở đây
                 Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
+
+                // Chuyển sang màn hình Home
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 

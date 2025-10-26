@@ -39,6 +39,7 @@
     <string name="filter_all">Tất cả</string>
     <string name="filter_today">Hôm nay</string>
     <string name="filter_upcoming">Sắp tới</string>
+    <string name="filter_overdue">Quá hạn</string>
     <string name="filter_completed">Hoàn thành</string>
     <string name="filter_expired">Qúa hạn</string>
     <string name="empty_state_title">Hôm nay bạn muốn làm gì ?</string>
@@ -93,7 +94,6 @@
     <string name="create_new_group">Tạo mới</string>
     <string name="add_group_button">Thêm nhóm</string>
     <string name="add_icon">Add icon</string>
-
 
     <!-- Create Group Dialog -->
     <string name="create_new_group_title">Tạo nhóm mới</string>
