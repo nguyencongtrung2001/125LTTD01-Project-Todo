@@ -51,4 +51,6 @@
     <string name="nav_calendar">Lịch</string>
     <string name="nav_statistics">Thống kê</string>
     <string name="nav_settings">Cài đặt</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
