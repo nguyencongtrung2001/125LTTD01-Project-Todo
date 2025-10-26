@@ -103,4 +103,24 @@
     <string name="create_group_button">Tạo nhóm</string>
     <string name="hello_blank_fragment">Hello Blank Fragment</string>
 
+    <!-- Content Descriptions -->
+    <string name="color_option">Color option</string>
+
+    <!-- Custom Reminder Dialog -->
+    <string name="custom_reminder_title">Tùy chỉnh thời gian nhắc nhở</string>
+    <string name="reminder_before_label">Nhắc nhở trước</string>
+    <string name="days_label">Ngày</string>
+    <string name="hours_label">Giờ</string>
+    <string name="minutes_label">Phút</string>
+    <string name="common_time_label">Thời gian thường dùng</string>
+    <string name="time_5_minutes">5 phút</string>
+    <string name="time_10_minutes">10 phút</string>
+    <string name="time_15_minutes">15 phút</string>
+    <string name="time_30_minutes">30 phút</string>
+    <string name="time_1_hour">1 giờ</string>
+    <string name="time_2_hours">2 giờ</string>
+    <string name="time_1_day">1 ngày</string>
+    <string name="time_3_days">3 ngày</string>
+    <string name="time_1_week">1 tuần</string>
+    <string name="save_button">Lưu</string>
 </resources>
