@@ -1,7 +1,5 @@
 package com.example.projecttodo;
 
-
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -34,6 +32,7 @@ public class AddTaskActivity extends AppCompatActivity {
     private LinearLayout layoutDeadline, layoutTaskColors;
     private ChipGroup chipGroupReminder, chipGroupPriority;
     private Button btnCancel, btnCreate;
+    private Chip chipCustom;
 
     private Calendar deadlineCalendar;
     private String selectedColor = "#CCDD22"; // Default yellow
@@ -69,6 +68,7 @@ public class AddTaskActivity extends AppCompatActivity {
         layoutTaskColors = findViewById(R.id.layoutTaskColors);
         chipGroupReminder = findViewById(R.id.chipGroupReminder);
         chipGroupPriority = findViewById(R.id.chipGroupPriority);
+        chipCustom = findViewById(R.id.chipCustom);
 
         btnCancel = findViewById(R.id.btnCancel);
         btnCreate = findViewById(R.id.btnCreate);
@@ -141,6 +141,8 @@ public class AddTaskActivity extends AppCompatActivity {
                 selectedReminder = "1h";
             } else if (checkedId == R.id.chipCustom) {
                 selectedReminder = "Tùy chỉnh";
+                // Mở Custom Reminder Dialog
+                showCustomReminderDialog();
             }
         });
 
@@ -161,6 +163,35 @@ public class AddTaskActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(v -> finish());
 
         btnCreate.setOnClickListener(v -> createTask());
+    }
+
+    private void showCustomReminderDialog() {
+        CustomReminderDialog dialog = new CustomReminderDialog(this, new CustomReminderDialog.OnReminderSetListener() {
+            @Override
+            public void onReminderSet(int days, int hours, int minutes) {
+                // Xử lý khi đặt reminder tùy chỉnh
+                String reminderText = formatReminderTime(days, hours, minutes);
+                selectedReminder = reminderText;
+                Toast.makeText(AddTaskActivity.this,
+                        "Đã đặt nhắc nhở: " + reminderText,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
+
+    private String formatReminderTime(int days, int hours, int minutes) {
+        StringBuilder sb = new StringBuilder();
+        if (days > 0) {
+            sb.append(days).append(" ngày ");
+        }
+        if (hours > 0) {
+            sb.append(hours).append(" giờ ");
+        }
+        if (minutes > 0) {
+            sb.append(minutes).append(" phút");
+        }
+        return sb.toString().trim();
     }
 
     private void showSelectGroupDialog() {

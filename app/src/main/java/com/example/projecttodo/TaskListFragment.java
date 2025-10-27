@@ -1,5 +1,6 @@
 package com.example.projecttodo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +75,15 @@ public class TaskListFragment extends Fragment {
         chipCompleted.setOnClickListener(v -> {
             selectChip("completed");
             Toast.makeText(getContext(), "Hoàn thành", Toast.LENGTH_SHORT).show();
+        });
+
+        fabAddTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(getContext(), AddTaskActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
