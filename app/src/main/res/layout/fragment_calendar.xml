@@ -33,58 +33,58 @@
             android:padding="16dp">
 
             <!-- Month/Year Header -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:layout_marginBottom="16dp">-->
 
-                <ImageButton
-                    android:id="@+id/btnPreviousMonth"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_back"
-                    android:contentDescription="Previous month"
-                    app:tint="@color/white" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnPreviousMonth"-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                    android:src="@drawable/ic_back"-->
+<!--                    android:contentDescription="Previous month"-->
+<!--                    app:tint="@color/white" />-->
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:gravity="center">-->
 
-                    <TextView
-                        android:id="@+id/tvMonth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tháng 2"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvMonth"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Tháng 2"-->
+<!--                        android:textColor="@color/white"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textStyle="bold" />-->
 
-                    <TextView
-                        android:id="@+id/tvYear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2025"
-                        android:textColor="@color/text_gray"
-                        android:textSize="12sp" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvYear"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="2025"-->
+<!--                        android:textColor="@color/text_gray"-->
+<!--                        android:textSize="12sp" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-                <ImageButton
-                    android:id="@+id/btnNextMonth"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_arrow_right"
-                    android:contentDescription="Next month"
-                    app:tint="@color/white" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnNextMonth"-->
+<!--                    android:layout_width="48dp"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                    android:src="@drawable/ic_arrow_right"-->
+<!--                    android:contentDescription="Next month"-->
+<!--                    app:tint="@color/white" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <!-- Calendar Grid -->
             <CalendarView

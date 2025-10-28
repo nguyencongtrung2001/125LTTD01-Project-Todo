@@ -39,22 +39,16 @@
                 android:textSize="48sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
+                android:text="ngày"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:layout_marginStart="8dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ngày"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical" />
 
             <TextView
                 android:id="@+id/tvTotalDays"
@@ -66,21 +60,15 @@
                 android:textStyle="bold"
                 android:layout_marginStart="24dp" />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:text="ngày"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:layout_marginStart="8dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ngày"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical" />
 
         </LinearLayout>
 
@@ -101,18 +89,39 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <View
+                <!-- Icon with check mark -->
+                <FrameLayout
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_color_circle"
-                    android:backgroundTint="@color/button_purple" />
+                    android:layout_height="40dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_color_circle"
+                        android:backgroundTint="@color/button_purple" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        app:tint="@color/white" />
+
+                </FrameLayout>
+
+                <!-- Vertical divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/border_gray"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -152,18 +161,39 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <View
+                <!-- Icon with check mark -->
+                <FrameLayout
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_color_circle"
-                    android:backgroundTint="@color/button_purple" />
+                    android:layout_height="40dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_color_circle"
+                        android:backgroundTint="@color/button_purple" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        app:tint="@color/white" />
+
+                </FrameLayout>
+
+                <!-- Vertical divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/border_gray"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -203,18 +233,39 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <View
+                <!-- Icon with warning mark -->
+                <FrameLayout
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_color_circle"
-                    android:backgroundTint="#FF5555" />
+                    android:layout_height="40dp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_color_circle"
+                        android:backgroundTint="#FF5555" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_warning"
+                        app:tint="@color/white" />
+
+                </FrameLayout>
+
+                <!-- Vertical divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/border_gray"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -238,33 +289,20 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Chart Section -->
+        <!-- Pie Chart Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp">
 
-            <!-- Pie Chart (Simple representation) -->
-            <RelativeLayout
+            <!-- Custom Pie Chart View -->
+            <com.example.projecttodo.PieChartView
+                android:id="@+id/pieChartView"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
-                android:layout_marginEnd="32dp">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_color_circle"
-                    android:backgroundTint="@color/button_purple" />
-
-
-                <View
-                    android:layout_width="90dp"
-                    android:layout_height="180dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="#333333" />
-
-            </RelativeLayout>
+                android:layout_marginEnd="32dp" />
 
             <!-- Legend -->
             <LinearLayout
@@ -305,7 +343,7 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="#333333" />
+                        android:backgroundTint="#E0E0E0" />
 
                     <TextView
                         android:layout_width="wrap_content"

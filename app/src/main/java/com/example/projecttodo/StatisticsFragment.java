@@ -1,9 +1,11 @@
 package com.example.projecttodo;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,14 @@ public class StatisticsFragment extends Fragment {
 
     private TextView tvDaysCount, tvTotalDays;
     private TextView tvTotalTasks, tvCompletedTasks, tvOverdueTasks;
+    private PieChartView pieChartView;
+
+    // Sample data
+    private int totalTasks = 18;
+    private int completedTasks = 15;
+    private int overdueTasks = 3;
+
+    private static final String TAG = "StatisticsFragment";
 
     @Nullable
     @Override
@@ -22,6 +32,16 @@ public class StatisticsFragment extends Fragment {
 
         initViews(view);
         loadStatistics();
+
+        // Force update PieChart sau khi layout measure (thêm listener để đảm bảo kích thước sẵn sàng)
+        pieChartView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                pieChartView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                Log.d(TAG, "PieChart measured: width=" + pieChartView.getWidth() + ", height=" + pieChartView.getHeight());
+                pieChartView.invalidate(); // Force vẽ lại
+            }
+        });
 
         return view;
     }
@@ -32,6 +52,10 @@ public class StatisticsFragment extends Fragment {
         tvTotalTasks = view.findViewById(R.id.tvTotalTasks);
         tvCompletedTasks = view.findViewById(R.id.tvCompletedTasks);
         tvOverdueTasks = view.findViewById(R.id.tvOverdueTasks);
+        pieChartView = view.findViewById(R.id.pieChartView);
+        if (pieChartView == null) {
+            Log.e(TAG, "PieChartView NOT FOUND! Check XML ID.");
+        }
     }
 
     private void loadStatistics() {
@@ -39,8 +63,14 @@ public class StatisticsFragment extends Fragment {
         // For now, display sample data
         tvDaysCount.setText("7");
         tvTotalDays.setText("30");
-        tvTotalTasks.setText("18");
-        tvCompletedTasks.setText("15");
-        tvOverdueTasks.setText("3");
+        tvTotalTasks.setText(String.valueOf(totalTasks));
+        tvCompletedTasks.setText(String.valueOf(completedTasks));
+        tvOverdueTasks.setText(String.valueOf(overdueTasks));
+
+        // Update pie chart
+        if (pieChartView != null) {
+            pieChartView.setData(completedTasks, totalTasks);
+            Log.d(TAG, "Set data: completed=" + completedTasks + ", total=" + totalTasks);
+        }
     }
 }

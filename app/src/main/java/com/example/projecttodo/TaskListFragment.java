@@ -33,8 +33,7 @@ public class TaskListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
         initViews(view);
-        setupChipListeners();
-        setupFabListener();
+        setupChipListeners();  // Gộp FAB listener vào đây
 
         return view;
     }
@@ -77,12 +76,13 @@ public class TaskListFragment extends Fragment {
             Toast.makeText(getContext(), "Hoàn thành", Toast.LENGTH_SHORT).show();
         });
 
-        fabAddTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(getContext(), AddTaskActivity.class);
+        // Listener FAB: Chuyển sang AddTaskActivity (gộp, ưu tiên Intent)
+        fabAddTask.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                Intent intent = new Intent(getActivity(), AddTaskActivity.class);
                 startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "Không thể mở màn hình thêm task", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -127,10 +127,5 @@ public class TaskListFragment extends Fragment {
         taskRecyclerView.setVisibility(View.GONE);
     }
 
-    private void setupFabListener() {
-        fabAddTask.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Thêm nhiệm vụ mới", Toast.LENGTH_SHORT).show();
-            // Có thể mở dialog hoặc activity mới để thêm task
-        });
-    }
+    // Xóa hàm setupFabListener() vì đã gộp
 }
