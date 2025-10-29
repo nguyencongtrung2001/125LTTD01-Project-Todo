@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?attr/colorBackground">
 
     <!-- Header -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lịch"
-        android:textColor="@color/white"
+        android:text="@string/calendar_title"
+        android:textColor="?attr/colorOnBackground"
         android:textSize="32sp"
         android:textStyle="bold"
         android:padding="16dp"
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:cardBackgroundColor="@color/dark_gray"
+        app:cardBackgroundColor="?attr/colorSurface"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp">
 
@@ -32,72 +32,16 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Month/Year Header -->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:gravity="center_vertical"-->
-<!--                android:layout_marginBottom="16dp">-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/btnPreviousMonth"-->
-<!--                    android:layout_width="48dp"-->
-<!--                    android:layout_height="48dp"-->
-<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                    android:src="@drawable/ic_back"-->
-<!--                    android:contentDescription="Previous month"-->
-<!--                    app:tint="@color/white" />-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:orientation="vertical"-->
-<!--                    android:gravity="center">-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tvMonth"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Tháng 2"-->
-<!--                        android:textColor="@color/white"-->
-<!--                        android:textSize="16sp"-->
-<!--                        android:textStyle="bold" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tvYear"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="2025"-->
-<!--                        android:textColor="@color/text_gray"-->
-<!--                        android:textSize="12sp" />-->
-
-<!--                </LinearLayout>-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/btnNextMonth"-->
-<!--                    android:layout_width="48dp"-->
-<!--                    android:layout_height="48dp"-->
-<!--                    android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                    android:src="@drawable/ic_arrow_right"-->
-<!--                    android:contentDescription="Next month"-->
-<!--                    app:tint="@color/white" />-->
-
-<!--            </LinearLayout>-->
-
             <!-- Calendar Grid -->
             <CalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dark_gray"
+                android:background="?attr/colorSurface"
                 android:dateTextAppearance="@style/CalendarDateTextStyle"
                 android:weekDayTextAppearance="@style/CalendarWeekDayTextStyle"
                 android:theme="@style/CalendarViewTheme" />
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
     <!-- Task List for Selected Date -->
@@ -109,5 +53,4 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="16dp" />
-
 </LinearLayout>

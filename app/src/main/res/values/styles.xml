@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ===== CalendarView Styles ===== -->
+    <style name="CalendarViewTheme" parent="Theme.AppCompat">
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:colorBackground">?attr/colorSurface</item>
+    </style>
+
+    <style name="CalendarDateTextStyle" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">?attr/colorCalender</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="CalendarWeekDayTextStyle" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

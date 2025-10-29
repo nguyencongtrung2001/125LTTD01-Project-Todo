@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="?attr/colorBackground">
 
     <!-- Fragment Container -->
     <FrameLayout
@@ -18,12 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/bottom_nav_bg"
+        android:background="?attr/colorSurface"
         android:orientation="horizontal"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:elevation="8dp">
 
+        <!-- HOME -->
         <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"
@@ -40,6 +41,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home"
+                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="@string/nav_home" />
 
             <TextView
@@ -48,10 +50,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/nav_home"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
         </LinearLayout>
 
+        <!-- CALENDAR -->
         <LinearLayout
             android:id="@+id/navCalendar"
             android:layout_width="0dp"
@@ -68,6 +71,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_calendar"
+                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="@string/nav_calendar" />
 
             <TextView
@@ -76,10 +80,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/nav_calendar"
-                android:textColor="@color/icon_gray"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
         </LinearLayout>
 
+        <!-- STATISTICS -->
         <LinearLayout
             android:id="@+id/navStatistics"
             android:layout_width="0dp"
@@ -96,6 +101,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_statistics"
+                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="@string/nav_statistics" />
 
             <TextView
@@ -104,10 +110,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/nav_statistics"
-                android:textColor="@color/icon_gray"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
         </LinearLayout>
 
+        <!-- SETTINGS -->
         <LinearLayout
             android:id="@+id/navSettings"
             android:layout_width="0dp"
@@ -124,6 +131,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_settings"
+                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="@string/nav_settings" />
 
             <TextView
@@ -132,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/nav_settings"
-                android:textColor="@color/icon_gray"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp" />
         </LinearLayout>
 

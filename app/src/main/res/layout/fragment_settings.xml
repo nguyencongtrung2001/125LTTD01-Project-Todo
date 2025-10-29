@@ -2,27 +2,30 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="?attr/colorBackground"
+    tools:context=".SettingsFragment">
 
+    <!-- ===== AppBar ===== -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
+        android:background="?attr/colorSurface"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@null"
-            app:title="Cài đặt"
+            app:title="@string/title_settings"
             app:titleCentered="true"
-            app:titleTextColor="@color/white" />
-
+            app:titleTextColor="?attr/colorOnSurface"
+            app:navigationIcon="@null" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- ===== Scroll nội dung ===== -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,62 +37,17 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Account Section -->
+            <!-- === Tài khoản === -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/dark_gray"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width=
-                        "match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tài khoản"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="nguyenvana@gmail.com"
-                        android:textColor="@color/gray"
-                        android:textSize="13sp" />
-
-                    <Button
-                        android:id="@+id/btn_logout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:layout_gravity="end"
-                        android:backgroundTint="@color/purple"
-                        android:text="Đăng xuất"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="13sp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Theme Section -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/dark_gray"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                android:backgroundTint="?attr/colorSurface"
+                app:cardUseCompatPadding="true"
+                app:cardPreventCornerOverlap="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -100,9 +58,56 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Giao diện"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
+                        android:text="@string/label_account"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/default_email"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:textSize="13sp" />
+
+                    <Button
+                        android:id="@+id/btn_logout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:text="@string/btn_logout"
+                        android:textAllCaps="false"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- === Giao diện === -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                android:backgroundTint="?attr/colorSurface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_theme"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <RadioGroup
@@ -112,38 +117,37 @@
                         android:layout_marginTop="8dp">
 
                         <RadioButton
-                            android:id="@+id/rb_light"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Light"
-                            android:textColor="@color/white"
-                            android:textSize="13sp"
-                            android:buttonTint="@color/white" />
-
-                        <RadioButton
                             android:id="@+id/rb_dark"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Dark"
-                            android:textColor="@color/white"
+                            android:text="@string/theme_dark"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="13sp"
                             android:checked="true"
-                            android:buttonTint="@color/white" />
+                            android:buttonTint="?attr/colorOnSurface" />
+
+                        <RadioButton
+                            android:id="@+id/rb_light"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/theme_light"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="13sp"
+                            android:buttonTint="?attr/colorOnSurface" />
 
                     </RadioGroup>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
-            <!-- Notifications Section -->
+            <!-- === Thông báo === -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_notifications"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/dark_gray"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                android:backgroundTint="?attr/colorSurface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -154,23 +158,23 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Thông báo"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
+                            android:text="@string/label_notifications"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
 
                         <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switch_notification"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="true" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -184,32 +188,30 @@
                             android:id="@+id/cb_silent_mode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:buttonTint="@color/white" />
+                            android:buttonTint="?attr/colorOnSurface" />
 
                         <TextView
-                            android:layout_width="198dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Giờ yên lặng"
-                            android:textColor="@color/white"
+                            android:layout_marginStart="8dp"
+                            android:text="@string/label_silent_time"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tv_silent_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="23:00-07:00"
-                            android:textColor="@color/white"
+                            android:text="@string/default_silent_range"
+                            android:textColor="?attr/colorOnSurfaceVariant"
                             android:textSize="12sp"
                             android:visibility="gone" />
-
                     </LinearLayout>
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
-            <!-- Language Section -->
+            <!-- === Ngôn ngữ === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/layout_language"
                 android:layout_width="match_parent"
@@ -218,46 +220,44 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="@color/dark_gray"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                android:backgroundTint="?attr/colorSurface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Ngôn ngữ"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
+                        android:text="@string/label_language"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_language"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tiếng Việt"
-                        android:textColor="@color/gray"
+                        android:text="@string/default_language"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="6dp" />
 
                     <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/ic_arrow_right"
-                        app:tint="@color/gray" />
-
+                        app:tint="?attr/colorOnSurfaceVariant" />
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
-            <!-- Backup & Restore Section -->
+            <!-- === Sao lưu & khôi phục === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/layout_backup_restore"
                 android:layout_width="match_parent"
@@ -266,22 +266,21 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="@color/dark_gray"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                android:backgroundTint="?attr/colorSurface">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="Sao lưu &amp; Khôi phục"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
+                    android:text="@string/label_backup_restore"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
-
             </androidx.cardview.widget.CardView>
 
-            <!-- About Section -->
+            <!-- === Giới thiệu === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/layout_about"
                 android:layout_width="match_parent"
@@ -290,9 +289,9 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="@color/dark_gray"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                android:backgroundTint="?attr/colorSurface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -303,9 +302,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Giới thiệu"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
+                        android:text="@string/label_about"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -313,8 +312,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Phiên bản 10.0"
-                        android:textColor="@color/gray"
+                        android:text="@string/default_version"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="12sp" />
 
                     <TextView
@@ -322,16 +321,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Nhóm Mobile 5"
-                        android:textColor="@color/gray"
+                        android:text="@string/default_group"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="12sp" />
-
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

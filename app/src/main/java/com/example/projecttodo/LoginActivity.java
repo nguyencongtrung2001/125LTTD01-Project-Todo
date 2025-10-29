@@ -1,6 +1,7 @@
 package com.example.projecttodo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +48,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Xử lý đăng nhập ở đây
                 Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
+
+                SharedPreferences prefs = getSharedPreferences("nav_state", MODE_PRIVATE);
+                prefs.edit().putString("last_tab", "home").apply();
 
                 // Chuyển sang màn hình Home
                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);

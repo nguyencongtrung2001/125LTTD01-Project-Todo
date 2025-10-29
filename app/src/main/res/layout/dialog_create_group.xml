@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/black"
+    android:background="?attr/colorBackground"
     android:padding="24dp">
 
     <!-- Title -->
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_new_group_title"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnBackground"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/group_name_label"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
@@ -33,8 +33,8 @@
         android:layout_height="56dp"
         android:background="@drawable/bg_input_border"
         android:hint="@string/group_name_hint"
-        android:textColorHint="@color/hint_gray"
-        android:textColor="@color/white"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
+        android:textColor="?attr/colorOnSurface"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textSize="16sp"
@@ -45,11 +45,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_color_label"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Color Options - Dynamic -->
+    <!-- Color Options -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +62,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="start" />
-
     </HorizontalScrollView>
 
     <Space
@@ -79,31 +78,32 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp">
 
+        <!-- Cancel -->
         <Button
             android:id="@+id/btnCancelCreate"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
             android:text="@string/cancel_button"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="16sp"
             android:textAllCaps="false"
             android:background="@android:color/transparent"
             android:layout_marginEnd="8dp" />
 
+        <!-- Create -->
         <Button
             android:id="@+id/btnCreateGroup"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
             android:text="@string/create_group_button"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAllCaps="false"
-            android:background="@drawable/bg_button_primary"
+            android:backgroundTint="?attr/colorPrimary"
             android:layout_marginStart="8dp" />
-
     </LinearLayout>
 
 </LinearLayout>

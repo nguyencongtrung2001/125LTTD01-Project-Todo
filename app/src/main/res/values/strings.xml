@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My App</string>
+    <string name="app_name">ProjectTodo</string>
 
     <!-- Login Screen -->
     <string name="login_title">Đăng nhập</string>
@@ -20,6 +20,7 @@
     <string name="register_button">Đăng ký</string>
     <string name="have_account_text">Đã có tài khoản? </string>
     <string name="login_link">Đăng nhập</string>
+    <string name="toggle_password_visibility">Hiển thị mật khẩu</string>
 
     <!-- Toast Messages -->
     <string name="error_empty_email">Vui lòng nhập email</string>
@@ -30,22 +31,17 @@
     <string name="login_success">Đăng nhập thành công!</string>
     <string name="register_success">Đăng ký thành công!</string>
 
-    <!-- Content Description -->
-    <string name="toggle_password_visibility">Toggle password visibility</string>
-
     <!-- Home Screen -->
     <string name="search_hint">Tìm kiếm nhiệm vụ của bạn...</string>
-    <string name="search_icon">Search icon</string>
     <string name="filter_all">Tất cả</string>
     <string name="filter_today">Hôm nay</string>
     <string name="filter_upcoming">Sắp tới</string>
     <string name="filter_overdue">Quá hạn</string>
     <string name="filter_completed">Hoàn thành</string>
-    <string name="filter_expired">Qúa hạn</string>
-    <string name="empty_state_title">Hôm nay bạn muốn làm gì ?</string>
+    <string name="empty_state_title">Hôm nay bạn muốn làm gì?</string>
     <string name="empty_state_subtitle">Nhấn + để thêm nhiệm vụ của bạn</string>
     <string name="empty_state_desc">Empty state illustration</string>
-    <string name="add_task">Add task</string>
+    <string name="add_task">Thêm công việc</string>
 
     <!-- Bottom Navigation -->
     <string name="nav_home">Trang chủ</string>
@@ -55,45 +51,33 @@
 
     <!-- Add Task Screen -->
     <string name="add_task_title">Thêm công việc</string>
-    <string name="back_button">Back</string>
-    <string name="task_title_hint">Nộp báo cáo công việc</string>
-    <string name="task_description_hint">Mô tả công việc</string>
+    <string name="back_button">Quay lại</string>
+    <string name="task_title_hint">Nhập tiêu đề công việc</string>
+    <string name="task_description_hint">Nhập mô tả công việc</string>
     <string name="group_label">Nhóm</string>
     <string name="add_new_group">+ Tạo nhóm mới</string>
-    <string name="deadline_label">Deadline</string>
+    <string name="deadline_label">Hạn chót</string>
     <string name="deadline_placeholder">16:00 20/09/2025</string>
-    <string name="calendar_icon">Calendar</string>
     <string name="reminder_label">Nhắc nhở</string>
     <string name="reminder_none">Không</string>
-    <string name="reminder_5p">5p</string>
-    <string name="reminder_10p">10p</string>
-    <string name="reminder_1h">1h</string>
+    <string name="reminder_5p">5 phút</string>
+    <string name="reminder_10p">10 phút</string>
+    <string name="reminder_1h">1 giờ</string>
     <string name="reminder_custom">Tùy chỉnh</string>
     <string name="priority_label">Ưu tiên</string>
     <string name="priority_low">Thấp</string>
     <string name="priority_medium">Trung bình</string>
     <string name="priority_high">Cao</string>
-    <string name="color_label">Màu</string>
+    <string name="color_label">Màu sắc</string>
     <string name="cancel_button">Hủy</string>
     <string name="create_button">Tạo</string>
     <string name="error_empty_task_title">Vui lòng nhập tiêu đề công việc</string>
     <string name="task_created_success">Tạo công việc thành công!</string>
+    <string name="calendar_icon">Lịch!</string>
 
     <!-- Select Group Dialog -->
     <string name="select_group_title">Chọn nhóm</string>
-    <string name="group_grocery">Grocery</string>
-    <string name="group_work">Work</string>
-    <string name="group_sport">Sport</string>
-    <string name="group_design">Design</string>
-    <string name="group_university">University</string>
-    <string name="group_social">Social</string>
-    <string name="group_music">Music</string>
-    <string name="group_health">Health</string>
-    <string name="group_movie">Movie</string>
-    <string name="group_home">Home</string>
-    <string name="create_new_group">Tạo mới</string>
     <string name="add_group_button">Thêm nhóm</string>
-    <string name="add_icon">Add icon</string>
 
     <!-- Create Group Dialog -->
     <string name="create_new_group_title">Tạo nhóm mới</string>
@@ -101,10 +85,6 @@
     <string name="group_name_hint">Nhập tên nhóm</string>
     <string name="select_color_label">Chọn màu</string>
     <string name="create_group_button">Tạo nhóm</string>
-    <string name="hello_blank_fragment">Hello Blank Fragment</string>
-
-    <!-- Content Descriptions -->
-    <string name="color_option">Color option</string>
 
     <!-- Custom Reminder Dialog -->
     <string name="custom_reminder_title">Tùy chỉnh thời gian nhắc nhở</string>
@@ -123,4 +103,47 @@
     <string name="time_3_days">3 ngày</string>
     <string name="time_1_week">1 tuần</string>
     <string name="save_button">Lưu</string>
+
+    <!-- Calendar Screen -->
+    <string name="calendar_title">Lịch</string>
+    <string name="previous_month">Tháng trước</string>
+    <string name="next_month">Tháng sau</string>
+
+    <!-- Statistics Screen -->
+    <string name="statistics_title">Thống kê</string>
+    <string name="total_tasks_label">Tổng số việc</string>
+    <string name="completed_tasks_label">Đã hoàn thành</string>
+    <string name="overdue_tasks_label">Đã quá hạn</string>
+    <string name="completed_label">Hoàn thành</string>
+    <string name="incomplete_label">Chưa hoàn thành</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Cài đặt</string>
+    <string name="label_account">Tài khoản</string>
+    <string name="default_email">nguyenvana@gmail.com</string>
+    <string name="btn_logout">Đăng xuất</string>
+    <string name="label_theme">Giao diện</string>
+    <string name="theme_light">Chế độ sáng</string>
+    <string name="theme_dark">Chế độ tối</string>
+    <string name="label_notifications">Thông báo</string>
+    <string name="label_silent_time">Giờ yên lặng (22:00 - 06:00)</string>
+    <string name="default_silent_range">23:00 - 07:00</string>
+    <string name="label_language">Ngôn ngữ</string>
+    <string name="default_language">Tiếng Việt</string>
+    <string name="label_backup_restore">Sao lưu &amp; Khôi phục</string>
+    <string name="label_about">Giới thiệu</string>
+    <string name="default_version">Phiên bản 1.0</string>
+    <string name="default_group">Nhóm Mobile 5</string>
+
+    <!-- Logic & Notifications -->
+    <string name="notifications_on">Thông báo đã bật</string>
+    <string name="notifications_off">Thông báo đã tắt</string>
+    <string name="language_coming_soon">Chức năng đổi ngôn ngữ đang phát triển</string>
+    <string name="logout_success">Đăng xuất thành công</string>
+
+    <!-- Fragment_task_list -->
+    <string name="search_icon">Tìm kiếm</string>
+
+    <!-- Item_group_grid -->
+    <string name="add_icon">Thêm</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.projecttodo;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -55,7 +56,7 @@ public class AddTaskActivity extends AppCompatActivity {
         etTaskDescription = findViewById(R.id.etTaskDescription);
         spinnerGroup = findViewById(R.id.spinnerGroup);
         tvDeadline = findViewById(R.id.tvDeadline);
-        tvAddGroup = findViewById(R.id.tvAddGroup);
+            tvAddGroup = findViewById(R.id.tvAddGroup);
         chipGroupReminder = findViewById(R.id.chipGroupReminder);
         chipGroupPriority = findViewById(R.id.chipGroupPriority);
         layoutDeadline = findViewById(R.id.layoutDeadline);
