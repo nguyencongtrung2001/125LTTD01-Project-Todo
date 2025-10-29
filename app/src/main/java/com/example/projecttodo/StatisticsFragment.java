@@ -1,64 +1,76 @@
 package com.example.projecttodo;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link StatisticsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 public class StatisticsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TextView tvDaysCount, tvTotalDays;
+    private TextView tvTotalTasks, tvCompletedTasks, tvOverdueTasks;
+    private PieChartView pieChartView;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // Sample data
+    private int totalTasks = 18;
+    private int completedTasks = 15;
+    private int overdueTasks = 3;
 
-    public StatisticsFragment() {
-        // Required empty public constructor
-    }
+    private static final String TAG = "StatisticsFragment";
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StatisticsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static StatisticsFragment newInstance(String param1, String param2) {
-        StatisticsFragment fragment = new StatisticsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_statistics, container, false);
+
+        initViews(view);
+        loadStatistics();
+
+        // Force update PieChart sau khi layout measure (thêm listener để đảm bảo kích thước sẵn sàng)
+        pieChartView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                pieChartView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                Log.d(TAG, "PieChart measured: width=" + pieChartView.getWidth() + ", height=" + pieChartView.getHeight());
+                pieChartView.invalidate(); // Force vẽ lại
+            }
+        });
+
+        return view;
+    }
+
+    private void initViews(View view) {
+        tvDaysCount = view.findViewById(R.id.tvDaysCount);
+        tvTotalDays = view.findViewById(R.id.tvTotalDays);
+        tvTotalTasks = view.findViewById(R.id.tvTotalTasks);
+        tvCompletedTasks = view.findViewById(R.id.tvCompletedTasks);
+        tvOverdueTasks = view.findViewById(R.id.tvOverdueTasks);
+        pieChartView = view.findViewById(R.id.pieChartView);
+        if (pieChartView == null) {
+            Log.e(TAG, "PieChartView NOT FOUND! Check XML ID.");
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_statistics, container, false);
+    private void loadStatistics() {
+        // TODO: Load real data from database
+        // For now, display sample data
+        tvDaysCount.setText("7");
+        tvTotalDays.setText("30");
+        tvTotalTasks.setText(String.valueOf(totalTasks));
+        tvCompletedTasks.setText(String.valueOf(completedTasks));
+        tvOverdueTasks.setText(String.valueOf(overdueTasks));
+
+        // Update pie chart
+        if (pieChartView != null) {
+            pieChartView.setData(completedTasks, totalTasks);
+            Log.d(TAG, "Set data: completed=" + completedTasks + ", total=" + totalTasks);
+        }
     }
 }

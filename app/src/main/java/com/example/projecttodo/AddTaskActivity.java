@@ -1,12 +1,12 @@
 package com.example.projecttodo;
 
-
-
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,32 +19,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.shape.CornerFamily;
+import com.google.android.material.shape.ShapeAppearanceModel;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.List;
 
 public class AddTaskActivity extends AppCompatActivity {
 
-    private ImageButton btnBack;
     private EditText etTaskTitle, etTaskDescription;
     private Spinner spinnerGroup;
-    private TextView tvAddGroup, tvDeadline;
-    private LinearLayout layoutDeadline, layoutTaskColors;
+    private TextView tvDeadline, tvAddGroup;
     private ChipGroup chipGroupReminder, chipGroupPriority;
+    private LinearLayout layoutDeadline, layoutTaskColors;
     private Button btnCancel, btnCreate;
+    private ImageButton btnBack;
 
-    private Calendar deadlineCalendar;
-    private String selectedColor = "#CCDD22"; // Default yellow
-    private String selectedReminder = "10p"; // Default 10p
-    private String selectedPriority = "Cao"; // Default high
-
-    // Array of colors for task
-    private static final String[] TASK_COLORS = {
-            "#CCDD22", "#66DD66", "#22DDBB", "#4499DD",
-            "#44BBEE", "#EE9944", "#BB66DD", "#EE5599"
-    };
+    // Màu sắc mẫu (có thể chỉnh)
+    private int[] colors = {Color.RED, Color.rgb(255, 165, 0), Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA};
+    private List<Button> colorButtons = new ArrayList<>();
+    private int selectedColorIndex = -1;  // -1: chưa chọn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,202 +46,123 @@ public class AddTaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_task);
 
         initViews();
-        setupSpinner();
-        populateTaskColors();
         setupListeners();
-        deadlineCalendar = Calendar.getInstance();
+        populateColors();  // Thêm danh sách màu động
     }
 
     private void initViews() {
-        btnBack = findViewById(R.id.btnBack);
         etTaskTitle = findViewById(R.id.etTaskTitle);
         etTaskDescription = findViewById(R.id.etTaskDescription);
         spinnerGroup = findViewById(R.id.spinnerGroup);
-        tvAddGroup = findViewById(R.id.tvAddGroup);
         tvDeadline = findViewById(R.id.tvDeadline);
-        layoutDeadline = findViewById(R.id.layoutDeadline);
-        layoutTaskColors = findViewById(R.id.layoutTaskColors);
+        tvAddGroup = findViewById(R.id.tvAddGroup);
         chipGroupReminder = findViewById(R.id.chipGroupReminder);
         chipGroupPriority = findViewById(R.id.chipGroupPriority);
-
+        layoutDeadline = findViewById(R.id.layoutDeadline);
+        layoutTaskColors = findViewById(R.id.layoutTaskColors);
         btnCancel = findViewById(R.id.btnCancel);
         btnCreate = findViewById(R.id.btnCreate);
+        btnBack = findViewById(R.id.btnBack);
+
+        // Default selections
+        chipGroupReminder.check(R.id.chipNone);
+        chipGroupPriority.check(R.id.chipLow);
+
+        // TODO: Setup Spinner adapter nếu có data groups
     }
 
-    private void populateTaskColors() {
-        for (int i = 0; i < TASK_COLORS.length; i++) {
-            String color = TASK_COLORS[i];
-            View colorView = new View(this);
+    private void populateColors() {
+        layoutTaskColors.removeAllViews();  // Xóa nếu có cũ
+        colorButtons.clear();
 
-            // Set layout params
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    dpToPx(40), dpToPx(40)
-            );
-            params.setMarginEnd(dpToPx(12));
-            colorView.setLayoutParams(params);
+        for (int i = 0; i < colors.length; i++) {
+            final int color = colors[i];
+            final int index = i;
 
-            // Set color
-            colorView.setBackgroundResource(R.drawable.bg_color_circle);
-            colorView.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
-                    android.graphics.Color.parseColor(color)
-            ));
+            // Tạo Button tròn cho màu
+            Button colorBtn = new Button(this);
+            colorBtn.setLayoutParams(new LinearLayout.LayoutParams(60, 60));  // Kích thước tròn
+            colorBtn.setPadding(0, 0, 0, 0);
 
-            // Set content description for accessibility
-            colorView.setContentDescription("Color option " + (i + 1));
+            // Shape tròn (circular)
+            ShapeAppearanceModel shapeModel = ShapeAppearanceModel.builder()
+                    .setAllCorners(CornerFamily.ROUNDED, 30f)  // Bán kính tròn
+                    .build();
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setShape(GradientDrawable.OVAL);
+            drawable.setColor(color);
+            colorBtn.setBackground(drawable);
 
-            // Set click listener
-            colorView.setOnClickListener(v -> selectColor(color));
+            // Không text, chỉ màu
+            colorBtn.setText("");
+            colorBtn.setId(View.generateViewId());  // ID unique
 
-            // Make clickable
-            colorView.setClickable(true);
-            colorView.setFocusable(true);
+            // Listener: Chọn màu
+            colorBtn.setOnClickListener(v -> {
+                if (selectedColorIndex != -1) {
+                    // Reset màu cũ
+                    GradientDrawable oldDrawable = (GradientDrawable) colorButtons.get(selectedColorIndex).getBackground();
+                    oldDrawable.setStroke(0, Color.TRANSPARENT);
+                }
+                // Set màu mới với viền trắng
+                selectedColorIndex = index;
+                GradientDrawable newDrawable = (GradientDrawable) colorBtn.getBackground();
+                newDrawable.setStroke(3, Color.WHITE);  // Viền trắng 3dp
+                Toast.makeText(this, "Chọn màu " + (index + 1), Toast.LENGTH_SHORT).show();
+            });
 
-            layoutTaskColors.addView(colorView);
+            layoutTaskColors.addView(colorBtn);
+            colorButtons.add(colorBtn);
         }
-    }
-
-    private int dpToPx(int dp) {
-        float density = getResources().getDisplayMetrics().density;
-        return Math.round(dp * density);
-    }
-
-    private void setupSpinner() {
-        ArrayList<String> groups = new ArrayList<>();
-        groups.add("Học tập");
-        groups.add("Công việc");
-        groups.add("Cá nhân");
-        groups.add("Thể thao");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, groups);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerGroup.setAdapter(adapter);
     }
 
     private void setupListeners() {
+        // Nút Back
         btnBack.setOnClickListener(v -> finish());
 
-        layoutDeadline.setOnClickListener(v -> showDateTimePicker());
-
-        // Reminder chips
-        chipGroupReminder.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.chipNone) {
-                selectedReminder = "Không";
-            } else if (checkedId == R.id.chip5p) {
-                selectedReminder = "5p";
-            } else if (checkedId == R.id.chip10p) {
-                selectedReminder = "10p";
-            } else if (checkedId == R.id.chip1h) {
-                selectedReminder = "1h";
-            } else if (checkedId == R.id.chipCustom) {
-                selectedReminder = "Tùy chỉnh";
-            }
+        // Layout Deadline (click mở DatePicker)
+        layoutDeadline.setOnClickListener(v -> {
+            // TODO: DatePickerDialog
+            Toast.makeText(this, "Chọn ngày hạn", Toast.LENGTH_SHORT).show();
         });
 
-        // Priority chips
-        chipGroupPriority.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.chipLow) {
-                selectedPriority = "Thấp";
-            } else if (checkedId == R.id.chipMedium) {
-                selectedPriority = "Trung bình";
-            } else if (checkedId == R.id.chipHigh) {
-                selectedPriority = "Cao";
-            }
+        // tvAddGroup
+        tvAddGroup.setOnClickListener(v -> {
+            // TODO: Dialog thêm group
+            Toast.makeText(this, "Thêm nhóm mới", Toast.LENGTH_SHORT).show();
         });
 
-        // Open Select Group Dialog when clicking "Tạo nhóm mới"
-        tvAddGroup.setOnClickListener(v -> showSelectGroupDialog());
+        // Chip Custom Reminder: Hiển thị Dialog centered + dim background
+        Chip chipCustom = findViewById(R.id.chipCustom);
+        chipCustom.setOnClickListener(v -> showCustomReminderDialog());
 
+        // Nút Cancel
         btnCancel.setOnClickListener(v -> finish());
 
-        btnCreate.setOnClickListener(v -> createTask());
+        // Nút Create
+        btnCreate.setOnClickListener(v -> {
+            String title = etTaskTitle.getText().toString().trim();
+            if (title.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập tiêu đề", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // TODO: Save task (bao gồm selectedColorIndex nếu cần)
+            Toast.makeText(this, "Tạo task: " + title + " (Màu: " + (selectedColorIndex != -1 ? colors[selectedColorIndex] : "Mặc định"), Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 
-    private void showSelectGroupDialog() {
-        SelectGroupDialog dialog = new SelectGroupDialog(this, new SelectGroupDialog.OnGroupSelectedListener() {
+    private void showCustomReminderDialog() {
+        CustomReminderDialog dialog = new CustomReminderDialog(this, new CustomReminderDialog.OnReminderSetListener() {
             @Override
-            public void onGroupSelected(String groupName) {
-                // Update spinner with selected group
-                Toast.makeText(AddTaskActivity.this, "Đã chọn nhóm: " + groupName, Toast.LENGTH_SHORT).show();
-                // TODO: Add selected group to spinner
-            }
-
-            @Override
-            public void onCreateNewGroup() {
-                showCreateGroupDialog();
+            public void onReminderSet(int days, int hours, int minutes) {
+                // Cập nhật chip text với thời gian custom
+                Chip chipCustom = findViewById(R.id.chipCustom);
+                String customText = String.format("%d ngày %d giờ %d phút", days, hours, minutes);
+                chipCustom.setText("Tùy chỉnh: " + customText);
+                chipGroupReminder.check(R.id.chipCustom);  // Chọn chip này
             }
         });
-        dialog.show();
-    }
-
-    private void showCreateGroupDialog() {
-        CreateGroupDialog dialog = new CreateGroupDialog(this, new CreateGroupDialog.OnGroupCreatedListener() {
-            @Override
-            public void onGroupCreated(String groupName, String color) {
-                // Add new group to spinner
-                Toast.makeText(AddTaskActivity.this,
-                        "Đã tạo nhóm mới: " + groupName + " với màu " + color,
-                        Toast.LENGTH_SHORT).show();
-                // TODO: Add new group to database and refresh spinner
-            }
-        });
-        dialog.show();
-    }
-
-    private void showDateTimePicker() {
-        Calendar calendar = Calendar.getInstance();
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year, month, dayOfMonth) -> {
-                    deadlineCalendar.set(Calendar.YEAR, year);
-                    deadlineCalendar.set(Calendar.MONTH, month);
-                    deadlineCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                    // Show time picker after date is selected
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                            (timeView, hourOfDay, minute) -> {
-                                deadlineCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                deadlineCalendar.set(Calendar.MINUTE, minute);
-
-                                updateDeadlineText();
-                            },
-                            calendar.get(Calendar.HOUR_OF_DAY),
-                            calendar.get(Calendar.MINUTE),
-                            true);
-                    timePickerDialog.show();
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-
-        datePickerDialog.show();
-    }
-
-    private void updateDeadlineText() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-        tvDeadline.setText(sdf.format(deadlineCalendar.getTime()));
-    }
-
-    private void selectColor(String color) {
-        selectedColor = color;
-        Toast.makeText(this, "Đã chọn màu", Toast.LENGTH_SHORT).show();
-        // TODO: Update UI to show selected color
-    }
-
-    private void createTask() {
-        String title = etTaskTitle.getText().toString().trim();
-        String description = etTaskDescription.getText().toString().trim();
-
-        if (title.isEmpty()) {
-            Toast.makeText(this, R.string.error_empty_task_title, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String group = spinnerGroup.getSelectedItem().toString();
-
-        // TODO: Save task to database or send to backend
-
-        Toast.makeText(this, R.string.task_created_success, Toast.LENGTH_SHORT).show();
-        finish();
+        dialog.show();  // Hiển thị, tự động centered + dim
     }
 }

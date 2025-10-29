@@ -1,11 +1,11 @@
 package com.example.projecttodo;
 
-package com.example.myapp;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,9 +38,12 @@ public class CustomReminderDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_custom_reminder);
 
-        // Set dialog background transparent
+        // Transparent background cho dialog
         if (getWindow() != null) {
             getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            getWindow().setDimAmount(0.5f);  // Mờ đen 50% background AddTaskActivity
+            getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            getWindow().setGravity(Gravity.CENTER);  // Centered vị trí
         }
 
         initViews();
@@ -67,7 +70,7 @@ public class CustomReminderDialog extends Dialog {
     }
 
     private void setupListeners() {
-        // Common time quick buttons
+        // Quick buttons
         btn5Minutes.setOnClickListener(v -> setTime(0, 0, 5));
         btn10Minutes.setOnClickListener(v -> setTime(0, 0, 10));
         btn15Minutes.setOnClickListener(v -> setTime(0, 0, 15));
@@ -86,24 +89,17 @@ public class CustomReminderDialog extends Dialog {
                 hours = Integer.parseInt(etHours.getText().toString());
                 minutes = Integer.parseInt(etMinutes.getText().toString());
 
-                // Validation
+                // Validation (giữ nguyên)
                 if (days < 0 || hours < 0 || minutes < 0) {
                     Toast.makeText(getContext(), "Giá trị phải lớn hơn hoặc bằng 0", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                if (hours > 23) {
-                    Toast.makeText(getContext(), "Giờ không được vượt quá 23", Toast.LENGTH_SHORT).show();
+                if (hours > 23 || minutes > 59) {
+                    Toast.makeText(getContext(), "Giờ/phút không hợp lệ", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                if (minutes > 59) {
-                    Toast.makeText(getContext(), "Phút không được vượt quá 59", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 if (days == 0 && hours == 0 && minutes == 0) {
-                    Toast.makeText(getContext(), "Vui lòng chọn thời gian nhắc nhở", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Vui lòng chọn thời gian", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -112,7 +108,7 @@ public class CustomReminderDialog extends Dialog {
                 }
 
                 String reminderText = formatReminderTime(days, hours, minutes);
-                Toast.makeText(getContext(), "Đã đặt nhắc nhở: " + reminderText, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Đã đặt: " + reminderText, Toast.LENGTH_SHORT).show();
                 dismiss();
 
             } catch (NumberFormatException e) {
@@ -129,17 +125,9 @@ public class CustomReminderDialog extends Dialog {
 
     private String formatReminderTime(int days, int hours, int minutes) {
         StringBuilder sb = new StringBuilder();
-
-        if (days > 0) {
-            sb.append(days).append(" ngày ");
-        }
-        if (hours > 0) {
-            sb.append(hours).append(" giờ ");
-        }
-        if (minutes > 0) {
-            sb.append(minutes).append(" phút");
-        }
-
+        if (days > 0) sb.append(days).append(" ngày ");
+        if (hours > 0) sb.append(hours).append(" giờ ");
+        if (minutes > 0) sb.append(minutes).append(" phút");
         return sb.toString().trim();
     }
 }
