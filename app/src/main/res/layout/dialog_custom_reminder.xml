@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/bg_dialog"
+    android:background="?attr/colorSurface"
     android:padding="24dp">
 
     <!-- Title -->
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/custom_reminder_title"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reminder_before_label"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
 
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/days_label"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp" />
 
@@ -57,12 +57,11 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:text="0"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="18sp"
                 android:gravity="center"
                 android:inputType="number"
                 android:maxLength="3" />
-
         </LinearLayout>
 
         <!-- Hours -->
@@ -79,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/hours_label"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp" />
 
@@ -89,12 +88,11 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:text="1"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="18sp"
                 android:gravity="center"
                 android:inputType="number"
                 android:maxLength="2" />
-
         </LinearLayout>
 
         <!-- Minutes -->
@@ -110,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/minutes_label"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp" />
 
@@ -120,14 +118,12 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input_border"
                 android:text="0"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="18sp"
                 android:gravity="center"
                 android:inputType="number"
                 android:maxLength="2" />
-
         </LinearLayout>
-
     </LinearLayout>
 
     <!-- Common Time Options Label -->
@@ -135,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/common_time_label"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         android:layout_marginBottom="16dp" />
 
@@ -144,17 +140,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3"
-        android:layout_marginBottom="24dp"
-        android:rowCount="3">
+        android:rowCount="3"
+        android:layout_marginBottom="24dp">
 
         <Button
             android:id="@+id/btn5Minutes"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_5_minutes"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -162,11 +158,11 @@
         <Button
             android:id="@+id/btn10Minutes"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_10_minutes"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -174,11 +170,11 @@
         <Button
             android:id="@+id/btn15Minutes"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_15_minutes"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -186,11 +182,11 @@
         <Button
             android:id="@+id/btn30Minutes"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_30_minutes"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -198,11 +194,11 @@
         <Button
             android:id="@+id/btn1Hour"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_1_hour"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -210,11 +206,11 @@
         <Button
             android:id="@+id/btn2Hours"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_2_hours"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -222,11 +218,11 @@
         <Button
             android:id="@+id/btn1Day"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_1_day"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -234,11 +230,11 @@
         <Button
             android:id="@+id/btn3Days"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_3_days"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
@@ -246,15 +242,14 @@
         <Button
             android:id="@+id/btn1Week"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_columnWeight="1"
             android:layout_margin="4dp"
             android:text="@string/time_1_week"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_input_border" />
-
     </GridLayout>
 
     <!-- Bottom Buttons -->
@@ -270,10 +265,10 @@
             android:layout_height="56dp"
             android:layout_weight="1"
             android:text="@string/cancel_button"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="16sp"
             android:textAllCaps="false"
-            android:background="@drawable/bg_button_transparent"
+            android:background="@android:color/transparent"
             android:layout_marginEnd="8dp" />
 
         <Button
@@ -282,13 +277,12 @@
             android:layout_height="56dp"
             android:layout_weight="1"
             android:text="@string/save_button"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textAllCaps="false"
-            android:background="@drawable/bg_button_primary"
+            android:backgroundTint="?attr/colorPrimary"
             android:layout_marginStart="8dp" />
-
     </LinearLayout>
 
 </LinearLayout>

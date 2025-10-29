@@ -1,41 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ProjectTodo" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.ProjectTodo" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/button_purple</item>
-        <item name="colorPrimaryVariant">@color/button_purple</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/button_purple</item>
-        <item name="colorSecondaryVariant">@color/button_purple</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/black</item>
-        <!-- Navigation bar color. -->
-        <item name="android:navigationBarColor">@color/black</item>
-        <!-- Window background -->
-        <item name="android:windowBackground">@color/black</item>
-        <!-- Text colors -->
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/hint_gray</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+
+        <item name="colorSurfaceVariant">@color/hint_gray</item>
+        <item name="colorOnSurfaceVariant">@color/dark_gray</item>
+
+        <item name="colorBackground">@color/white</item>
+        <item name="colorOnBackground">@color/black</item>
+
+        <item name="colorOutline">@color/outline_gray</item>
+        <item name="colorError">@color/error_red</item>
+
+        <item name="colorCalender">@color/button_purple</item>
+
+        <item name="colorBottomNavigationBar">@color/colorBottomNavigationBar</item>
+
+        <item name="colorChipBackground">@color/colorChipBackground</item>
+
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
     </style>
 
     <style name="Theme.ProjectTodo" parent="Base.Theme.ProjectTodo" />
-
-    <!-- Calendar Styles -->
-    <style name="CalendarViewTheme" parent="Theme.AppCompat">
-        <item name="colorAccent">@color/button_purple</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:colorBackground">@color/dark_gray</item>
-    </style>
-
-    <style name="CalendarDateTextStyle" parent="android:TextAppearance.DeviceDefault.Small">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="CalendarWeekDayTextStyle" parent="android:TextAppearance.DeviceDefault.Small">
-        <item name="android:textColor">@color/text_gray</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
 </resources>

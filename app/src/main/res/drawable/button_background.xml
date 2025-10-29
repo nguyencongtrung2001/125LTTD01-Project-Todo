@@ -2,8 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="#B8B8F6" />
+    <!-- Dùng màu chính của theme -->
+    <solid android:color="?attr/colorPrimary" />
 
+    <!-- Bo góc mềm mại -->
     <corners android:radius="8dp" />
-
 </shape>

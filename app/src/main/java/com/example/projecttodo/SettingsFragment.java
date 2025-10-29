@@ -1,64 +1,127 @@
 package com.example.projecttodo;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import androidx.appcompat.widget.SwitchCompat;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Màn hình Cài đặt (Settings)
+ * Người thực hiện: Bùi Xuân Văn
  */
 public class SettingsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    // Các thành phần giao diện
+    private RadioGroup rgTheme;
+    private RadioButton rbLight, rbDark;
+    private SwitchCompat switchNotification;
+    private CheckBox cbSilentMode;
+    private TextView tvSilentTime, tvLanguage, tvVersion, tvEmail;
+    private Button btnLogout;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private SharedPreferences prefs;
 
-    public SettingsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public SettingsFragment() { }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        // Ánh xạ View
+        rgTheme = view.findViewById(R.id.rg_theme);
+        rbLight = view.findViewById(R.id.rb_light);
+        rbDark = view.findViewById(R.id.rb_dark);
+        switchNotification = view.findViewById(R.id.switch_notification);
+        cbSilentMode = view.findViewById(R.id.cb_silent_mode);
+        tvSilentTime = view.findViewById(R.id.tv_silent_time);
+        tvLanguage = view.findViewById(R.id.tv_language);
+        tvVersion = view.findViewById(R.id.tv_version);
+        tvEmail = view.findViewById(R.id.tv_email);
+        btnLogout = view.findViewById(R.id.btn_logout);
+
+        prefs = requireContext().getSharedPreferences("settings", 0);
+        loadSettings();
+
+        // ===== XỬ LÝ SỰ KIỆN =====
+
+        rgTheme.setOnCheckedChangeListener((group, checkedId) -> {
+            boolean isDark = (checkedId == R.id.rb_dark);
+            saveTheme(isDark);
+            Toast.makeText(getContext(),
+                    isDark ? getString(R.string.theme_dark) : getString(R.string.theme_light),
+                    Toast.LENGTH_SHORT).show();
+        });
+
+        switchNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean("notification", isChecked).apply();
+            Toast.makeText(getContext(),
+                    isChecked ? getString(R.string.notifications_on) : getString(R.string.notifications_off),
+                    Toast.LENGTH_SHORT).show();
+        });
+
+        cbSilentMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            tvSilentTime.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            prefs.edit().putBoolean("silent", isChecked).apply();
+        });
+
+        tvLanguage.setOnClickListener(v ->
+                Toast.makeText(getContext(), getString(R.string.language_coming_soon), Toast.LENGTH_SHORT).show()
+        );
+
+        btnLogout.setOnClickListener(v -> {
+            // Hiển thị thông báo
+            Toast.makeText(
+                    getContext(),
+                    getString(R.string.logout_success),
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            // Quay lại màn hình đăng nhập
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        });
+
+
+        return view;
+    }
+
+    private void loadSettings() {
+        boolean isDark = prefs.getBoolean("dark_mode", true);
+        boolean isNoti = prefs.getBoolean("notification", true);
+        boolean isSilent = prefs.getBoolean("silent", false);
+
+        rbDark.setChecked(isDark);
+        rbLight.setChecked(!isDark);
+        switchNotification.setChecked(isNoti);
+        cbSilentMode.setChecked(isSilent);
+        tvSilentTime.setVisibility(isSilent ? View.VISIBLE : View.GONE);
+    }
+
+    private void saveTheme(boolean isDark) {
+        prefs.edit().putBoolean("dark_mode", isDark).apply();
+
+        // Lưu tab hiện tại để HomeActivity giữ nguyên fragment
+        SharedPreferences navPrefs = requireContext().getSharedPreferences("nav_state", 0);
+        navPrefs.edit().putString("last_tab", "settings").apply();
+
+        // Gọi hiệu ứng overlay mượt
+        if (getActivity() instanceof HomeActivity) {
+            ((HomeActivity) getActivity()).recreateWithFade(isDark);
+        } else {
+            requireActivity().recreate();
+        }
     }
 }

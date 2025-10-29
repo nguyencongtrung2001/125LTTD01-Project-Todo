@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="?attr/colorBackground"
     android:fillViewport="true">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thống kê"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnBackground"
             android:textSize="32sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="7"
-                android:textColor="@color/button_purple"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="48sp"
                 android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ngày"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 android:textSize="16sp"
                 android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 android:textSize="48sp"
                 android:textStyle="bold"
                 android:layout_marginStart="24dp" />
@@ -64,21 +64,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ngày"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnBackground"
                 android:textSize="16sp"
                 android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical" />
-
         </LinearLayout>
 
-        <!-- Statistics Cards -->
-        <!-- Total Tasks -->
+        <!-- Total Tasks Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/dark_gray"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp">
 
@@ -89,7 +87,7 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <!-- Icon with check mark -->
+                <!-- Icon -->
                 <FrameLayout
                     android:layout_width="40dp"
                     android:layout_height="40dp">
@@ -98,22 +96,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="@color/button_purple" />
+                        android:backgroundTint="?attr/colorPrimary" />
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_check"
-                        app:tint="@color/white" />
-
+                        app:tint="?attr/colorOnPrimary" />
                 </FrameLayout>
 
-                <!-- Vertical divider -->
+                <!-- Divider -->
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/border_gray"
+                    android:background="?attr/colorSurfaceVariant"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp" />
 
@@ -127,7 +124,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tổng số việc"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="14sp" />
 
                     <TextView
@@ -135,22 +132,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="18"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="24sp"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <!-- Completed Tasks -->
+        <!-- Completed Tasks Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/dark_gray"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp">
 
@@ -161,7 +155,6 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <!-- Icon with check mark -->
                 <FrameLayout
                     android:layout_width="40dp"
                     android:layout_height="40dp">
@@ -170,22 +163,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="@color/button_purple" />
+                        android:backgroundTint="?attr/colorPrimary" />
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_check"
-                        app:tint="@color/white" />
-
+                        app:tint="?attr/colorOnPrimary" />
                 </FrameLayout>
 
-                <!-- Vertical divider -->
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/border_gray"
+                    android:background="?attr/colorSurfaceVariant"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp" />
 
@@ -199,7 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đã hoàn thành"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="14sp" />
 
                     <TextView
@@ -207,22 +198,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="15"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="24sp"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
-        <!-- Overdue Tasks -->
+        <!-- Overdue Tasks Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            app:cardBackgroundColor="@color/dark_gray"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp">
 
@@ -233,7 +221,6 @@
                 android:padding="16dp"
                 android:gravity="center_vertical">
 
-                <!-- Icon with warning mark -->
                 <FrameLayout
                     android:layout_width="40dp"
                     android:layout_height="40dp">
@@ -249,15 +236,13 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_warning"
-                        app:tint="@color/white" />
-
+                        app:tint="?attr/colorOnPrimary" />
                 </FrameLayout>
 
-                <!-- Vertical divider -->
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/border_gray"
+                    android:background="?attr/colorSurfaceVariant"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp" />
 
@@ -271,7 +256,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đã quá hạn"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="14sp" />
 
                     <TextView
@@ -279,14 +264,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="3"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="24sp"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <!-- Pie Chart Section -->
@@ -297,7 +279,6 @@
             android:gravity="center_vertical"
             android:layout_marginTop="16dp">
 
-            <!-- Custom Pie Chart View -->
             <com.example.projecttodo.PieChartView
                 android:id="@+id/pieChartView"
                 android:layout_width="180dp"
@@ -321,16 +302,15 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="@color/button_purple" />
+                        android:backgroundTint="?attr/colorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="Đã hoàn thành"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnBackground"
                         android:textSize="14sp" />
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -343,22 +323,17 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="#E0E0E0" />
+                        android:backgroundTint="?attr/colorSurfaceVariant" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="Chưa hoàn thành"
-                        android:textColor="@color/white"
+                        android:textColor="?attr/colorOnBackground"
                         android:textSize="14sp" />
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

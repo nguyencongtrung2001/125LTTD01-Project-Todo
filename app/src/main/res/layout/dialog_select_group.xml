@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/bg_dialog"
+    android:background="?attr/colorSurface"
     android:padding="24dp">
 
     <!-- Title -->
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/select_group_title"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -31,11 +31,10 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="@string/add_group_button"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textAllCaps="false"
-        android:background="@drawable/bg_button_primary"
+        android:backgroundTint="?attr/colorPrimary"
         android:layout_marginBottom="16dp" />
-
 </LinearLayout>

@@ -2,8 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="#1A1A1A" />
+    <!-- Màu nền của chip bình thường -->
+    <solid android:color="?attr/colorChipBackground" />
 
+    <!-- Bo góc cho chip -->
     <corners android:radius="18dp" />
-
 </shape>

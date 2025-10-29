@@ -1,7 +1,29 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.ProjectTodo" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.ProjectTodo" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/button_purple_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSurface">@color/dark_gray</item>
+        <item name="colorOnSurface">@color/white</item>
+
+        <item name="colorSurfaceVariant">@color/text_gray</item>
+        <item name="colorOnSurfaceVariant">@color/icon_gray</item>
+
+        <item name="colorBackground">@color/black</item>
+        <item name="colorOnBackground">@color/white</item>
+
+        <item name="colorOutline">@color/border_gray</item>
+        <item name="colorError">@color/error_red</item>
+
+        <item name="colorCalender">@color/ic_launcher_background</item>
+
+        <item name="colorBottomNavigationBar">@color/colorBottomNavigationBar_Dark</item>
+
+        <item name="colorChipBackground">@color/colorChipBackground_Dark</item>
+
+        <item name="android:statusBarColor">?attr/colorBackground</item>
+        <item name="android:navigationBarColor">?attr/colorBackground</item>
     </style>
+
+    <style name="Theme.ProjectTodo" parent="Base.Theme.ProjectTodo" />
 </resources>

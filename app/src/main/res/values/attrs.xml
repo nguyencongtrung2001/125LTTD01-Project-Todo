@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tự khai báo để sử dụng trong theme -->
+    <attr name="colorBackground" format="color" />
+    <attr name="colorOnBackground" format="color"/>
+    <attr name="colorCalender" format="color" />
+    <attr name="colorBottomNavigationBar" format="color" />
+    <attr name="colorChipBackground" format="color" />
+</resources>
