@@ -30,6 +30,18 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Kiểm tra cài đặt theme trước khi tạo giao diện
+        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        if (!prefs.contains("dark_mode")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            boolean isDark = prefs.getBoolean("dark_mode", false);
+            AppCompatDelegate.setDefaultNightMode(
+                    isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+            );
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -37,8 +49,8 @@ public class HomeActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
 
         // Khôi phục tab trước đó
-        SharedPreferences prefs = getSharedPreferences("nav_state", MODE_PRIVATE);
-        String lastTab = prefs.getString("last_tab", "home");
+        SharedPreferences navPrefs = getSharedPreferences("nav_state", MODE_PRIVATE);
+        String lastTab = navPrefs.getString("last_tab", "home");
 
         switch (lastTab) {
             case "calendar":
@@ -60,8 +72,6 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         setupBottomNavigation();
-
-        // Cập nhật lại màu icon hệ thống (SIM, pin, navigation)
         updateSystemBarIcons();
     }
 
@@ -121,18 +131,14 @@ public class HomeActivity extends AppCompatActivity {
     private void selectTab(String tab) {
         currentTab = tab;
 
-        // Lấy màu động từ theme hiện tại
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getTheme();
 
-        // Màu nhấn theo theme (colorBottomNavigationBar)
         theme.resolveAttribute(R.attr.colorBottomNavigationBar, typedValue, true);
         int colorActive = typedValue.data;
 
-        // Màu xám cho icon & text chưa chọn
         int colorInactive = ContextCompat.getColor(this, R.color.icon_gray);
 
-        // Reset tất cả icon & text về màu inactive
         iconHome.setColorFilter(colorInactive);
         iconCalendar.setColorFilter(colorInactive);
         iconStatistics.setColorFilter(colorInactive);
@@ -143,7 +149,6 @@ public class HomeActivity extends AppCompatActivity {
         labelStatistics.setTextColor(colorInactive);
         labelSettings.setTextColor(colorInactive);
 
-        // Áp dụng màu active cho tab đang chọn
         switch (tab) {
             case "home":
                 iconHome.setColorFilter(colorActive);
@@ -164,15 +169,10 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-
-    // ===============================
-    // Hiệu ứng chuyển theme mượt (Overlay Fade)
-    // ===============================
     public void recreateWithFade(boolean isDark) {
         final View decor = getWindow().getDecorView();
         final View overlay = new View(this);
 
-        // Luôn chớp màu đen nhẹ dù giao diện sáng hay tối
         overlay.setBackgroundColor(getColor(android.R.color.black));
         overlay.setAlpha(0f);
 
@@ -180,27 +180,22 @@ public class HomeActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Fade in (từ trong suốt -> đen)
         overlay.animate()
                 .alpha(1f)
                 .setDuration(150)
                 .withEndAction(() -> {
                     runOnUiThread(() -> {
-                        // Đổi chế độ sáng/tối
                         AppCompatDelegate.setDefaultNightMode(
                                 isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
                         );
 
-                        // Tạo lại Activity
                         super.recreate();
 
-                        // Fade out (từ đen -> trong suốt)
                         overlay.animate()
                                 .alpha(0f)
                                 .setDuration(300)
                                 .withEndAction(() -> {
                                     ((ViewGroup) decor).removeView(overlay);
-                                    // Cập nhật lại icon thanh hệ thống sau khi recreate
                                     updateSystemBarIcons();
                                 })
                                 .start();
@@ -209,9 +204,6 @@ public class HomeActivity extends AppCompatActivity {
                 .start();
     }
 
-    // ===============================
-    // Tự đổi màu icon thanh trạng thái & điều hướng
-    // ===============================
     private void updateSystemBarIcons() {
         View decorView = getWindow().getDecorView();
         boolean isDarkMode = (getResources().getConfiguration().uiMode &
