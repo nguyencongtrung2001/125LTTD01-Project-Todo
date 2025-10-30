@@ -16,13 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-/**
- * Màn hình Cài đặt (Settings)
- * Người thực hiện: Bùi Xuân Văn
- */
 public class SettingsFragment extends Fragment {
 
-    // Các thành phần giao diện
     private RadioGroup rgTheme;
     private RadioButton rbLight, rbDark;
     private SwitchCompat switchNotification;
@@ -39,7 +34,6 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        // Ánh xạ View
         rgTheme = view.findViewById(R.id.rg_theme);
         rbLight = view.findViewById(R.id.rb_light);
         rbDark = view.findViewById(R.id.rb_dark);
@@ -53,8 +47,6 @@ public class SettingsFragment extends Fragment {
 
         prefs = requireContext().getSharedPreferences("settings", 0);
         loadSettings();
-
-        // ===== XỬ LÝ SỰ KIỆN =====
 
         rgTheme.setOnCheckedChangeListener((group, checkedId) -> {
             boolean isDark = (checkedId == R.id.rb_dark);
@@ -81,25 +73,22 @@ public class SettingsFragment extends Fragment {
         );
 
         btnLogout.setOnClickListener(v -> {
-            // Hiển thị thông báo
             Toast.makeText(
                     getContext(),
                     getString(R.string.logout_success),
                     Toast.LENGTH_SHORT
             ).show();
 
-            // Quay lại màn hình đăng nhập
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
 
-
         return view;
     }
 
     private void loadSettings() {
-        boolean isDark = prefs.getBoolean("dark_mode", true);
+        boolean isDark = prefs.getBoolean("dark_mode", false);
         boolean isNoti = prefs.getBoolean("notification", true);
         boolean isSilent = prefs.getBoolean("silent", false);
 
@@ -113,11 +102,9 @@ public class SettingsFragment extends Fragment {
     private void saveTheme(boolean isDark) {
         prefs.edit().putBoolean("dark_mode", isDark).apply();
 
-        // Lưu tab hiện tại để HomeActivity giữ nguyên fragment
         SharedPreferences navPrefs = requireContext().getSharedPreferences("nav_state", 0);
         navPrefs.edit().putString("last_tab", "settings").apply();
 
-        // Gọi hiệu ứng overlay mượt
         if (getActivity() instanceof HomeActivity) {
             ((HomeActivity) getActivity()).recreateWithFade(isDark);
         } else {
