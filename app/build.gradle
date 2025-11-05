@@ -1,8 +1,9 @@
 plugins {
-    // Áp dụng các plugin đã được định nghĩa ở file project-level
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.gms.google.services)
 }
+
+// Apply Google Services plugin AFTER android block
+apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace 'com.example.projecttodo'
@@ -32,16 +33,13 @@ android {
 
 dependencies {
 
-    // BƯỚC QUAN TRỌNG: Khai báo Firebase BOM để quản lý phiên bản cho tất cả các thư viện Firebase
-    implementation(platform(libs.firebase.bom))
-
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
 
-    // Thư viện database sẽ tự động lấy phiên bản tương thích từ BOM
-    implementation libs.firebase.database
+    // Firebase Realtime Database
+    implementation 'com.google.firebase:firebase-database:22.0.1'
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
