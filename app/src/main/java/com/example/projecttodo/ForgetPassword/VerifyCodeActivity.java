@@ -35,7 +35,7 @@ public class VerifyCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_code);
 
-        // Nhận dữ liệu từ intent
+        // Nhận dữ liệu từ ForgotPasswordActivity
         userEmail = getIntent().getStringExtra("email");
         correctCode = getIntent().getStringExtra("verification_code");
 
@@ -61,65 +61,33 @@ public class VerifyCodeActivity extends AppCompatActivity {
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
 
-        // Tự động chuyển focus giữa các ô nhập
+        // Tự chuyển focus
         setupAutoFocus(code1, code2);
         setupAutoFocus(code2, code3);
         setupAutoFocus(code3, code4);
         setupAutoFocus(code4, code5);
         setupAutoFocus(code5, code6);
 
-        // Xác thực khi nhập đủ 6 số
-        code6.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 1) {
-                    // Tự động verify khi nhập đủ
-                    verifyButton.performClick();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
         verifyButton.setOnClickListener(v -> handleVerify());
-
         tvResendCode.setOnClickListener(v -> {
-            if (canResend) {
-                resendCode();
-            } else {
-                Toast.makeText(this, "Vui lòng đợi trước khi gửi lại mã", Toast.LENGTH_SHORT).show();
-            }
+            if (canResend) resendCode();
+            else Toast.makeText(this, "Vui lòng đợi trước khi gửi lại mã", Toast.LENGTH_SHORT).show();
         });
     }
 
     private void setupAutoFocus(EditText current, EditText next) {
         current.addTextChangedListener(new TextWatcher() {
-            @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 1) {
-                    next.requestFocus();
-                }
+                if (s.length() == 1) next.requestFocus();
             }
-
-            @Override
             public void afterTextChanged(Editable s) {}
         });
     }
 
     private void handleVerify() {
-        String code = code1.getText().toString() +
-                code2.getText().toString() +
-                code3.getText().toString() +
-                code4.getText().toString() +
-                code5.getText().toString() +
-                code6.getText().toString();
+        String code = code1.getText().toString() + code2.getText().toString() + code3.getText().toString()
+                + code4.getText().toString() + code5.getText().toString() + code6.getText().toString();
 
         if (code.length() != 6) {
             Toast.makeText(this, "Vui lòng nhập đủ 6 số", Toast.LENGTH_SHORT).show();
@@ -127,13 +95,11 @@ public class VerifyCodeActivity extends AppCompatActivity {
         }
 
         setLoading(true);
-
-        // Kiểm tra mã xác thực
         if (code.equals(correctCode)) {
             setLoading(false);
             Toast.makeText(this, "Xác thực thành công!", Toast.LENGTH_SHORT).show();
 
-            // Chuyển sang màn hình đặt lại mật khẩu
+            // Chuyển sang đặt lại mật khẩu
             Intent intent = new Intent(VerifyCodeActivity.this, ResetPasswordActivity.class);
             intent.putExtra("email", userEmail);
             startActivity(intent);
@@ -146,28 +112,21 @@ public class VerifyCodeActivity extends AppCompatActivity {
     }
 
     private void clearCode() {
-        code1.setText("");
-        code2.setText("");
-        code3.setText("");
-        code4.setText("");
-        code5.setText("");
-        code6.setText("");
+        code1.setText(""); code2.setText(""); code3.setText("");
+        code4.setText(""); code5.setText(""); code6.setText("");
         code1.requestFocus();
     }
 
     private void startCountdown() {
         canResend = false;
         tvResendCode.setEnabled(false);
-        tvResendCode.setTextColor(getColor(R.color.text_gray));
+        tvTimer.setTextColor(getColor(R.color.text_gray));
 
         countDownTimer = new CountDownTimer(60000, 1000) {
-            @Override
             public void onTick(long millisUntilFinished) {
                 long seconds = millisUntilFinished / 1000;
                 tvTimer.setText(String.format("(%02d:%02d)", seconds / 60, seconds % 60));
             }
-
-            @Override
             public void onFinish() {
                 canResend = true;
                 tvResendCode.setEnabled(true);
@@ -178,27 +137,20 @@ public class VerifyCodeActivity extends AppCompatActivity {
     }
 
     private void resendCode() {
-        // Trong thực tế, gửi lại mã qua email
-        Toast.makeText(this,
-                "Mã mới: " + correctCode + "\n(Trong thực tế sẽ gửi qua email)",
-                Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "Mã mới: " + correctCode, Toast.LENGTH_LONG).show();
         startCountdown();
         clearCode();
     }
 
     private void setLoading(boolean isLoading) {
-        if (progressBar != null) {
+        if (progressBar != null)
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        }
         verifyButton.setEnabled(!isLoading);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+        if (countDownTimer != null) countDownTimer.cancel();
     }
 }
