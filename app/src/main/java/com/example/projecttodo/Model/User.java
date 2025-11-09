@@ -1,4 +1,5 @@
 package com.example.projecttodo.Model;
+
 public class User {
     private String userId;
     private String fullName;
@@ -6,7 +7,7 @@ public class User {
     private String password;
     private long createdAt;
 
-    // Constructor rỗng (bắt buộc cho Firebase)
+    // Constructor rỗng (Firebase yêu cầu)
     public User() {
     }
 
@@ -59,5 +60,16 @@ public class User {
 
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    // Dùng khi debug để in ra thông tin user
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }

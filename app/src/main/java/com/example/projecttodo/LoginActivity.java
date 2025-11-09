@@ -29,20 +29,17 @@ import java.security.NoSuchAlgorithmException;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText emailEditText;
-    private EditText passwordEditText;
+    private EditText emailEditText, passwordEditText;
     private Button loginButton;
-    private TextView signupTextView;
-    private TextView tvForgotPassword;
+    private TextView signupTextView, tvForgotPassword;
     private ProgressBar progressBar;
 
     private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Thiết lập theme đúng trước khi tạo giao diện
+        // Áp dụng theme đã lưu trước đó (dark/light)
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
-
         if (!prefs.contains("dark_mode")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         } else {
@@ -55,17 +52,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Khởi tạo Firebase Database
+        // Kết nối Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
         initViews();
         setupListeners();
 
-        // Tự động điền email nếu vừa đăng ký
+        // Điền sẵn email nếu vừa đăng ký
         Intent intent = getIntent();
         if (intent.hasExtra("registered_email")) {
-            String email = intent.getStringExtra("registered_email");
-            emailEditText.setText(email);
+            emailEditText.setText(intent.getStringExtra("registered_email"));
         }
     }
 
@@ -79,35 +75,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        // Xử lý đăng nhập
         loginButton.setOnClickListener(v -> handleLogin());
-
-        // Xử lý chuyển sang màn hình Đăng ký
-        signupTextView.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
-
-        // Xử lý quên mật khẩu
-        tvForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-        });
+        signupTextView.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class))
+        );
+        tvForgotPassword.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class))
+        );
     }
 
     private void handleLogin() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        // Validate input
-        if (!validateInput(email, password)) {
-            return;
-        }
+        if (!validateInput(email, password)) return;
 
-        // Hiển thị progress bar
         setLoading(true);
-
-        // Kiểm tra đăng nhập
         checkLogin(email, password);
     }
 
@@ -116,17 +99,14 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.error_empty_email, Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (password.isEmpty()) {
             Toast.makeText(this, R.string.error_empty_password, Toast.LENGTH_SHORT).show();
             return false;
         }
-
         return true;
     }
 
@@ -143,11 +123,11 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Lấy thông tin user
                 boolean loginSuccess = false;
                 String userId = "";
                 String fullName = "";
 
+                // Kiểm tra mật khẩu
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
                     if (user != null) {
@@ -162,16 +142,17 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (loginSuccess) {
-                    // Lưu thông tin đăng nhập
                     saveLoginInfo(userId, fullName, email);
-
                     Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
 
-                    // Lưu lại tab cuối cùng là "home"
+                    // Sau khi login thành công → lấy cài đặt người dùng
+                    applyUserSettings(userId);
+
+                    // Lưu lại tab mặc định là "home"
                     SharedPreferences navPrefs = getSharedPreferences("nav_state", MODE_PRIVATE);
                     navPrefs.edit().putString("last_tab", "home").apply();
 
-                    // Chuyển sang màn hình Home
+                    // Mở HomeActivity
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
@@ -184,6 +165,45 @@ public class LoginActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 setLoading(false);
                 Toast.makeText(LoginActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Áp dụng thiết lập người dùng từ Firebase (darkMode, language, notification)
+    private void applyUserSettings(String userId) {
+        DatabaseReference settingsRef = databaseReference.child(userId).child("settings");
+
+        settingsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                // Dark mode
+                boolean darkMode = snapshot.child("darkMode").getValue(Boolean.class) != null &&
+                        snapshot.child("darkMode").getValue(Boolean.class);
+                editor.putBoolean("dark_mode", darkMode);
+
+                // Ngôn ngữ (comment lại, sẽ xử lý sau)
+                // String language = snapshot.child("language").getValue(String.class);
+                // if (language != null) editor.putString("language", language);
+
+                // Thông báo (comment lại, sẽ xử lý sau)
+                // boolean notification = snapshot.child("notification").getValue(Boolean.class) != null &&
+                //         snapshot.child("notification").getValue(Boolean.class);
+                // editor.putBoolean("notification", notification);
+
+                editor.apply();
+
+                // Áp dụng lại darkMode ngay
+                AppCompatDelegate.setDefaultNightMode(
+                        darkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+                );
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LoginActivity.this, "Không tải được cài đặt người dùng", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -203,13 +223,11 @@ public class LoginActivity extends AppCompatActivity {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes());
             StringBuilder hexString = new StringBuilder();
-
             for (byte b : hash) {
                 String hex = Integer.toHexString(0xff & b);
                 if (hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
-
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -218,9 +236,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setLoading(boolean isLoading) {
-        if (progressBar != null) {
+        if (progressBar != null)
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        }
         loginButton.setEnabled(!isLoading);
         emailEditText.setEnabled(!isLoading);
         passwordEditText.setEnabled(!isLoading);

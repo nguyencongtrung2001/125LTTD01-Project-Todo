@@ -41,7 +41,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        // Khởi tạo Firebase Database
+        // Kết nối Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
         initViews();
@@ -58,50 +58,25 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
-
         sendCodeButton.setOnClickListener(v -> handleSendCode());
     }
 
+    // Kiểm tra email hợp lệ và tồn tại trong Firebase
     private void handleSendCode() {
         String email = emailEditText.getText().toString().trim();
 
-        if (!validateEmail(email)) {
-            return;
-        }
+        if (!validateEmail(email)) return;
 
         setLoading(true);
-        checkEmailExists(email);
-    }
-
-    private boolean validateEmail(String email) {
-        if (email.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-
-    private void checkEmailExists(String email) {
         Query query = databaseReference.orderByChild("email").equalTo(email);
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 setLoading(false);
-
                 if (!snapshot.exists()) {
-                    Toast.makeText(ForgotPasswordActivity.this,
-                            "Email không tồn tại trong hệ thống", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPasswordActivity.this, "Email không tồn tại trong hệ thống", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                // Email tồn tại, tạo mã xác thực
                 userEmail = email;
                 generateAndSendCode();
             }
@@ -109,25 +84,31 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 setLoading(false);
-                Toast.makeText(ForgotPasswordActivity.this,
-                        "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ForgotPasswordActivity.this, "Lỗi: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private boolean validateEmail(String email) {
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    // Sinh mã xác thực (demo bằng Toast)
     private void generateAndSendCode() {
-        // Tạo mã xác thực 6 chữ số
         Random random = new Random();
         verificationCode = String.format("%06d", random.nextInt(1000000));
 
-        // Trong thực tế, bạn sẽ gửi code qua email
-        // Ở đây ta chỉ hiển thị Toast để demo
-        Toast.makeText(this,
-                "Mã xác thực của bạn là: " + verificationCode +
-                        "\n(Trong thực tế sẽ gửi qua email)",
-                Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Mã xác thực của bạn là: " + verificationCode, Toast.LENGTH_LONG).show();
 
-        // Chuyển sang màn hình nhập mã
+        // Chuyển sang màn hình xác thực mã
         Intent intent = new Intent(ForgotPasswordActivity.this, VerifyCodeActivity.class);
         intent.putExtra("email", userEmail);
         intent.putExtra("verification_code", verificationCode);
@@ -135,9 +116,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void setLoading(boolean isLoading) {
-        if (progressBar != null) {
+        if (progressBar != null)
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        }
         sendCodeButton.setEnabled(!isLoading);
         emailEditText.setEnabled(!isLoading);
     }

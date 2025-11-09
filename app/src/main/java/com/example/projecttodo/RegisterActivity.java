@@ -28,14 +28,10 @@ import java.security.NoSuchAlgorithmException;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText fullNameEditText;
-    private EditText emailEditText;
-    private EditText passwordEditText;
-    private EditText confirmPasswordEditText;
+    private EditText fullNameEditText, emailEditText, passwordEditText, confirmPasswordEditText;
     private Button registerButton;
     private TextView loginTextView;
-    private ImageView togglePasswordVisibility;
-    private ImageView toggleConfirmPasswordVisibility;
+    private ImageView togglePasswordVisibility, toggleConfirmPasswordVisibility;
     private ProgressBar progressBar;
 
     private boolean isPasswordVisible = false;
@@ -55,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Ánh xạ các view trong layout
     private void initViews() {
         fullNameEditText = findViewById(R.id.fullNameEditText);
         emailEditText = findViewById(R.id.emailEditText);
@@ -64,13 +61,12 @@ public class RegisterActivity extends AppCompatActivity {
         loginTextView = findViewById(R.id.loginTextView);
         togglePasswordVisibility = findViewById(R.id.togglePasswordVisibility);
         toggleConfirmPasswordVisibility = findViewById(R.id.toggleConfirmPasswordVisibility);
-
-        // Thêm ProgressBar vào layout nếu chưa có
         progressBar = findViewById(R.id.progressBar);
     }
 
+    // Thiết lập các sự kiện click
     private void setupListeners() {
-        // Xử lý hiển thị/ẩn mật khẩu
+        // Ẩn/hiện mật khẩu
         togglePasswordVisibility.setOnClickListener(v -> {
             if (isPasswordVisible) {
                 passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -84,7 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
             passwordEditText.setSelection(passwordEditText.getText().length());
         });
 
-        // Xử lý hiển thị/ẩn xác nhận mật khẩu
+        // Ẩn/hiện xác nhận mật khẩu
         toggleConfirmPasswordVisibility.setOnClickListener(v -> {
             if (isConfirmPasswordVisible) {
                 confirmPasswordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -98,31 +94,29 @@ public class RegisterActivity extends AppCompatActivity {
             confirmPasswordEditText.setSelection(confirmPasswordEditText.getText().length());
         });
 
-        // Xử lý sự kiện click nút Đăng ký
+        // Xử lý nút đăng ký
         registerButton.setOnClickListener(v -> handleRegister());
 
-        // Xử lý chuyển sang màn hình Đăng nhập
+        // Chuyển sang màn hình đăng nhập
         loginTextView.setOnClickListener(v -> finish());
     }
 
+    // Xử lý đăng ký
     private void handleRegister() {
         String fullName = fullNameEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
-        // Validate input
         if (!validateInput(fullName, email, password, confirmPassword)) {
             return;
         }
 
-        // Hiển thị progress bar
         setLoading(true);
-
-        // Kiểm tra email đã tồn tại chưa
         checkEmailExists(email, fullName, password);
     }
 
+    // Kiểm tra dữ liệu nhập vào
     private boolean validateInput(String fullName, String email, String password, String confirmPassword) {
         if (fullName.isEmpty()) {
             Toast.makeText(this, R.string.error_empty_fullname, Toast.LENGTH_SHORT).show();
@@ -149,11 +143,6 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (confirmPassword.isEmpty()) {
-            Toast.makeText(this, R.string.error_empty_confirm_password, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         if (!password.equals(confirmPassword)) {
             Toast.makeText(this, R.string.error_password_mismatch, Toast.LENGTH_SHORT).show();
             return false;
@@ -162,6 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
+    // Kiểm tra email đã tồn tại trong Firebase
     private void checkEmailExists(String email, String fullName, String password) {
         Query query = databaseReference.orderByChild("email").equalTo(email);
 
@@ -169,11 +159,9 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Email đã tồn tại
                     setLoading(false);
                     Toast.makeText(RegisterActivity.this, "Email đã được sử dụng", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Email chưa tồn tại, tiến hành đăng ký
                     registerUser(fullName, email, password);
                 }
             }
@@ -186,8 +174,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // Đăng ký tài khoản mới và thêm cấu trúc mặc định
     private void registerUser(String fullName, String email, String password) {
-        // Tạo userId unique
         String userId = databaseReference.push().getKey();
 
         if (userId == null) {
@@ -196,21 +184,38 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Hash password (đơn giản, nên dùng thư viện BCrypt trong thực tế)
         String hashedPassword = hashPassword(password);
+        User user = new User(userId, fullName, email, hashedPassword, System.currentTimeMillis());
 
-        // Tạo đối tượng User
-        User user = new User(
-                userId,
-                fullName,
-                email,
-                hashedPassword,
-                System.currentTimeMillis()
-        );
-
-        // Lưu vào Firebase
+        // Ghi dữ liệu người dùng
         databaseReference.child(userId).setValue(user)
                 .addOnSuccessListener(aVoid -> {
+                    DatabaseReference userRef = databaseReference.child(userId);
+
+                    // Thêm thông tin người dùng
+                    userRef.child("info").child("name").setValue(fullName);
+                    userRef.child("info").child("email").setValue(email);
+                    userRef.child("info").child("createdAt").setValue(System.currentTimeMillis());
+
+                    // Cài đặt mặc định
+                    userRef.child("settings").child("darkMode").setValue(false);
+                    userRef.child("settings").child("language").setValue("vi");
+                    userRef.child("settings").child("notification").setValue(true);
+
+                    // Nhóm mặc định
+                    userRef.child("groups").child("group_001").setValue("Công việc cá nhân");
+                    userRef.child("groups").child("group_002").setValue("Học tập");
+
+                    // Thống kê mặc định
+                    userRef.child("statistics").child("totalTasks").setValue(0);
+                    userRef.child("statistics").child("completedTasks").setValue(0);
+                    userRef.child("statistics").child("incompleteTasks").setValue(0);
+                    userRef.child("statistics").child("overdueTasks").setValue(0);
+                    userRef.child("statistics").child("completionRate").setValue(0);
+
+                    // Tạo node tasks rỗng (giữ nhánh tồn tại nhưng chưa có dữ liệu)
+                    userRef.child("tasks").setValue("");
+
                     setLoading(false);
                     Toast.makeText(RegisterActivity.this, R.string.register_success, Toast.LENGTH_SHORT).show();
 
@@ -226,6 +231,7 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    // Mã hóa mật khẩu bằng SHA-256
     private String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -241,10 +247,11 @@ public class RegisterActivity extends AppCompatActivity {
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return password; // Fallback (không nên dùng trong production)
+            return password;
         }
     }
 
+    // Ẩn/hiện ProgressBar khi đang xử lý
     private void setLoading(boolean isLoading) {
         if (progressBar != null) {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
