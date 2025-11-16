@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -14,12 +14,11 @@ public class PieChartView extends View {
 
     private Paint completedPaint;
     private Paint incompletePaint;
-    private Paint borderPaint; // Thêm viền đen để rõ arc
+    private Paint textPaint;
+
     private RectF rectF;
 
     private float completedPercentage = 0f;
-
-    private static final String TAG = "PieChartView";
 
     public PieChartView(Context context) {
         super(context);
@@ -37,26 +36,36 @@ public class PieChartView extends View {
     }
 
     private void init() {
-        // Completed: Tím đậm hơn (0xFF800080) để nổi bật trên nền đen
+
+        // === Lấy màu từ ?attr/colorPrimary của app ===
+        TypedValue typedValue = new TypedValue();
+        getContext().getTheme().resolveAttribute(
+                androidx.appcompat.R.attr.colorPrimary,
+                typedValue,
+                true
+        );
+        int primaryColor = typedValue.data;
+
+        // Completed color (màu chủ đạo của app)
         completedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        completedPaint.setColor(0xFF9F9FEF);
+        completedPaint.setColor(primaryColor);
         completedPaint.setStyle(Paint.Style.FILL);
 
-
-        // Incomplete: Giữ xám nhạt, nhưng tăng tương phản
+        // Incomplete color (xám nhạt)
         incompletePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         incompletePaint.setColor(0xFFE0E0E0);
         incompletePaint.setStyle(Paint.Style.FILL);
 
-
-        // Viền đen cho toàn pie (dễ thấy ranh giới)
-        borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        borderPaint.setColor(0xFF000000); // Đen
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(3f);
+        // Text % giữa biểu đồ
+        textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setColor(0xFF000000);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTextSize(48f);
+        textPaint.setFakeBoldText(true);
 
         rectF = new RectF();
     }
+
 
     public void setData(int completed, int total) {
         if (total > 0) {
@@ -64,8 +73,7 @@ public class PieChartView extends View {
         } else {
             this.completedPercentage = 0;
         }
-        Log.d(TAG, "Set percentage: " + completedPercentage + "% (completed=" + completed + ", total=" + total + ")");
-        invalidate(); // Trigger onDraw
+        invalidate(); // refresh UI
     }
 
     @Override
@@ -74,48 +82,32 @@ public class PieChartView extends View {
 
         int width = getWidth();
         int height = getHeight();
-        if (width <= 0 || height <= 0) {
-            Log.w(TAG, "Invalid size: width=" + width + ", height=" + height + " -> Skip draw");
-            return;
-        }
 
-        Log.d(TAG, "onDraw called: size=" + width + "x" + height + ", percentage=" + completedPercentage);
-
-        int radius = Math.min(width, height) / 2 - 20; // Giảm radius để tránh sát viền
-        if (radius <= 0) {
-            Log.w(TAG, "Radius too small: " + radius + " -> Skip draw");
-            return;
-        }
+        int radius = Math.min(width, height) / 2 - 20;
 
         int centerX = width / 2;
         int centerY = height / 2;
 
-        rectF.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
+        rectF.set(centerX - radius, centerY - radius,
+                centerX + radius, centerY + radius);
 
-        // Vẽ viền ngoài trước (toàn bộ circle)
-        canvas.drawCircle(centerX, centerY, radius, borderPaint);
-
-        // Vẽ completed arc (từ top, clockwise)
         float completedAngle = (completedPercentage / 100f) * 360f;
-        Log.d(TAG, "Drawing completed arc: angle=" + completedAngle + " degrees");
+
+        // Draw completed arc
         canvas.drawArc(rectF, -90, completedAngle, true, completedPaint);
 
-        // Vẽ incomplete arc (tiếp nối)
-        float incompleteAngle = 360f - completedAngle;
-        Log.d(TAG, "Drawing incomplete arc: angle=" + incompleteAngle + " degrees");
-        canvas.drawArc(rectF, -90 + completedAngle, incompleteAngle, true, incompletePaint);
+        // Draw incomplete arc
+        canvas.drawArc(rectF, -90 + completedAngle, 360f - completedAngle,
+                true, incompletePaint);
 
-        // Text % ở giữa (tăng size, màu trắng đậm)
-        Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(0xFFFFFFFF); // Trắng
-        textPaint.setTextSize(50f); // Tăng size
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setFakeBoldText(true); // Bold
+        // Draw % text
         String percentText = String.format("%.0f%%", completedPercentage);
-        // Vẽ background trắng mờ cho text (dễ đọc)
-        Paint bgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        bgPaint.setColor(0x80000000); // Đen mờ 50%
-        canvas.drawCircle(centerX, centerY, 30f, bgPaint); // Vòng tròn bg
-        canvas.drawText(percentText, centerX, centerY + 15, textPaint); // Text trên bg
+
+        // căn text chính giữa
+        Paint.FontMetrics fm = textPaint.getFontMetrics();
+        float textHeight = fm.descent - fm.ascent;
+        float textOffset = (textHeight / 2) - fm.descent;
+
+        canvas.drawText(percentText, centerX, centerY + textOffset, textPaint);
     }
 }
