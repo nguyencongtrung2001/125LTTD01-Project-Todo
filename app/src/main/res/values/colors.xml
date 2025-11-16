@@ -2,8 +2,8 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
-    <color name="button_purple">#9F9FEF</color>
-    <color name="button_purple_dark">#8C8CEF</color>
+    <color name="button_purple">#4178FF</color>
+    <color name="button_purple_dark">#3D6EE6</color>
 
     <color name="border_gray">#444444</color>
     <color name="outline_gray">#BBBBBB</color>
@@ -15,11 +15,13 @@
     <color name="bottom_nav_bg">#1A1A1A</color>
     <color name="dark_gray">#333333</color>
     <color name="gray">#666666</color>
-    <color name="purple">#9F9FEF</color>
+    <color name="purple">#7D7DF0</color>
 
-    <color name="colorBottomNavigationBar">#8C8CEF</color>
+    <color name="colorBottomNavigationBar">#6363ED</color>
     <color name="colorBottomNavigationBar_Dark">#FFFFFF</color>
 
     <color name="colorChipBackground">#BEBEFF</color>
     <color name="colorChipBackground_Dark">#A4A4A4</color>
+
+    <color name="purple_500">#3D6EE6</color>
 </resources>
