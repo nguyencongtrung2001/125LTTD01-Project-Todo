@@ -122,6 +122,8 @@
     <string name="title_settings">Cài đặt</string>
     <string name="label_account">Tài khoản</string>
     <string name="default_email">nguyenvana@gmail.com</string>
+    <string name="default_name">nguyễn văn A</string>
+    <string name="default_time">Đã tham gia xxx ngày</string>
     <string name="btn_logout">Đăng xuất</string>
     <string name="label_theme">Giao diện</string>
     <string name="theme_light">Chế độ sáng</string>

@@ -46,8 +46,7 @@
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
                 android:backgroundTint="?attr/colorSurface"
-                app:cardUseCompatPadding="true"
-                app:cardPreventCornerOverlap="true">
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -55,36 +54,145 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!-- Tiêu đề -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_account"
+                        android:text="Tài khoản"
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_email"
-                        android:layout_width="wrap_content"
+                    <!-- ================= Email ================= -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="@string/default_email"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="13sp" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/btn_logout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="8dp"
-                        android:backgroundTint="?attr/colorPrimary"
-                        android:text="@string/btn_logout"
-                        android:textAllCaps="false"
-                        android:textColor="?attr/colorOnPrimary"
-                        android:textSize="13sp" />
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Email:"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/tv_email"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Đang tải..."
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"/>
+                    </LinearLayout>
+
+                    <!-- ================= Tên đăng nhập ================= -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Tên đăng nhập:"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/tv_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Đang tải..."
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"/>
+                    </LinearLayout>
+
+                    <!-- ================= Ngày tạo ================= -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Ngày tạo:"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/tv_createAt"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Đang tải..."
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="13sp"/>
+                    </LinearLayout>
+
+                    <!-- ================= 3 BUTTONS ================= -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="20dp">
+
+                        <!-- Cập nhật -->
+                        <Button
+                            android:id="@+id/btn_update"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:backgroundTint="?attr/colorPrimary"
+                            android:text="Cập nhật"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/colorOnPrimary"
+                            android:textSize="10sp"
+                            android:paddingHorizontal="6dp" />
+
+                        <!-- Đổi mật khẩu -->
+                        <Button
+                            android:id="@+id/btn_change_password"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:backgroundTint="?attr/colorPrimary"
+                            android:text="Đổi mật khẩu"
+                            android:textAllCaps="false"
+                            android:textColor="?attr/colorOnPrimary"
+                            android:textSize="10sp"
+                            android:paddingHorizontal="6dp" />
+
+                        <!-- Đăng xuất -->
+                        <Button
+                            android:id="@+id/btn_logout"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/error_red"
+                            android:text="Đăng xuất"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/white"
+                            android:textSize="10sp"
+                            android:paddingHorizontal="6dp" />
+
+                    </LinearLayout>
+
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
 
             <!-- === Giao diện === -->
             <androidx.cardview.widget.CardView
