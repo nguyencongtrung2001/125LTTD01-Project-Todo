@@ -8,7 +8,6 @@
     android:background="?attr/colorBackground"
     tools:context=".SettingsFragment">
 
-    <!-- ===== AppBar ===== -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,13 +18,23 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/title_settings"
-            app:titleCentered="true"
-            app:titleTextColor="?attr/colorOnSurface"
-            app:navigationIcon="@null" />
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@null">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginStart="16dp"
+                android:text="@string/title_settings"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- ===== Scroll nội dung ===== -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +46,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- === Tài khoản === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_account"
                 android:layout_width="match_parent"
@@ -45,100 +53,99 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
-                android:backgroundTint="?attr/colorSurface"
-                app:cardUseCompatPadding="true">
+                android:backgroundTint="?attr/colorSurface">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"> <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Tài khoản"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-                    <!-- Tiêu đề -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tài khoản"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <!-- ================= Email ================= -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="120dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Email:"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="13sp"
-                            android:textStyle="bold"/>
+                            android:layout_marginTop="12dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tv_email"
-                            android:layout_width="0dp"
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:text="Email:"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="13sp"/>
+
+                            <TextView
+                                android:id="@+id/tv_email"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Đang tải..."
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="13sp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Đang tải..."
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="13sp"/>
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:text="Tên đăng nhập:"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="13sp"/>
+
+                            <TextView
+                                android:id="@+id/tv_name"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Đang tải..."
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="13sp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:text="Ngày tạo:"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/tv_createAt"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Đang tải..."
+                                android:textColor="?attr/colorOnSurfaceVariant"
+                                android:textSize="13sp"/>
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <!-- ================= Tên đăng nhập ================= -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:text="Tên đăng nhập:"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="13sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:id="@+id/tv_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Đang tải..."
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="13sp"/>
-                    </LinearLayout>
-
-                    <!-- ================= Ngày tạo ================= -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:text="Ngày tạo:"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="13sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:id="@+id/tv_createAt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Đang tải..."
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="13sp"/>
-                    </LinearLayout>
-
-                    <!-- ================= 3 BUTTONS ================= -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -146,55 +153,58 @@
                         android:gravity="center"
                         android:layout_marginTop="20dp">
 
-                        <!-- Cập nhật -->
                         <Button
                             android:id="@+id/btn_update"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
                             android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
+                            android:layout_marginEnd="8dp"
                             android:backgroundTint="?attr/colorPrimary"
                             android:text="Cập nhật"
                             android:textAllCaps="false"
                             android:textColor="?attr/colorOnPrimary"
                             android:textSize="10sp"
-                            android:paddingHorizontal="6dp" />
+                            android:paddingHorizontal="4dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"/>
 
-                        <!-- Đổi mật khẩu -->
                         <Button
                             android:id="@+id/btn_change_password"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
                             android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
+                            android:layout_marginEnd="8dp"
                             android:backgroundTint="?attr/colorPrimary"
                             android:text="Đổi mật khẩu"
                             android:textAllCaps="false"
                             android:textColor="?attr/colorOnPrimary"
                             android:textSize="10sp"
-                            android:paddingHorizontal="6dp" />
+                            android:paddingHorizontal="4dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"/>
 
-                        <!-- Đăng xuất -->
                         <Button
                             android:id="@+id/btn_logout"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
                             android:layout_weight="1"
                             android:backgroundTint="@color/error_red"
                             android:text="Đăng xuất"
                             android:textAllCaps="false"
                             android:textColor="@android:color/white"
                             android:textSize="10sp"
-                            android:paddingHorizontal="6dp" />
+                            android:paddingHorizontal="4dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"/>
 
                     </LinearLayout>
-
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
 
-            <!-- === Giao diện === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_theme"
                 android:layout_width="match_parent"
@@ -208,30 +218,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_theme"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                    android:padding="16dp"> <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_theme"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                     <RadioGroup
                         android:id="@+id/rg_theme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp">
-
-                        <RadioButton
-                            android:id="@+id/rb_dark"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/theme_dark"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="13sp"
-                            android:buttonTint="?attr/colorOnSurface" />
+                        android:layout_marginTop="12dp"> <RadioButton
+                        android:id="@+id/rb_dark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/theme_dark"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="13sp"
+                        android:buttonTint="?attr/colorOnSurface"
+                        android:paddingStart="8dp"/>
 
                         <RadioButton
                             android:id="@+id/rb_light"
@@ -241,13 +248,13 @@
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="13sp"
                             android:checked="true"
-                            android:buttonTint="?attr/colorOnSurface" />
+                            android:buttonTint="?attr/colorOnSurface"
+                            android:paddingStart="8dp"/>
 
                     </RadioGroup>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- === Thông báo === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_notifications"
                 android:layout_width="match_parent"
@@ -296,13 +303,15 @@
                             android:id="@+id/cb_silent_mode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:minWidth="0dp"
+                            android:minHeight="0dp"
                             android:buttonTint="?attr/colorOnSurface" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_marginStart="8dp"
+                            android:layout_marginStart="12dp"
                             android:text="@string/label_silent_time"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="13sp" />
@@ -319,7 +328,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- === Ngôn ngữ === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/layout_language"
                 android:layout_width="match_parent"
@@ -355,7 +363,7 @@
                         android:text="@string/default_language"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"
-                        android:layout_marginEnd="6dp" />
+                        android:layout_marginEnd="8dp" />
 
                     <ImageView
                         android:layout_width="18dp"
@@ -365,7 +373,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- === Sao lưu & khôi phục === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/layout_backup_restore"
                 android:layout_width="match_parent"
@@ -388,7 +395,6 @@
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
-            <!-- === Giới thiệu === -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/layout_about"
                 android:layout_width="match_parent"
