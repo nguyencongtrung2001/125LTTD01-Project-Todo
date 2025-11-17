@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
 import androidx.appcompat.widget.SwitchCompat;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.projecttodo.settings.ChangePasswordDialog;
+import com.example.projecttodo.settings.ThemeManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,6 +36,7 @@ public class SettingsFragment extends Fragment {
     private Button btnLogout, btnChangePassword;
 
     private SharedPreferences prefs;
+    private ThemeManager themeManager;
 
     private String userId;
     private DatabaseReference userRef;
@@ -50,6 +53,7 @@ public class SettingsFragment extends Fragment {
 
         initViews(view);
         prefs = requireContext().getSharedPreferences("settings", 0);
+        themeManager = new ThemeManager(requireContext());
 
         loadUserSession();
         loadUserInfoFromFirebase();
@@ -61,28 +65,22 @@ public class SettingsFragment extends Fragment {
 
     private void initViews(View view) {
 
-        // Account info
         tvEmail = view.findViewById(R.id.tv_email);
         tvName = view.findViewById(R.id.tv_name);
         tvCreatedAt = view.findViewById(R.id.tv_createAt);
 
-        // Theme
         rgTheme = view.findViewById(R.id.rg_theme);
         rbLight = view.findViewById(R.id.rb_light);
         rbDark = view.findViewById(R.id.rb_dark);
 
-        // Notifications
         switchNotification = view.findViewById(R.id.switch_notification);
         cbSilentMode = view.findViewById(R.id.cb_silent_mode);
         tvSilentTime = view.findViewById(R.id.tv_silent_time);
 
-        // Language + Version
         tvLanguage = view.findViewById(R.id.tv_language);
         tvVersion = view.findViewById(R.id.tv_version);
 
         btnChangePassword = view.findViewById(R.id.btn_change_password);
-
-        // Logout
         btnLogout = view.findViewById(R.id.btn_logout);
     }
 
@@ -124,7 +122,7 @@ public class SettingsFragment extends Fragment {
 
     private void loadSettings() {
 
-        boolean isDark = prefs.getBoolean("dark_mode", false);
+        boolean isDark = themeManager.isDarkMode();
         boolean isNoti = prefs.getBoolean("notification", true);
         boolean isSilent = prefs.getBoolean("silent", false);
 
@@ -141,7 +139,8 @@ public class SettingsFragment extends Fragment {
 
         rgTheme.setOnCheckedChangeListener((group, checkedId) -> {
             boolean isDark = (checkedId == R.id.rb_dark);
-            saveTheme(isDark);
+
+            themeManager.applyTheme(requireActivity(), isDark);
 
             Toast.makeText(getContext(),
                     isDark ? "Chế độ tối" : "Chế độ sáng",
@@ -166,20 +165,5 @@ public class SettingsFragment extends Fragment {
         btnChangePassword.setOnClickListener(v -> {
             new ChangePasswordDialog(requireContext()).show();
         });
-
-    }
-
-    private void saveTheme(boolean isDark) {
-
-        prefs.edit().putBoolean("dark_mode", isDark).apply();
-
-        SharedPreferences navPrefs = requireContext().getSharedPreferences("nav_state", 0);
-        navPrefs.edit().putString("last_tab", "settings").apply();
-
-        if (getActivity() instanceof HomeActivity) {
-            ((HomeActivity) getActivity()).recreateWithFade(isDark);
-        } else {
-            requireActivity().recreate();
-        }
     }
 }

@@ -31,16 +31,12 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Kiểm tra cài đặt theme trước khi tạo giao diện
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
-        if (!prefs.contains("dark_mode")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            boolean isDark = prefs.getBoolean("dark_mode", false);
-            AppCompatDelegate.setDefaultNightMode(
-                    isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
-            );
-        }
+        boolean isDark = prefs.getBoolean("dark_mode", false);
+
+        AppCompatDelegate.setDefaultNightMode(
+                isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+        );
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -48,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         initViews();
         fragmentManager = getSupportFragmentManager();
 
-        // Khôi phục tab trước đó
+        // Load tab cuối cùng
         SharedPreferences navPrefs = getSharedPreferences("nav_state", MODE_PRIVATE);
         String lastTab = navPrefs.getString("last_tab", "home");
 
@@ -185,6 +181,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setDuration(150)
                 .withEndAction(() -> {
                     runOnUiThread(() -> {
+
                         AppCompatDelegate.setDefaultNightMode(
                                 isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
                         );
