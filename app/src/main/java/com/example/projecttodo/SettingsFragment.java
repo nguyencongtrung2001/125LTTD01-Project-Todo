@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.projecttodo.settings.ChangePasswordDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,7 +31,7 @@ public class SettingsFragment extends Fragment {
     private CheckBox cbSilentMode;
     private TextView tvSilentTime, tvLanguage, tvVersion;
     private TextView tvEmail, tvName, tvCreatedAt;
-    private Button btnLogout;
+    private Button btnLogout, btnChangePassword;
 
     private SharedPreferences prefs;
 
@@ -78,6 +79,8 @@ public class SettingsFragment extends Fragment {
         // Language + Version
         tvLanguage = view.findViewById(R.id.tv_language);
         tvVersion = view.findViewById(R.id.tv_version);
+
+        btnChangePassword = view.findViewById(R.id.btn_change_password);
 
         // Logout
         btnLogout = view.findViewById(R.id.btn_logout);
@@ -159,6 +162,11 @@ public class SettingsFragment extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
+
+        btnChangePassword.setOnClickListener(v -> {
+            new ChangePasswordDialog(requireContext()).show();
+        });
+
     }
 
     private void saveTheme(boolean isDark) {
