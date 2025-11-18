@@ -7,16 +7,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
-import androidx.appcompat.widget.SwitchCompat;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.projecttodo.settings.ChangePasswordDialog;
@@ -31,8 +33,9 @@ public class SettingsFragment extends Fragment {
     private RadioButton rbLight, rbDark;
     private SwitchCompat switchNotification;
     private CheckBox cbSilentMode;
-    private TextView tvSilentTime, tvLanguage, tvVersion;
+    private TextView tvSilentTime, tvVersion;
     private TextView tvEmail, tvName, tvCreatedAt;
+    private Spinner spinnerLanguage;
     private Button btnLogout, btnChangePassword;
 
     private SharedPreferences prefs;
@@ -58,6 +61,7 @@ public class SettingsFragment extends Fragment {
         loadUserSession();
         loadUserInfoFromFirebase();
         loadSettings();
+        setupLanguageSpinner();
         setupListeners();
 
         return view;
@@ -77,11 +81,39 @@ public class SettingsFragment extends Fragment {
         cbSilentMode = view.findViewById(R.id.cb_silent_mode);
         tvSilentTime = view.findViewById(R.id.tv_silent_time);
 
-        tvLanguage = view.findViewById(R.id.tv_language);
+        spinnerLanguage = view.findViewById(R.id.spinner_language);
+
         tvVersion = view.findViewById(R.id.tv_version);
 
         btnChangePassword = view.findViewById(R.id.btn_change_password);
         btnLogout = view.findViewById(R.id.btn_logout);
+    }
+
+    private void setupLanguageSpinner() {
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.languages,
+                android.R.layout.simple_spinner_item
+        );
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLanguage.setAdapter(adapter);
+
+        // Load saved language
+        String savedLang = prefs.getString("language", "Tiếng Việt");
+        int position = adapter.getPosition(savedLang);
+        spinnerLanguage.setSelection(position);
+
+        spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                String lang = parent.getItemAtPosition(pos).toString();
+                prefs.edit().putString("language", lang).apply();
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     private void loadUserSession() {
@@ -163,24 +195,18 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    /**
-     * Xử lý đăng xuất - XÓA thông tin nhớ mật khẩu
-     */
     private void handleLogout() {
-        // Xóa session hiện tại
+
         SharedPreferences sessionPrefs = requireContext().getSharedPreferences("user_session", 0);
         sessionPrefs.edit().clear().apply();
 
-        // XÓA thông tin "Nhớ mật khẩu"
         LoginActivity.clearRememberedCredentials(requireContext());
 
-        // Xóa trạng thái navigation
         SharedPreferences navPrefs = requireContext().getSharedPreferences("nav_state", 0);
         navPrefs.edit().clear().apply();
 
         Toast.makeText(getContext(), "Đã đăng xuất", Toast.LENGTH_SHORT).show();
 
-        // Chuyển về màn hình đăng nhập
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
