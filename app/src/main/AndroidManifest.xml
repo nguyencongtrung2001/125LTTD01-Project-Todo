@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectTodo">
         <activity
+            android:name=".ForgetPassword.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgetPassword.VerifyCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgetPassword.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddTaskActivity"
             android:exported="false" />
         <activity

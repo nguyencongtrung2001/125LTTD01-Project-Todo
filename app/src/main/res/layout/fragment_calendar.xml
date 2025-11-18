@@ -6,16 +6,34 @@
     android:orientation="vertical"
     android:background="?attr/colorBackground">
 
-    <!-- Header -->
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Header: Title + Add Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/calendar_title"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="32sp"
-        android:textStyle="bold"
+        android:orientation="horizontal"
         android:padding="16dp"
-        android:layout_marginTop="16dp" />
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/tvCalendarTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/calendar_title"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnAdd"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_add"
+            app:tint="?attr/colorPrimary"
+            android:contentDescription="Add" />
+    </LinearLayout>
 
     <!-- Calendar Card -->
     <androidx.cardview.widget.CardView
@@ -53,4 +71,5 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="16dp" />
+
 </LinearLayout>
