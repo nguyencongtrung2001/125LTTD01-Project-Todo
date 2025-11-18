@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingTop="8dp"
         android:paddingBottom="16dp">
 
@@ -21,20 +21,20 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_back"
             android:contentDescription="@string/back_button"
+            android:src="@drawable/ic_back"
             app:tint="?attr/colorOnBackground" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:text="@string/add_task_title"
             android:textColor="?attr/colorOnBackground"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ScrollView
@@ -53,36 +53,36 @@
                 android:id="@+id/etTaskTitle"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_input_border"
                 android:hint="@string/task_title_hint"
-                android:textColorHint="?attr/colorOnSurfaceVariant"
-                android:textColor="?attr/colorOnSurface"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp" />
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp" />
 
             <!-- Task Description Input -->
             <EditText
                 android:id="@+id/etTaskDescription"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_input_border"
                 android:hint="@string/task_description_hint"
-                android:textColorHint="?attr/colorOnSurfaceVariant"
-                android:textColor="?attr/colorOnSurface"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp" />
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp" />
 
             <!-- Group Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -96,11 +96,11 @@
                     android:id="@+id/tvAddGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:text="@string/add_new_group"
                     android:textColor="?attr/colorPrimary"
-                    android:textSize="14sp"
-                    android:clickable="true"
-                    android:focusable="true" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <!-- Group Spinner -->
@@ -108,34 +108,34 @@
                 android:id="@+id/spinnerGroup"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_input_border"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:layout_marginBottom="16dp"
                 android:popupBackground="?attr/colorSurface" />
 
             <!-- Deadline Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@string/deadline_label"
                 android:textColor="?attr/colorOnBackground"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
+                android:textSize="16sp" />
 
             <!-- Deadline Input -->
             <LinearLayout
                 android:id="@+id/layoutDeadline"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_input_border"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_marginBottom="16dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
                 <TextView
                     android:id="@+id/tvDeadline"
@@ -149,19 +149,19 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:contentDescription="@string/calendar_icon"
                     android:src="@drawable/ic_calendar"
-                    app:tint="?attr/colorOnSurface"
-                    android:contentDescription="@string/calendar_icon" />
+                    app:tint="?attr/colorOnSurface" />
             </LinearLayout>
 
             <!-- Reminder Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@string/reminder_label"
                 android:textColor="?attr/colorOnBackground"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
+                android:textSize="16sp" />
 
             <!-- Reminder Chips -->
             <com.google.android.material.chip.ChipGroup
@@ -169,47 +169,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:singleSelection="true"
-                app:chipSpacingHorizontal="8dp">
+                app:chipSpacingHorizontal="8dp"
+                app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipNone"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_none"
-                    android:textColor="?attr/colorOnSurface"
                     app:chipBackgroundColor="?attr/colorSurfaceVariant" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip5p"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_5p"
-                    android:textColor="?attr/colorOnSurface"
                     app:chipBackgroundColor="?attr/colorSurfaceVariant" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip10p"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_10p"
-                    android:textColor="?attr/colorOnPrimary"
-                    app:chipBackgroundColor="?attr/colorPrimary" />
+                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip1h"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_1h"
-                    android:textColor="?attr/colorOnSurface"
                     app:chipBackgroundColor="?attr/colorSurfaceVariant" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCustom"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_custom"
-                    android:textColor="?attr/colorOnSurface"
                     app:chipBackgroundColor="?attr/colorSurfaceVariant" />
             </com.google.android.material.chip.ChipGroup>
 
@@ -217,10 +217,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@string/priority_label"
                 android:textColor="?attr/colorOnBackground"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
+                android:textSize="16sp" />
 
             <!-- Priority Chips -->
             <com.google.android.material.chip.ChipGroup
@@ -228,56 +228,58 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:singleSelection="true"
-                app:chipSpacingHorizontal="8dp">
+                app:chipSpacingHorizontal="8dp"
+                app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipLow"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/priority_low"
-                    android:textColor="?attr/colorOnSurface"
-                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
+                    app:chipBackgroundColor="@color/colorChipBackground" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipMedium"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/priority_medium"
-                    android:textColor="?attr/colorOnSurface"
-                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
+                    app:chipBackgroundColor="@color/colorChipBackground" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipHigh"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/priority_high"
-                    android:textColor="?attr/colorOnPrimary"
-                    app:chipBackgroundColor="?attr/colorPrimary" />
+                    app:chipBackgroundColor="@color/colorChipBackground" />
             </com.google.android.material.chip.ChipGroup>
 
             <!-- Color Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@string/color_label"
                 android:textColor="?attr/colorOnBackground"
                 android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
+                android:visibility="gone" />
 
             <!-- Color Options -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
                 android:scrollbars="none"
-                android:layout_marginBottom="24dp">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/layoutTaskColors"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="start" />
+                    android:gravity="start"
+                    android:orientation="horizontal" />
             </HorizontalScrollView>
         </LinearLayout>
     </ScrollView>
@@ -286,33 +288,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingTop="16dp">
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_height="56dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:text="@string/cancel_button"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp"
-            android:textAllCaps="false"
             android:background="@drawable/bg_button_transparent"
-            android:layout_marginEnd="8dp" />
+            android:text="@string/cancel_button"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/btnCreate"
             android:layout_width="0dp"
             android:layout_height="56dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
+            android:background="@drawable/bg_button_primary"
             android:text="@string/create_button"
+            android:textAllCaps="false"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:background="@drawable/bg_button_primary"
-            android:layout_marginStart="8dp" />
+            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>
