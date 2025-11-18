@@ -83,7 +83,7 @@
                             <TextView
                                 android:layout_width="120dp"
                                 android:layout_height="wrap_content"
-                                android:text="Email:"
+                                android:text="Email đăng nhập"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textSize="13sp"/>
 
@@ -107,7 +107,7 @@
                             <TextView
                                 android:layout_width="120dp"
                                 android:layout_height="wrap_content"
-                                android:text="Tên đăng nhập:"
+                                android:text="Tên người dùng"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textSize="13sp"/>
 
@@ -131,7 +131,7 @@
                             <TextView
                                 android:layout_width="120dp"
                                 android:layout_height="wrap_content"
-                                android:text="Ngày tạo:"
+                                android:text="Ngày tạo"
                                 android:textColor="?attr/colorOnSurface"
                                 android:textSize="13sp" />
 
@@ -147,60 +147,43 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center"
+                        android:layout_gravity="end"
                         android:layout_marginTop="20dp">
 
                         <Button
-                            android:id="@+id/btn_update"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="8dp"
-                            android:backgroundTint="?attr/colorPrimary"
-                            android:text="Cập nhật"
-                            android:textAllCaps="false"
-                            android:textColor="?attr/colorOnPrimary"
-                            android:textSize="10sp"
-                            android:paddingHorizontal="4dp"
-                            android:insetTop="0dp"
-                            android:insetBottom="0dp"/>
-
-                        <Button
                             android:id="@+id/btn_change_password"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:layout_weight="1"
+                            android:minHeight="40dp"
                             android:layout_marginEnd="8dp"
                             android:backgroundTint="?attr/colorPrimary"
                             android:text="Đổi mật khẩu"
                             android:textAllCaps="false"
                             android:textColor="?attr/colorOnPrimary"
-                            android:textSize="10sp"
-                            android:paddingHorizontal="4dp"
+                            android:textSize="13sp"
+                            android:paddingHorizontal="14dp"
                             android:insetTop="0dp"
                             android:insetBottom="0dp"/>
 
                         <Button
                             android:id="@+id/btn_logout"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:layout_weight="1"
+                            android:minHeight="40dp"
                             android:backgroundTint="@color/error_red"
                             android:text="Đăng xuất"
                             android:textAllCaps="false"
                             android:textColor="@android:color/white"
-                            android:textSize="10sp"
-                            android:paddingHorizontal="4dp"
+                            android:textSize="13sp"
+                            android:paddingHorizontal="12dp"
                             android:insetTop="0dp"
                             android:insetBottom="0dp"/>
 
                     </LinearLayout>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

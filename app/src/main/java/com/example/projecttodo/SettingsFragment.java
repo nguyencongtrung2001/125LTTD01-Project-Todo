@@ -114,7 +114,7 @@ public class SettingsFragment extends Fragment {
             if (fullname != null) tvName.setText(fullname);
 
             if (createdAt != null) {
-                String formatted = android.text.format.DateFormat.format("dd/MM/yyyy", createdAt).toString();
+                String formatted = android.text.format.DateFormat.format("dd/MM/yyyy  HH:mm", createdAt).toString();
                 tvCreatedAt.setText(formatted);
             }
         });
