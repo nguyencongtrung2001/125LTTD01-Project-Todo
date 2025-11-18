@@ -1,131 +1,104 @@
 package com.example.projecttodo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projecttodo.adapter.TaskAdapter;
+import com.example.projecttodo.Model.Task;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 public class TaskListFragment extends Fragment {
 
-    private EditText searchEditText;
-    private TextView chipAll, chipToday, chipUpcoming, chipOverdue, chipCompleted;
-    private LinearLayout emptyStateLayout;
     private RecyclerView taskRecyclerView;
-    private FloatingActionButton fabAddTask;
-
-    private String currentFilter = "upcoming";
+    private TaskAdapter taskAdapter;
+    private LinearLayout emptyStateLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        initViews(view);
-        setupChipListeners();  // Gộp FAB listener vào đây
+        taskRecyclerView = view.findViewById(R.id.taskRecyclerView);
+        emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
+        FloatingActionButton fabAddTask = view.findViewById(R.id.fabAddTask);
+
+        fabAddTask.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+            startActivity(intent);
+        });
+
+        setupRecyclerView();
 
         return view;
     }
 
-    private void initViews(View view) {
-        searchEditText = view.findViewById(R.id.searchEditText);
-        chipAll = view.findViewById(R.id.chipAll);
-        chipToday = view.findViewById(R.id.chipToday);
-        chipUpcoming = view.findViewById(R.id.chipUpcoming);
-        chipOverdue = view.findViewById(R.id.chipOverdue);
-        chipCompleted = view.findViewById(R.id.chipCompleted);
-        emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
-        taskRecyclerView = view.findViewById(R.id.taskRecyclerView);
-        fabAddTask = view.findViewById(R.id.fabAddTask);
-    }
+    private void setupRecyclerView() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("user_session", Context.MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
 
-    private void setupChipListeners() {
-        chipAll.setOnClickListener(v -> {
-            selectChip("all");
-            Toast.makeText(getContext(), "Tất cả", Toast.LENGTH_SHORT).show();
-        });
-
-        chipToday.setOnClickListener(v -> {
-            selectChip("today");
-            Toast.makeText(getContext(), "Hôm nay", Toast.LENGTH_SHORT).show();
-        });
-
-        chipUpcoming.setOnClickListener(v -> {
-            selectChip("upcoming");
-            Toast.makeText(getContext(), "Sắp tới", Toast.LENGTH_SHORT).show();
-        });
-
-        chipOverdue.setOnClickListener(v -> {
-            selectChip("overdue");
-            Toast.makeText(getContext(), "Quá hạn", Toast.LENGTH_SHORT).show();
-        });
-
-        chipCompleted.setOnClickListener(v -> {
-            selectChip("completed");
-            Toast.makeText(getContext(), "Hoàn thành", Toast.LENGTH_SHORT).show();
-        });
-
-        // Listener FAB: Chuyển sang AddTaskActivity (gộp, ưu tiên Intent)
-        fabAddTask.setOnClickListener(v -> {
-            if (getActivity() != null) {
-                Intent intent = new Intent(getActivity(), AddTaskActivity.class);
-                startActivity(intent);
-            } else {
-                Toast.makeText(getContext(), "Không thể mở màn hình thêm task", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void selectChip(String filter) {
-        currentFilter = filter;
-
-        // Reset tất cả chips về trạng thái mặc định
-        chipAll.setBackgroundResource(R.drawable.chip_background);
-        chipToday.setBackgroundResource(R.drawable.chip_background);
-        chipUpcoming.setBackgroundResource(R.drawable.chip_background);
-        chipOverdue.setBackgroundResource(R.drawable.chip_background);
-        chipCompleted.setBackgroundResource(R.drawable.chip_background);
-
-        // Set chip được chọn
-        switch (filter) {
-            case "all":
-                chipAll.setBackgroundResource(R.drawable.chip_selected_background);
-                break;
-            case "today":
-                chipToday.setBackgroundResource(R.drawable.chip_selected_background);
-                break;
-            case "upcoming":
-                chipUpcoming.setBackgroundResource(R.drawable.chip_selected_background);
-                break;
-            case "overdue":
-                chipOverdue.setBackgroundResource(R.drawable.chip_selected_background);
-                break;
-            case "completed":
-                chipCompleted.setBackgroundResource(R.drawable.chip_selected_background);
-                break;
+        if (userId == null) {
+            updateEmptyState(true);
+            return;
         }
 
-        // Cập nhật danh sách task
-        updateTaskList();
+        Query query = FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(userId)
+                .child("tasks");
+
+        FirebaseRecyclerOptions<Task> options = new FirebaseRecyclerOptions.Builder<Task>()
+                .setQuery(query, Task.class)
+                .build();
+
+        taskAdapter = new TaskAdapter(options) {
+            @Override
+            public void onDataChanged() {
+                super.onDataChanged();
+                updateEmptyState(getItemCount() == 0);
+            }
+        };
+        taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        taskRecyclerView.setAdapter(taskAdapter);
     }
 
-    private void updateTaskList() {
-        // Hiện tại hiển thị empty state
-        // Sau này có thể thêm logic hiển thị danh sách task
-        emptyStateLayout.setVisibility(View.VISIBLE);
-        taskRecyclerView.setVisibility(View.GONE);
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (taskAdapter != null) {
+            taskAdapter.startListening();
+        }
     }
 
-    // Xóa hàm setupFabListener() vì đã gộp
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (taskAdapter != null) {
+            taskAdapter.stopListening();
+        }
+    }
+
+    private void updateEmptyState(boolean isEmpty) {
+        if (isEmpty) {
+            emptyStateLayout.setVisibility(View.VISIBLE);
+            taskRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyStateLayout.setVisibility(View.GONE);
+            taskRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
 }

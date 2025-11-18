@@ -41,6 +41,7 @@ dependencies {
     // Firebase Realtime Database
     implementation 'com.google.firebase:firebase-database:22.0.1'
     implementation libs.firebase.auth
+    implementation 'com.firebaseui:firebase-ui-database:8.0.2'
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
