@@ -12,6 +12,7 @@
     <string name="no_account_text">Bạn chưa có tài khoản? </string>
     <string name="forgot_password_link">Quên mật khẩu</string>
     <string name="signup_link">Đăng ký</string>
+    <string name="remember_me_checkbox">Nhớ mật khẩu</string>
 
     <!-- Register Screen -->
     <string name="register_title">Đăng ký</string>

@@ -63,18 +63,25 @@
             android:textColorHint="?attr/colorOnSurfaceVariant"
             android:textSize="16sp" />
 
+        <CheckBox
+            android:id="@+id/rememberMeCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/remember_me_checkbox"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/tvForgotPassword"
             android:layout_width="wrap_content"
-            android:layout_height="49dp"
+            android:layout_height="48dp"
             android:layout_gravity="end"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="-48dp" android:clickable="true"
+            android:focusable="true"
             android:text="@string/forgot_password_link"
             android:textColor="?attr/colorPrimary"
-            android:textSize="14sp"
-            android:clickable="true"
-            android:focusable="true"
-          />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/loginButton"
@@ -115,7 +122,6 @@
 
     </LinearLayout>
 
-    <!-- ProgressBar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
