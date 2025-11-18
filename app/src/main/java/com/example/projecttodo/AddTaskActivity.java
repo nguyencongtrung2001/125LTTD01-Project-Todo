@@ -3,26 +3,24 @@ package com.example.projecttodo;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -30,11 +28,21 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -53,6 +61,9 @@ public class AddTaskActivity extends AppCompatActivity {
     private Button btnCancel, btnCreate;
     private ImageButton btnBack;
 
+    // Firebase
+    private DatabaseReference mDatabase;
+
     // Dữ liệu
     private List<String> groupList = new ArrayList<>();
     private ArrayAdapter<String> groupAdapter;
@@ -67,7 +78,11 @@ public class AddTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
+        // Khởi tạo Firebase
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         initViews();
+        loadUserGroups();
         setupListeners();
         populateColors();
     }
@@ -87,7 +102,6 @@ public class AddTaskActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
 
         // Setup Spinner
-        groupList.add("Default");
         groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, groupList);
         groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGroup.setAdapter(groupAdapter);
@@ -95,6 +109,66 @@ public class AddTaskActivity extends AppCompatActivity {
         // Default selections
         chipGroupReminder.check(R.id.chipNone);
     }
+
+    private void loadUserGroups() {
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
+
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Sử dụng Set để lưu trữ các nhóm duy nhất để tránh trùng lặp
+        final Set<String> uniqueGroups = new HashSet<>();
+        DatabaseReference userRef = mDatabase.child("users").child(userId);
+
+        // 1. Tìm nạp từ users/{userId}/groups (các nhóm được xác định trước)
+        userRef.child("groups").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot groupsSnapshot) {
+                for (DataSnapshot groupSnapshot : groupsSnapshot.getChildren()) {
+                    String groupName = groupSnapshot.getValue(String.class);
+                    if (groupName != null && !groupName.isEmpty()) {
+                        uniqueGroups.add(groupName);
+                    }
+                }
+
+                // 2. Tìm nạp từ users/{userId}/tasks để nhận các nhóm đặc biệt
+                userRef.child("tasks").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot tasksSnapshot) {
+                        for (DataSnapshot taskSnapshot : tasksSnapshot.getChildren()) {
+                            String taskGroup = taskSnapshot.child("Group").getValue(String.class);
+                            if (taskGroup != null && !taskGroup.isEmpty()) {
+                                uniqueGroups.add(taskGroup);
+                            }
+                        }
+
+                        // 3. Cập nhật bộ điều hợp với danh sách kết hợp, duy nhất
+                        groupList.clear();
+                        groupList.addAll(uniqueGroups);
+                        groupAdapter.notifyDataSetChanged();
+
+                        if (groupList.isEmpty()) {
+                            Toast.makeText(AddTaskActivity.this, "Bạn chưa có nhóm nào, hãy tạo một nhóm mới!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(AddTaskActivity.this, "Lỗi khi tải nhóm từ các công việc đã có", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AddTaskActivity.this, "Lỗi khi tải danh sách nhóm", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void populateColors() {
         layoutTaskColors.removeAllViews();
@@ -164,10 +238,6 @@ public class AddTaskActivity extends AppCompatActivity {
             } else if (checkedId == R.id.chipHigh) {
                 selectedPriority = Priority.HIGH;
             }
-
-            if (selectedPriority != null) {
-                Toast.makeText(this, "Độ ưu tiên: " + selectedPriority.name(), Toast.LENGTH_SHORT).show();
-            }
         });
 
         chipGroupPriority.check(R.id.chipLow);
@@ -177,15 +247,66 @@ public class AddTaskActivity extends AppCompatActivity {
 
         btnCancel.setOnClickListener(v -> finish());
 
-        btnCreate.setOnClickListener(v -> {
-            String title = etTaskTitle.getText().toString().trim();
-            if (title.isEmpty()) {
-                Toast.makeText(this, getString(R.string.error_empty_task_title), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Toast.makeText(this, "Tạo task: '" + title + "' với độ ưu tiên: " + selectedPriority.name(), Toast.LENGTH_LONG).show();
-            finish();
-        });
+        btnCreate.setOnClickListener(v -> createTask());
+    }
+
+    private void createTask() {
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
+
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "Vui lòng đăng nhập để tạo công việc", Toast.LENGTH_SHORT).show();
+            finish(); // Đóng activity nếu không có user id
+            return;
+        }
+
+        String title = etTaskTitle.getText().toString().trim();
+        if (title.isEmpty()) {
+            Toast.makeText(this, getString(R.string.error_empty_task_title), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (spinnerGroup.getSelectedItem() == null) {
+            Toast.makeText(this, "Vui lòng tạo một nhóm trước", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String description = etTaskDescription.getText().toString().trim();
+        String group = spinnerGroup.getSelectedItem().toString();
+        String deadline = tvDeadline.getText().toString();
+        String priority = "Thấp"; // Default
+        int checkedPriorityId = chipGroupPriority.getCheckedChipId();
+        if (checkedPriorityId == R.id.chipHigh) {
+            priority = "Cao";
+        } else if (checkedPriorityId == R.id.chipMedium) {
+            priority = "Trung bình";
+        }
+
+        String taskId = mDatabase.child("users").child(userId).child("tasks").push().getKey();
+        if (taskId == null) {
+            Toast.makeText(this, "Lỗi khi tạo mã công việc", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> taskValues = new HashMap<>();
+        taskValues.put("title", title);
+        taskValues.put("description", description);
+        taskValues.put("Group", group);
+        taskValues.put("deadline", deadline);
+        taskValues.put("priority", priority);
+        taskValues.put("completed", false);
+        taskValues.put("createAt", getCurrentTime());
+
+        mDatabase.child("users").child(userId).child("tasks").child(taskId).setValue(taskValues)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(AddTaskActivity.this, "Tạo thành công", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(AddTaskActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private String getCurrentTime() {
+        return new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.US).format(Calendar.getInstance().getTime());
     }
 
     private void showDateTimePicker() {
@@ -201,7 +322,7 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void updateDeadlineText() {
-        String myFormat = "dd/MM/yyyy HH:mm";
+        String myFormat = "HH:mm dd/MM/yyyy";
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(myFormat, Locale.US);
         tvDeadline.setText(sdf.format(selectedDateTime.getTime()));
     }

@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity {
                         String hashedPassword = hashPassword(password);
                         if (user.getPassword().equals(hashedPassword)) {
                             loginSuccess = true;
-                            userId = user.getUserId();
+                            userId = userSnapshot.getKey(); // THAY ĐỔI TẠI ĐÂY
                             fullName = user.getFullName();
                             break;
                         }
@@ -200,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // Lưu lại tab mặc định là "home"
                     SharedPreferences navPrefs = getSharedPreferences("nav_state", MODE_PRIVATE);
-                    navPrefs.edit().putString("last_tab", "home").apply();
+                    navPrefs.edit().putString("last_tab", "home").commit();
 
                     // Mở HomeActivity
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
@@ -270,7 +270,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.remove(KEY_SAVED_PASSWORD);
         }
 
-        editor.apply();
+        editor.commit();
     }
 
     /**
@@ -312,7 +312,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_REMEMBER, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
-        editor.apply();
+        editor.commit();
     }
 
     // ========== CÁC HÀM KHÁC (giữ nguyên) ==========
@@ -331,7 +331,7 @@ public class LoginActivity extends AppCompatActivity {
                         snapshot.child("darkMode").getValue(Boolean.class);
                 editor.putBoolean("dark_mode", darkMode);
 
-                editor.apply();
+                editor.commit();
 
                 // Áp dụng lại darkMode ngay
                 AppCompatDelegate.setDefaultNightMode(
@@ -353,7 +353,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("full_name", fullName);
         editor.putString("email", email);
         editor.putBoolean("is_logged_in", true);
-        editor.apply();
+        editor.commit(); // Đảm bảo lưu xong trước khi tiếp tục
     }
 
     private String hashPassword(String password) {
