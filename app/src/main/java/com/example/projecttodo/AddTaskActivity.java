@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,6 +24,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -35,6 +38,13 @@ import java.util.Locale;
 
 public class AddTaskActivity extends AppCompatActivity {
 
+    // Sử dụng enum để quản lý độ ưu tiên
+    public enum Priority {
+        LOW,
+        MEDIUM,
+        HIGH
+    }
+
     private EditText etTaskTitle, etTaskDescription;
     private Spinner spinnerGroup;
     private TextView tvDeadline, tvAddGroup;
@@ -43,13 +53,14 @@ public class AddTaskActivity extends AppCompatActivity {
     private Button btnCancel, btnCreate;
     private ImageButton btnBack;
 
-    // Dữ liệu cho Spinner và màu sắc
+    // Dữ liệu
     private List<String> groupList = new ArrayList<>();
     private ArrayAdapter<String> groupAdapter;
     private int[] colors = {Color.RED, Color.rgb(255, 165, 0), Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA};
     private List<Button> colorButtons = new ArrayList<>();
     private int selectedColorIndex = -1;
     private Calendar selectedDateTime = Calendar.getInstance();
+    private Priority selectedPriority; // Sử dụng enum
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,14 +87,13 @@ public class AddTaskActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
 
         // Setup Spinner
-        groupList.add("Default"); // Thêm nhóm mặc định
+        groupList.add("Default");
         groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, groupList);
         groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGroup.setAdapter(groupAdapter);
 
         // Default selections
         chipGroupReminder.check(R.id.chipNone);
-        chipGroupPriority.check(R.id.chipLow);
     }
 
     private void populateColors() {
@@ -127,12 +137,40 @@ public class AddTaskActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
-
         layoutDeadline.setOnClickListener(v -> showDateTimePicker());
+        tvAddGroup.setOnClickListener(v -> showCreateGroupDialog());
 
-        tvAddGroup.setOnClickListener(v -> {
-            showCreateGroupDialog();
+        chipGroupPriority.setOnCheckedChangeListener((group, checkedId) -> {
+            int colorPrimary = ContextCompat.getColor(this, R.color.button_purple);
+            int colorOnPrimary = ContextCompat.getColor(this, R.color.white);
+            int colorSurfaceVariant = ContextCompat.getColor(this, R.color.colorChipBackground);
+            int colorOnSurface = ContextCompat.getColor(this, R.color.black);
+
+            for (int i = 0; i < group.getChildCount(); i++) {
+                Chip chip = (Chip) group.getChildAt(i);
+                if (chip.getId() == checkedId) {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(colorPrimary));
+                    chip.setTextColor(colorOnPrimary);
+                } else {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(colorSurfaceVariant));
+                    chip.setTextColor(colorOnSurface);
+                }
+            }
+
+            if (checkedId == R.id.chipLow) {
+                selectedPriority = Priority.LOW;
+            } else if (checkedId == R.id.chipMedium) {
+                selectedPriority = Priority.MEDIUM;
+            } else if (checkedId == R.id.chipHigh) {
+                selectedPriority = Priority.HIGH;
+            }
+
+            if (selectedPriority != null) {
+                Toast.makeText(this, "Độ ưu tiên: " + selectedPriority.name(), Toast.LENGTH_SHORT).show();
+            }
         });
+
+        chipGroupPriority.check(R.id.chipLow);
 
         Chip chipCustom = findViewById(R.id.chipCustom);
         chipCustom.setOnClickListener(v -> showCustomReminderDialog());
@@ -142,10 +180,10 @@ public class AddTaskActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(v -> {
             String title = etTaskTitle.getText().toString().trim();
             if (title.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập tiêu đề", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_empty_task_title), Toast.LENGTH_SHORT).show();
                 return;
             }
-            Toast.makeText(this, "Tạo task: " + title + " (Màu: " + (selectedColorIndex != -1 ? colors[selectedColorIndex] : "Mặc định"), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Tạo task: '" + title + "' với độ ưu tiên: " + selectedPriority.name(), Toast.LENGTH_LONG).show();
             finish();
         });
     }
@@ -163,7 +201,7 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void updateDeadlineText() {
-        String myFormat = "dd/MM/yyyy HH:mm"; // Định dạng ngày giờ
+        String myFormat = "dd/MM/yyyy HH:mm";
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(myFormat, Locale.US);
         tvDeadline.setText(sdf.format(selectedDateTime.getTime()));
     }
