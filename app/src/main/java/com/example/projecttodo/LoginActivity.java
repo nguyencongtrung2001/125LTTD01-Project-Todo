@@ -3,10 +3,13 @@ package com.example.projecttodo;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,14 +30,29 @@ import com.google.firebase.database.ValueEventListener;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
     private TextView signupTextView, tvForgotPassword;
+    private CheckBox rememberMeCheckbox;
     private ProgressBar progressBar;
+    private ImageView togglePasswordVisibility;
 
     private DatabaseReference databaseReference;
+    private boolean isPasswordVisible = false;
+
+    // SharedPreferences keys
+    private static final String PREFS_REMEMBER = "remember_credentials";
+    private static final String KEY_REMEMBER_CHECKED = "remember_checked";
+    private static final String KEY_SAVED_EMAIL = "saved_email";
+    private static final String KEY_SAVED_PASSWORD = "saved_password";
+
+    // Simple encryption key (trong production nên dùng Android Keystore)
+    private static final String ENCRYPTION_KEY = "ProjectTodoKey16"; // 16 bytes cho AES
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +76,9 @@ public class LoginActivity extends AppCompatActivity {
         initViews();
         setupListeners();
 
+        // Load thông tin đã lưu (nếu có)
+        loadRememberedCredentials();
+
         // Điền sẵn email nếu vừa đăng ký
         Intent intent = getIntent();
         if (intent.hasExtra("registered_email")) {
@@ -71,7 +92,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         signupTextView = findViewById(R.id.signupTextView);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        rememberMeCheckbox = findViewById(R.id.rememberMeCheckbox);
         progressBar = findViewById(R.id.progressBar);
+        togglePasswordVisibility = findViewById(R.id.togglePasswordVisibility);
     }
 
     private void setupListeners() {
@@ -82,6 +105,30 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword.setOnClickListener(v ->
                 startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class))
         );
+
+        // Toggle hiển thị mật khẩu
+        togglePasswordVisibility.setOnClickListener(v -> togglePasswordVisibility());
+    }
+
+    /**
+     * Chuyển đổi hiển thị/ẩn mật khẩu
+     */
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            // Ẩn mật khẩu
+            passwordEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                    android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            togglePasswordVisibility.setImageResource(R.drawable.ic_eye_off);
+            isPasswordVisible = false;
+        } else {
+            // Hiện mật khẩu
+            passwordEditText.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                    android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            togglePasswordVisibility.setImageResource(R.drawable.ic_eye_on);
+            isPasswordVisible = true;
+        }
+        // Đặt con trỏ về cuối text
+        passwordEditText.setSelection(passwordEditText.getText().length());
     }
 
     private void handleLogin() {
@@ -142,6 +189,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (loginSuccess) {
+                    // Lưu hoặc xóa thông tin đăng nhập
+                    handleRememberMe(email, password);
+
                     saveLoginInfo(userId, fullName, email);
                     Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
 
@@ -169,7 +219,104 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Áp dụng thiết lập người dùng từ Firebase (darkMode, language, notification)
+    // ========== CHỨC NĂNG NHỚ MẬT KHẨU ==========
+
+    /**
+     * Load thông tin đã lưu (nếu có)
+     */
+    private void loadRememberedCredentials() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_REMEMBER, MODE_PRIVATE);
+        boolean isRememberChecked = prefs.getBoolean(KEY_REMEMBER_CHECKED, false);
+
+        rememberMeCheckbox.setChecked(isRememberChecked);
+
+        if (isRememberChecked) {
+            String savedEmail = prefs.getString(KEY_SAVED_EMAIL, "");
+            String encryptedPassword = prefs.getString(KEY_SAVED_PASSWORD, "");
+
+            if (!savedEmail.isEmpty() && !encryptedPassword.isEmpty()) {
+                emailEditText.setText(savedEmail);
+
+                // Giải mã mật khẩu
+                String decryptedPassword = decryptPassword(encryptedPassword);
+                if (decryptedPassword != null) {
+                    passwordEditText.setText(decryptedPassword);
+                }
+            }
+        }
+    }
+
+    /**
+     * Xử lý lưu/xóa thông tin khi đăng nhập
+     */
+    private void handleRememberMe(String email, String password) {
+        SharedPreferences prefs = getSharedPreferences(PREFS_REMEMBER, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        if (rememberMeCheckbox.isChecked()) {
+            // Lưu thông tin
+            editor.putBoolean(KEY_REMEMBER_CHECKED, true);
+            editor.putString(KEY_SAVED_EMAIL, email);
+
+            // Mã hóa mật khẩu trước khi lưu
+            String encryptedPassword = encryptPassword(password);
+            if (encryptedPassword != null) {
+                editor.putString(KEY_SAVED_PASSWORD, encryptedPassword);
+            }
+        } else {
+            // Xóa thông tin đã lưu
+            editor.putBoolean(KEY_REMEMBER_CHECKED, false);
+            editor.remove(KEY_SAVED_EMAIL);
+            editor.remove(KEY_SAVED_PASSWORD);
+        }
+
+        editor.apply();
+    }
+
+    /**
+     * Mã hóa mật khẩu bằng AES
+     */
+    private String encryptPassword(String password) {
+        try {
+            SecretKeySpec key = new SecretKeySpec(ENCRYPTION_KEY.getBytes(), "AES");
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] encrypted = cipher.doFinal(password.getBytes());
+            return Base64.encodeToString(encrypted, Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Giải mã mật khẩu
+     */
+    private String decryptPassword(String encryptedPassword) {
+        try {
+            SecretKeySpec key = new SecretKeySpec(ENCRYPTION_KEY.getBytes(), "AES");
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] decrypted = cipher.doFinal(Base64.decode(encryptedPassword, Base64.DEFAULT));
+            return new String(decrypted);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Xóa thông tin đã lưu (gọi khi đăng xuất)
+     */
+    public static void clearRememberedCredentials(android.content.Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_REMEMBER, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    // ========== CÁC HÀM KHÁC (giữ nguyên) ==========
+
     private void applyUserSettings(String userId) {
         DatabaseReference settingsRef = databaseReference.child(userId).child("settings");
 
@@ -183,15 +330,6 @@ public class LoginActivity extends AppCompatActivity {
                 boolean darkMode = snapshot.child("darkMode").getValue(Boolean.class) != null &&
                         snapshot.child("darkMode").getValue(Boolean.class);
                 editor.putBoolean("dark_mode", darkMode);
-
-                // Ngôn ngữ (comment lại, sẽ xử lý sau)
-                // String language = snapshot.child("language").getValue(String.class);
-                // if (language != null) editor.putString("language", language);
-
-                // Thông báo (comment lại, sẽ xử lý sau)
-                // boolean notification = snapshot.child("notification").getValue(Boolean.class) != null &&
-                //         snapshot.child("notification").getValue(Boolean.class);
-                // editor.putBoolean("notification", notification);
 
                 editor.apply();
 

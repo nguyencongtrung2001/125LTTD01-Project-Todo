@@ -156,14 +156,33 @@ public class SettingsFragment extends Fragment {
             prefs.edit().putBoolean("silent", isChecked).apply();
         });
 
-        btnLogout.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
+        btnLogout.setOnClickListener(v -> handleLogout());
 
         btnChangePassword.setOnClickListener(v -> {
             new ChangePasswordDialog(requireContext()).show();
         });
+    }
+
+    /**
+     * Xử lý đăng xuất - XÓA thông tin nhớ mật khẩu
+     */
+    private void handleLogout() {
+        // Xóa session hiện tại
+        SharedPreferences sessionPrefs = requireContext().getSharedPreferences("user_session", 0);
+        sessionPrefs.edit().clear().apply();
+
+        // XÓA thông tin "Nhớ mật khẩu"
+        LoginActivity.clearRememberedCredentials(requireContext());
+
+        // Xóa trạng thái navigation
+        SharedPreferences navPrefs = requireContext().getSharedPreferences("nav_state", 0);
+        navPrefs.edit().clear().apply();
+
+        Toast.makeText(getContext(), "Đã đăng xuất", Toast.LENGTH_SHORT).show();
+
+        // Chuyển về màn hình đăng nhập
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }
