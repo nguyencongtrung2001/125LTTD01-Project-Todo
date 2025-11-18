@@ -7,4 +7,7 @@
 
     <!-- Bo góc cho chip -->
     <corners android:radius="18dp" />
+
 </shape>
+
+
