@@ -1,31 +1,31 @@
-package com.example.projecttodo; // SỬA: Đảm bảo package là 'adapter'
+package com.example.projecttodo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projecttodo.R;
- // THÊM/SỬA: Import lớp Task từ gói model
+import com.example.projecttodo.Task;
 
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    private List<Task> taskList;
+    private List<Task> tasks;
     private Context context;
 
-    public TaskAdapter(Context context, List<Task> taskList) {
+    public TaskAdapter(Context context, List<Task> tasks) {
         this.context = context;
-        this.taskList = taskList;
+        this.tasks = tasks;
     }
 
     public void updateTasks(List<Task> newTasks) {
-        this.taskList.clear();
-        this.taskList.addAll(newTasks);
+        this.tasks = newTasks;
         notifyDataSetChanged();
     }
 
@@ -38,34 +38,37 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = taskList.get(position);
-        holder.titleTextView.setText(task.getTitle());
+        Task task = tasks.get(position);
+        holder.tvTitle.setText(task.getTitle());
+        holder.tvDeadline.setText("Deadline: " + task.getDeadline());
+        holder.tvGroup.setText("Group: " + task.getGroup());
 
-        // SỬA LỖI: Gọi getDeadline() (D hoa)
-        holder.deadlineTextView.setText(task.getdeadline());
-
-        // Thiết lập giao diện khác dựa trên task.isCompleted() hoặc task.getPriority()
-        // ... (Logic màu sắc không đổi)
+        // Nếu task đã hoàn thành, đổi màu text hoặc style
         if (task.isCompleted()) {
-            holder.titleTextView.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+            holder.tvTitle.setAlpha(0.5f);
+            holder.tvDeadline.setAlpha(0.5f);
+            holder.tvGroup.setAlpha(0.5f);
         } else {
-            holder.titleTextView.setTextColor(context.getResources().getColor(android.R.color.black));
+            holder.tvTitle.setAlpha(1f);
+            holder.tvDeadline.setAlpha(1f);
+            holder.tvGroup.setAlpha(1f);
         }
     }
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return tasks.size();
     }
 
-    public static class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView;
-        TextView deadlineTextView;
+    static class TaskViewHolder extends RecyclerView.ViewHolder {
+
+        TextView tvTitle, tvDeadline, tvGroup;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.taskTitle);
-            deadlineTextView = itemView.findViewById(R.id.taskdeadline);
+            tvTitle = itemView.findViewById(R.id.tvTaskTitle);
+            tvDeadline = itemView.findViewById(R.id.tvTaskDeadline);
+            tvGroup = itemView.findViewById(R.id.tvTaskGroup);
         }
     }
 }
