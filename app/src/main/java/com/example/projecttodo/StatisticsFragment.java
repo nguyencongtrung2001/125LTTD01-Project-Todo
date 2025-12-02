@@ -21,7 +21,10 @@ public class StatisticsFragment extends Fragment {
 
     private TextView tvTotalTasks, tvCompletedTasks, tvOverdueTasks;
     private TextView btnAll, btn7Days, btn30Days;
+    private TextView tvBarChartTitle;
+
     private PieChartView pieChartView;
+    private BarChartView barChartView;
 
     private String userId;
     private DatabaseReference userRef;
@@ -40,7 +43,7 @@ public class StatisticsFragment extends Fragment {
         loadUserSession();
 
         highlightSelected(btnAll);
-        loadStatistics("_all");   // đúng key Firebase
+        loadStatistics("all");  // dùng đúng key Firebase
 
         setupClicks();
 
@@ -57,6 +60,9 @@ public class StatisticsFragment extends Fragment {
         btn30Days = view.findViewById(R.id.btn30Days);
 
         pieChartView = view.findViewById(R.id.pieChartView);
+        barChartView = view.findViewById(R.id.barChartView);
+
+        tvBarChartTitle = view.findViewById(R.id.tvBarChartTitle);
     }
 
     private void loadUserSession() {
@@ -100,10 +106,11 @@ public class StatisticsFragment extends Fragment {
 
     private void loadStatistics(String key) {
 
+        // lấy data đúng key: "all", "last7Days", "last30Days"
         userRef.child(key).get().addOnCompleteListener(task -> {
 
             if (!task.isSuccessful()) {
-                Log.e(TAG, "Load error");
+                Log.e(TAG, "Load error", task.getException());
                 return;
             }
 
@@ -119,18 +126,37 @@ public class StatisticsFragment extends Fragment {
             int overdue = s.child("overdue").getValue(Integer.class) != null ?
                     s.child("overdue").getValue(Integer.class) : 0;
 
-            int incomplete = Math.max(0, total - completed); // auto tính
-
-            // cập nhật UI
+            // Cập nhật UI
             tvTotalTasks.setText(String.valueOf(total));
             tvCompletedTasks.setText(String.valueOf(completed));
             tvOverdueTasks.setText(String.valueOf(overdue));
 
-            // cập nhật biểu đồ
+            // === Biểu đồ tròn ===
             pieChartView.setData(completed, total);
+
+            // === Biểu đồ cột: Tất cả – Hoàn thành – Quá hạn ===
+            if (barChartView != null) {
+                barChartView.setData(total, completed, overdue);
+            }
+
+            // === Tên biểu đồ dưới BarChart ===
+            String title;
+            switch (key) {
+                case "last7Days":
+                    title = "Số lượng công việc 7 ngày gần nhất";
+                    break;
+                case "last30Days":
+                    title = "Số lượng công việc 30 ngày gần nhất";
+                    break;
+                default:
+                    title = "Tất cả công việc của bạn";
+                    break;
+            }
+            tvBarChartTitle.setText(title);
 
         });
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -140,5 +166,4 @@ public class StatisticsFragment extends Fragment {
             loadStatistics("all");
         }
     }
-
 }

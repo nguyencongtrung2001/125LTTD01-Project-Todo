@@ -1,333 +1,398 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorBackground"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:background="?attr/colorBackground">
 
-    <LinearLayout
+    <!-- Header cố định -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:text="Thống kê"
+        android:textColor="?attr/colorOnBackground"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:gravity="start"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp" />
 
-        <!-- Header -->
+    <!-- FILTER TIME cố định -->
+    <LinearLayout
+        android:id="@+id/filterLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="6dp">
+
         <TextView
+            android:id="@+id/btnAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thống kê"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="32sp"
+            android:text="Tất cả"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp" />
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:textColor="?attr/colorPrimary" />
 
-        <!-- FILTER TIME -->
+        <TextView
+            android:id="@+id/btn7Days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7 ngày"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:layout_marginStart="16dp"
+            android:textColor="?attr/colorOnBackground" />
+
+        <TextView
+            android:id="@+id/btn30Days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30 ngày"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:layout_marginStart="16dp"
+            android:textColor="?attr/colorOnBackground" />
+    </LinearLayout>
+
+    <!-- Divider dưới filter -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="?attr/colorSurfaceVariant" />
+
+    <!-- Nội dung cuộn được -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
         <LinearLayout
-            android:id="@+id/filterLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="left"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- SECTION: TỔNG QUAN -->
             <TextView
-                android:id="@+id/btnAll"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tất cả"
-                android:textSize="16sp"
+                android:text="Tổng quan công việc"
+                android:textColor="?attr/colorOnBackground"
                 android:textStyle="bold"
-                android:padding="8dp"
-                android:textColor="?attr/colorPrimary" />
-
-            <TextView
-                android:id="@+id/btn7Days"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7 ngày"
                 android:textSize="16sp"
-                android:padding="8dp"
-                android:layout_marginStart="24dp"
-                android:textColor="?attr/colorOnBackground" />
+                android:layout_marginBottom="8dp" />
 
+            <!-- Total Tasks Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="12dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="40dp"
+                        android:layout_height="40dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_color_circle"
+                            android:backgroundTint="?attr/colorPrimary" />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_alltasks"
+                            app:tint="?attr/colorOnPrimary" />
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="?attr/colorSurfaceVariant"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tổng số việc"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalTasks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Completed Tasks Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="12dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="40dp"
+                        android:layout_height="40dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_color_circle"
+                            android:backgroundTint="?attr/colorPrimary" />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_check"
+                            app:tint="?attr/colorOnPrimary" />
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="?attr/colorSurfaceVariant"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đã hoàn thành"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvCompletedTasks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Overdue Tasks Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="12dp"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <FrameLayout
+                        android:layout_width="40dp"
+                        android:layout_height="40dp">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_color_circle"
+                            android:backgroundTint="#FF5555" />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_warning"
+                            app:tint="?attr/colorOnPrimary" />
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="?attr/colorSurfaceVariant"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đã quá hạn"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvOverdueTasks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- SECTION: BIỂU ĐỒ -->
             <TextView
-                android:id="@+id/btn30Days"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="30 ngày"
+                android:text="Biểu đồ thống kê"
+                android:textColor="?attr/colorOnBackground"
+                android:textStyle="bold"
                 android:textSize="16sp"
-                android:padding="8dp"
-                android:layout_marginStart="24dp"
-                android:textColor="?attr/colorOnBackground" />
-        </LinearLayout>
+                android:layout_marginBottom="8dp" />
 
-        <!-- Total Tasks Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp">
-
+            <!-- Pie Chart -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                <com.example.projecttodo.PieChartView
+                    android:id="@+id/pieChartView"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="?attr/colorPrimary" />
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_alltasks"
-                        app:tint="?attr/colorOnPrimary" />
-                </FrameLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="?attr/colorSurfaceVariant"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tổng số việc"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalTasks"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Completed Tasks Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
-
-                <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="?attr/colorPrimary" />
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_check"
-                        app:tint="?attr/colorOnPrimary" />
-                </FrameLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="?attr/colorSurfaceVariant"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Đã hoàn thành"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvCompletedTasks"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Overdue Tasks Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
-
-                <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="#FF5555" />
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_warning"
-                        app:tint="?attr/colorOnPrimary" />
-                </FrameLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="?attr/colorSurfaceVariant"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Đã quá hạn"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvOverdueTasks"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Pie Chart -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <com.example.projecttodo.PieChartView
-                android:id="@+id/pieChartView"
-                android:layout_width="200dp"
-                android:layout_height="200dp" />
-
-            <!-- LEGEND -->
-            <!-- LEGEND -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="12dp"
-                android:gravity="center">
-
-                <!-- Completed -->
+                <!-- LEGEND -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginEnd="24dp">
+                    android:layout_marginTop="12dp"
+                    android:gravity="center">
 
-                    <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="?attr/colorPrimary"/>
-
-                    <TextView
+                    <!-- Completed -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Đã hoàn thành"
-                        android:textColor="?attr/colorOnBackground"
-                        android:textSize="14sp"/>
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="24dp">
 
-                <!-- Incomplete -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:background="@drawable/bg_color_circle"
+                            android:backgroundTint="?attr/colorPrimary" />
 
-                    <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:background="@drawable/bg_color_circle"
-                        android:backgroundTint="#E0E0E0"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Đã hoàn thành"
+                            android:textColor="?attr/colorOnBackground"
+                            android:textSize="14sp" />
+                    </LinearLayout>
 
-                    <TextView
+                    <!-- Incomplete -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Chưa hoàn thành"
-                        android:textColor="?attr/colorOnBackground"
-                        android:textSize="14sp"/>
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:background="@drawable/bg_color_circle"
+                            android:backgroundTint="#E0E0E0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Chưa hoàn thành"
+                            android:textColor="?attr/colorOnBackground"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+            <!-- Bar Chart -->
+            <com.example.projecttodo.BarChartView
+                android:id="@+id/barChartView"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginTop="24dp" />
 
-    </LinearLayout>
-</ScrollView>
+            <!-- Tiêu đề biểu đồ cột -->
+            <TextView
+                android:id="@+id/tvBarChartTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Tất cả công việc của bạn"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurface"
+                android:gravity="center" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
