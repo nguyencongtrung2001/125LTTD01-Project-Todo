@@ -1,4 +1,4 @@
-package com.example.projecttodo;
+package com.example.projecttodo.ThongKe;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,6 +14,7 @@ public class BarChartView extends View {
 
     private Paint paintTotal;
     private Paint paintCompleted;
+    private Paint paintIncomplete;
     private Paint paintOverdue;
 
     private Paint paintAxis;
@@ -25,12 +26,15 @@ public class BarChartView extends View {
 
     private int total = 0;
     private int completed = 0;
+    private int incomplete = 0;
     private int overdue = 0;
+
     private int maxValue = 0;      // max thực tế
     private int displayMax = 0;    // max để vẽ (cao hơn một chút)
 
     private int colorPrimary;
     private int colorGray;
+    private int colorWarning;
     private int colorError;
     private int colorOnSurface;
 
@@ -71,6 +75,8 @@ public class BarChartView extends View {
 
         // Xám cho "Tất cả"
         colorGray = 0xFFBDBDBD;
+        // Vàng/da cam cho "Chưa hoàn thành"
+        colorWarning = 0xFFFFC107;
         // Đỏ cho "Quá hạn"
         colorError = 0xFFFF5555;
 
@@ -82,6 +88,10 @@ public class BarChartView extends View {
         paintCompleted = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintCompleted.setColor(colorPrimary);
         paintCompleted.setStyle(Paint.Style.FILL);
+
+        paintIncomplete = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintIncomplete.setColor(colorWarning);
+        paintIncomplete.setStyle(Paint.Style.FILL);
 
         paintOverdue = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintOverdue.setColor(colorError);
@@ -99,36 +109,41 @@ public class BarChartView extends View {
         paintGrid.setAlpha(60);
 
         // ===== TEXT =====
+        float axisTextSizeSp = 10f; // cùng size cho trục tung & hoành
+
         paintLabel = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintLabel.setColor(colorOnSurface);
-        paintLabel.setTextSize(sp(14));
+        paintLabel.setTextSize(sp(axisTextSizeSp));
         paintLabel.setTextAlign(Paint.Align.CENTER);
 
         paintValue = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintValue.setColor(colorOnSurface);
-        paintValue.setTextSize(sp(16));
+        paintValue.setTextSize(sp(13));
         paintValue.setFakeBoldText(true);
         paintValue.setTextAlign(Paint.Align.CENTER);
 
         paintYAxisText = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintYAxisText.setColor(colorOnSurface);
-        paintYAxisText.setTextSize(sp(12));
+        paintYAxisText.setTextSize(sp(axisTextSizeSp));   // = paintLabel
         paintYAxisText.setTextAlign(Paint.Align.RIGHT);
 
         paintYAxisTitle = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintYAxisTitle.setColor(colorOnSurface);
-        paintYAxisTitle.setTextSize(sp(11));
+        paintYAxisTitle.setTextSize(sp(10));
         paintYAxisTitle.setTextAlign(Paint.Align.LEFT);
     }
 
-    // 🔹 total, completed, overdue
-    public void setData(int total, int completed, int overdue) {
+    // 🔹 total, completed, incomplete, overdue
+    public void setData(int total, int completed, int incomplete, int overdue) {
         this.total = Math.max(0, total);
         this.completed = Math.max(0, completed);
+        this.incomplete = Math.max(0, incomplete);
         this.overdue = Math.max(0, overdue);
 
-        maxValue = Math.max(this.total,
-                Math.max(this.completed, this.overdue));
+        maxValue = Math.max(
+                Math.max(this.total, this.completed),
+                Math.max(this.incomplete, this.overdue)
+        );
 
         if (maxValue <= 0) {
             displayMax = 0;
@@ -161,7 +176,7 @@ public class BarChartView extends View {
         float paddingLeft = dp(40);   // chừa chỗ cho số & chữ trục tung
         float paddingRight = dp(20);
         float paddingTop = dp(24);
-        float paddingBottom = dp(40); // chừa chỗ cho label X
+        float paddingBottom = dp(52); // thêm chút cho label dài
 
         float axisX = paddingLeft;              // vị trí trục tung
         float chartBottom = height - paddingBottom;
@@ -186,13 +201,15 @@ public class BarChartView extends View {
         canvas.drawText("SL công việc", axisX, chartTop - dp(6), paintYAxisTitle);
 
         // ===== VẼ CỘT =====
-        float totalChartWidth = width - paddingRight - axisX;
+        float chartLeft = axisX + dp(10);                // cách trục tung một chút
+        float chartRight = width - paddingRight;
+        float totalChartWidth = chartRight - chartLeft;
 
-        float gapFromAxis = dp(10);     // cách trục tung
-        float space = dp(26);           // khoảng cách giữa các cột
+        int barCount = 4;
+        float space = dp(18);                            // tăng khoảng cách giữa các cột
+        float barWidth = (totalChartWidth - space * (barCount - 1)) / barCount;
 
-        float barWidth = (totalChartWidth - gapFromAxis - space * 2) / 3f;
-        float firstLeft = axisX + gapFromAxis;
+        float firstLeft = chartLeft;
 
         drawBar(canvas,
                 firstLeft,
@@ -204,7 +221,7 @@ public class BarChartView extends View {
                 chartHeight);
 
         drawBar(canvas,
-                firstLeft + barWidth + space,
+                firstLeft + (barWidth + space),
                 chartBottom,
                 barWidth,
                 completed,
@@ -216,8 +233,17 @@ public class BarChartView extends View {
                 firstLeft + (barWidth + space) * 2,
                 chartBottom,
                 barWidth,
+                incomplete,
+                "Chưa hoàn thành",
+                paintIncomplete,
+                chartHeight);
+
+        drawBar(canvas,
+                firstLeft + (barWidth + space) * 3,
+                chartBottom,
+                barWidth,
                 overdue,
-                "Quá hạn",
+                "Đã quá hạn",
                 paintOverdue,
                 chartHeight);
 
@@ -246,9 +272,9 @@ public class BarChartView extends View {
         float cx = left + width / 2f;
 
         if (value > 0) {
-            canvas.drawText(String.valueOf(value), cx, top - dp(6), paintValue);
+            canvas.drawText(String.valueOf(value), cx, top - dp(4), paintValue);
         }
 
-        canvas.drawText(label, cx, bottom + dp(22), paintLabel);
+        canvas.drawText(label, cx, bottom + dp(16), paintLabel);
     }
 }
