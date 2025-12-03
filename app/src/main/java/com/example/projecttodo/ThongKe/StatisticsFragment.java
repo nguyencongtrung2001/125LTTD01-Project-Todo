@@ -1,4 +1,4 @@
-package com.example.projecttodo;
+package com.example.projecttodo.ThongKe;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,13 +13,14 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.projecttodo.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class StatisticsFragment extends Fragment {
 
-    private TextView tvTotalTasks, tvCompletedTasks, tvOverdueTasks;
+    private TextView tvTotalTasks, tvCompletedTasks, tvIncompleteTasks, tvOverdueTasks;
     private TextView btnAll, btn7Days, btn30Days;
     private TextView tvBarChartTitle;
 
@@ -43,7 +44,7 @@ public class StatisticsFragment extends Fragment {
         loadUserSession();
 
         highlightSelected(btnAll);
-        loadStatistics("all");  // dùng đúng key Firebase
+        loadStatistics("all");  // mặc định tab "Tất cả"
 
         setupClicks();
 
@@ -53,6 +54,7 @@ public class StatisticsFragment extends Fragment {
     private void initViews(View view) {
         tvTotalTasks = view.findViewById(R.id.tvTotalTasks);
         tvCompletedTasks = view.findViewById(R.id.tvCompletedTasks);
+        tvIncompleteTasks = view.findViewById(R.id.tvIncompleteTasks);
         tvOverdueTasks = view.findViewById(R.id.tvOverdueTasks);
 
         btnAll = view.findViewById(R.id.btnAll);
@@ -117,26 +119,40 @@ public class StatisticsFragment extends Fragment {
             DataSnapshot s = task.getResult();
             if (s == null) return;
 
-            int total = s.child("total").getValue(Integer.class) != null ?
-                    s.child("total").getValue(Integer.class) : 0;
+            // Đọc dữ liệu, nếu null thì = 0, đảm bảo không bị NPE
+            int total = getIntValue(s, "total");
+            int completed = getIntValue(s, "completed");
+            int incomplete = getIntValue(s, "incomplete");
+            int overdue = getIntValue(s, "overdue");
 
-            int completed = s.child("completed").getValue(Integer.class) != null ?
-                    s.child("completed").getValue(Integer.class) : 0;
+            // Clamp cho chắc (nếu DB lỡ để -1, -2,...)
+            completed = Math.max(0, completed);
+            incomplete = Math.max(0, incomplete);
+            overdue = Math.max(0, overdue);
+            total = Math.max(0, total);
 
-            int overdue = s.child("overdue").getValue(Integer.class) != null ?
-                    s.child("overdue").getValue(Integer.class) : 0;
+            // Tính lại tổng dựa trên 3 trường trạng thái
+            int sumStates = completed + incomplete + overdue;
 
-            // Cập nhật UI
-            tvTotalTasks.setText(String.valueOf(total));
+            // UI tổng số việc:
+            // - nếu sumStates > 0: ưu tiên hiển thị sumStates (vì logic chắc chắn)
+            // - nếu sumStates = 0: hiển thị total (trường hợp chưa có dữ liệu trạng thái)
+            int displayTotal = (sumStates > 0) ? sumStates : total;
+
+            // Cập nhật UI text
+            tvTotalTasks.setText(String.valueOf(displayTotal));
             tvCompletedTasks.setText(String.valueOf(completed));
+            tvIncompleteTasks.setText(String.valueOf(incomplete));
             tvOverdueTasks.setText(String.valueOf(overdue));
 
             // === Biểu đồ tròn ===
-            pieChartView.setData(completed, total);
+            // PieChartView tự tính % dựa trên completed + incomplete + overdue
+            pieChartView.setData(completed, incomplete, overdue);
 
-            // === Biểu đồ cột: Tất cả – Hoàn thành – Quá hạn ===
+            // === Biểu đồ cột ===
+            // Cột "Tất cả" nên dùng displayTotal cho khớp với card tổng
             if (barChartView != null) {
-                barChartView.setData(total, completed, overdue);
+                barChartView.setData(displayTotal, completed, incomplete, overdue);
             }
 
             // === Tên biểu đồ dưới BarChart ===
@@ -155,6 +171,11 @@ public class StatisticsFragment extends Fragment {
             tvBarChartTitle.setText(title);
 
         });
+    }
+
+    private int getIntValue(DataSnapshot parent, String childKey) {
+        Integer v = parent.child(childKey).getValue(Integer.class);
+        return v != null ? v : 0;
     }
 
     @Override

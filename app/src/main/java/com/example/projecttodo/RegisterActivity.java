@@ -209,16 +209,19 @@ public class RegisterActivity extends AppCompatActivity {
                     // Thống kê tổng (all)
                     userRef.child("statistics").child("all").child("total").setValue(0);
                     userRef.child("statistics").child("all").child("completed").setValue(0);
+                    userRef.child("statistics").child("all").child("incomplete").setValue(0);
                     userRef.child("statistics").child("all").child("overdue").setValue(0);
 
                     // Thống kê 7 ngày (last7Days)
                     userRef.child("statistics").child("last7Days").child("total").setValue(0);
                     userRef.child("statistics").child("last7Days").child("completed").setValue(0);
+                    userRef.child("statistics").child("last7Days").child("incomplete").setValue(0);
                     userRef.child("statistics").child("last7Days").child("overdue").setValue(0);
 
                     // Thống kê 30 ngày (last30Days)
                     userRef.child("statistics").child("last30Days").child("total").setValue(0);
                     userRef.child("statistics").child("last30Days").child("completed").setValue(0);
+                    userRef.child("statistics").child("last30Days").child("incomplete").setValue(0);
                     userRef.child("statistics").child("last30Days").child("overdue").setValue(0);
 
                     // Tạo node tasks rỗng (giữ nhánh tồn tại nhưng chưa có dữ liệu)

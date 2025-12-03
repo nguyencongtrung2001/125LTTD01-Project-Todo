@@ -19,6 +19,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.projecttodo.ThongKe.StatisticsFragment;
+import com.example.projecttodo.ThongKe.StatisticsUpdater;
+
 public class HomeActivity extends AppCompatActivity {
 
     private LinearLayout navHome, navCalendar, navStatistics, navSettings;
@@ -54,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
                 selectTab("calendar");
                 break;
             case "statistics":
-                loadFragment(new StatisticsFragment());
+                openStatisticsTab();  // <-- update trước rồi mới mở
                 selectTab("statistics");
                 break;
             case "settings":
@@ -105,8 +108,7 @@ public class HomeActivity extends AppCompatActivity {
 
         navStatistics.setOnClickListener(v -> {
             if (!currentTab.equals("statistics")) {
-                loadFragment(new StatisticsFragment());
-                selectTab("statistics");
+                openStatisticsTab();
             }
         });
 
@@ -163,6 +165,30 @@ public class HomeActivity extends AppCompatActivity {
                 labelSettings.setTextColor(colorActive);
                 break;
         }
+    }
+
+    private void openStatisticsTab() {
+
+        // Lấy user_id từ SharedPreferences (giống StatisticsFragment)
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", "");
+
+        // Nếu chưa có userId thì mở luôn fragment, khỏi update
+        if (userId == null || userId.isEmpty()) {
+            loadFragment(new StatisticsFragment());
+            selectTab("statistics");
+            return;
+        }
+
+        // Gọi updater để tính toán & update số liệu
+        StatisticsUpdater updater = new StatisticsUpdater(userId);
+
+        // (Bạn có thể thêm ProgressBar nếu muốn, ở đây mình mở thẳng sau khi xong)
+        updater.updateStatistics(task -> {
+            // Dù thành công hay thất bại, vẫn mở trang thống kê
+            loadFragment(new StatisticsFragment());
+            selectTab("statistics");
+        });
     }
 
     public void recreateWithFade(boolean isDark) {
