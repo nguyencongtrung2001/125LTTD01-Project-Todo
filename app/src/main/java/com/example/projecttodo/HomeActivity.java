@@ -1,7 +1,9 @@
 package com.example.projecttodo;
 
+import android.Manifest;                              // <<< thêm
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.content.pm.PackageManager;             // <<< thêm
 import android.os.Build;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -12,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;                   // <<< thêm (cho onRequestPermissionsResult)
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;              // <<< thêm
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,6 +27,9 @@ import com.example.projecttodo.ThongKe.StatisticsFragment;
 import com.example.projecttodo.ThongKe.StatisticsUpdater;
 
 public class HomeActivity extends AppCompatActivity {
+
+    // ====== THÊM: request code xin quyền thông báo ======
+    private static final int REQ_POST_NOTIF = 1001;   // <<< thêm
 
     private LinearLayout navHome, navCalendar, navStatistics, navSettings;
     private ImageView iconHome, iconCalendar, iconStatistics, iconSettings;
@@ -44,10 +51,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        ensureNotificationPermission();
         initViews();
         fragmentManager = getSupportFragmentManager();
 
-        // Load tab cuối cùng
         SharedPreferences navPrefs = getSharedPreferences("nav_state", MODE_PRIVATE);
         String lastTab = navPrefs.getString("last_tab", "home");
 
@@ -72,6 +79,37 @@ public class HomeActivity extends AppCompatActivity {
 
         setupBottomNavigation();
         updateSystemBarIcons();
+    }
+
+    // ====== THÊM: hàm kiểm tra/xin quyền thông báo ======
+    private void ensureNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQ_POST_NOTIF
+                );
+            }
+        }
+    }
+
+    // ====== THÊM: nhận kết quả xin quyền ======
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_POST_NOTIF) {
+            boolean granted = grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            if (!granted) {
+            }
+        }
     }
 
     private void initViews() {
@@ -168,24 +206,17 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void openStatisticsTab() {
-
-        // Lấy user_id từ SharedPreferences (giống StatisticsFragment)
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
         String userId = prefs.getString("user_id", "");
 
-        // Nếu chưa có userId thì mở luôn fragment, khỏi update
         if (userId == null || userId.isEmpty()) {
             loadFragment(new StatisticsFragment());
             selectTab("statistics");
             return;
         }
 
-        // Gọi updater để tính toán & update số liệu
         StatisticsUpdater updater = new StatisticsUpdater(userId);
-
-        // (Bạn có thể thêm ProgressBar nếu muốn, ở đây mình mở thẳng sau khi xong)
         updater.updateStatistics(task -> {
-            // Dù thành công hay thất bại, vẫn mở trang thống kê
             loadFragment(new StatisticsFragment());
             selectTab("statistics");
         });
