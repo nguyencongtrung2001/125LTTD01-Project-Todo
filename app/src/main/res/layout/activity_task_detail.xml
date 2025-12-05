@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/detailTitle"
+            android:text="Title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Description:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detailDescription"
+            android:layout_marginBottom="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView android:text="Deadline:" android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detailDeadline"
+            android:layout_marginBottom="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView android:text="Group:" android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detailGroup"
+            android:layout_marginBottom="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView android:text="Priority:" android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detailPriority"
+            android:layout_marginBottom="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView android:text="Status:" android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detailStatus"
+            android:layout_marginBottom="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!-- Buttons -->
+        <TextView
+            android:id="@+id/btnEditTask"
+            android:text="Edit Task"
+            android:padding="15dp"
+            android:gravity="center"
+            android:background="@drawable/bg_btn_primary"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/btnDeleteTask"
+            android:text="Delete Task"
+            android:padding="15dp"
+            android:gravity="center"
+            android:background="@drawable/bg_dialog"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</ScrollView>

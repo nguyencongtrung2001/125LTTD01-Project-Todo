@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageSwitcher;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projecttodo.R;
 import com.example.projecttodo.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+    private boolean isSelecting = false;
+    private final List<String> selectedTaskIds = new ArrayList<>();
 
     private List<Task> tasks;
     private Context context;
@@ -53,7 +57,30 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.tvDeadline.setAlpha(1f);
             holder.tvGroup.setAlpha(1f);
         }
+        holder.imgCheck.setOnClickListener(v -> {
+            isSelecting = true;
+            toggleSelect(task.getTaskId(), holder);
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (isSelecting) {
+                toggleSelect(task.getTaskId(), holder);
+            } else {
+//                listener.onTaskClick(task); // mở trang chi tiết
+            }
+        });
+
     }
+    private void toggleSelect(String taskId, TaskViewHolder holder) {
+        if (selectedTaskIds.contains(taskId)) {
+            selectedTaskIds.remove(taskId);
+            holder.imgCheck.setImageResource(R.drawable.ic_circle_unchecked);
+        } else {
+            selectedTaskIds.add(taskId);
+            holder.imgCheck.setImageResource(R.drawable.ic_circle_checked);
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -62,6 +89,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
 
+        public ImageSwitcher imgCheck;
         TextView tvTitle, tvDeadline, tvGroup;
 
         public TaskViewHolder(@NonNull View itemView) {

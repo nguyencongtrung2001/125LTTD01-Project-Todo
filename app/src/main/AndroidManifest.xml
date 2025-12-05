@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectTodo">
         <activity
+            android:name=".TaskDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".TaskAdapter"
             android:exported="false" />
         <activity
