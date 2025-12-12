@@ -9,7 +9,6 @@
     android:elevation="3dp"
     android:clipToOutline="true">
 
-    <!-- Checkbox / Select Circle -->
     <ImageView
         android:id="@+id/ivSelect"
         android:layout_width="28dp"
@@ -17,25 +16,24 @@
         android:src="@drawable/ic_circle_unchecked"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:padding="4dp" />
+        android:padding="4dp"
+        android:contentDescription="Select task" />
 
-    <!-- Task content -->
     <LinearLayout
         android:id="@+id/layoutTaskContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/ivSelect"
         android:layout_marginStart="16dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvTaskTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nộp báo cáo đề tài"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface" />
+        android:orientation="vertical"
+        android:layout_toStartOf="@+id/btnActionLayout"> <TextView
+        android:id="@+id/tvTaskTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nộp báo cáo đề tài"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/tvTaskGroup"
@@ -61,7 +59,8 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/bg_color_square"
-                app:tint="?attr/colorOnSurfaceVariant" />
+                app:tint="?attr/colorOnSurfaceVariant"
+                android:contentDescription="Deadline icon"/>
 
             <TextView
                 android:id="@+id/tvTaskDeadline"
@@ -72,6 +71,35 @@
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="14sp" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnActionLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/btnDeleteTaskItem"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_delete"
+            app:tint="?attr/colorOnSurfaceVariant"
+            android:contentDescription="Delete task"
+            android:padding="4dp"
+            android:layout_marginBottom="8dp"/>
+
+        <ImageView
+            android:id="@+id/btnCompleteTask"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_check_complete"
+            android:contentDescription="Complete task"
+            android:padding="4dp"/>
+
     </LinearLayout>
 
 </RelativeLayout>
