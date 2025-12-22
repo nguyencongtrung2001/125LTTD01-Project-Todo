@@ -42,6 +42,7 @@ import java.util.Locale;
 public class CalendarFragment extends Fragment {
 
     private CalendarView calendarView;
+
     private RecyclerView rvCalendarTasks;
 
     private String selectedDate = null;
@@ -54,6 +55,7 @@ public class CalendarFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setVietnameseLocale(requireContext());
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         SharedPreferences sp = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
@@ -65,6 +67,11 @@ public class CalendarFragment extends Fragment {
 
     private void initViews(View view) {
         calendarView = view.findViewById(R.id.calendarView);
+        calendarView.setDate(System.currentTimeMillis(), false, true);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        selectedDate = sdf.format(new Date());
+        loadRemindersForDate();
+
         rvCalendarTasks = view.findViewById(R.id.rvCalendarTasks);
         ImageButton btnAdd = view.findViewById(R.id.btnAdd);
 
@@ -72,11 +79,13 @@ public class CalendarFragment extends Fragment {
         reminderAdapter = new ReminderAdapter(reminderList);
         rvCalendarTasks.setAdapter(reminderAdapter);
 
+        rvCalendarTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+        reminderAdapter = new ReminderAdapter(reminderList);
+        rvCalendarTasks.setAdapter(reminderAdapter);
         calendarView.setOnDateChangeListener((cv, year, month, dayOfMonth) -> {
             selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth);
             Toast.makeText(getContext(), "Ngày đã chọn: " + selectedDate, Toast.LENGTH_SHORT).show();
-            loadRemindersForDate();
-        });
+            loadRemindersForDate(); });
 
         btnAdd.setOnClickListener(v -> {
             if (selectedDate == null) {
@@ -281,6 +290,19 @@ public class CalendarFragment extends Fragment {
         } else {
             am.setExact(AlarmManager.RTC_WAKEUP, timeMillis, pi);
         }
+    }
+    private void setVietnameseLocale(Context context) {
+        Locale locale = new Locale("vi", "VN");
+        Locale.setDefault(locale);
+
+        android.content.res.Configuration config =
+                context.getResources().getConfiguration();
+        config.setLocale(locale);
+
+        context.getResources().updateConfiguration(
+                config,
+                context.getResources().getDisplayMetrics()
+        );
     }
 
 }
