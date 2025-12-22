@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projecttodo.HenGio.ReminderReceiver;
+import com.example.projecttodo.Model.Reminder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +51,8 @@ public class CalendarFragment extends Fragment {
     private TextView tvDayInfo;
     private String userId = "";
 
-    private final List<String> reminderList = new ArrayList<>();
+    private final List<Reminder> reminderList = new ArrayList<>();
+
     private ReminderAdapter reminderAdapter;
 
     @Nullable
@@ -78,11 +80,25 @@ public class CalendarFragment extends Fragment {
         ImageButton btnAdd = view.findViewById(R.id.btnAdd);
 
         rvCalendarTasks.setLayoutManager(new LinearLayoutManager(getContext()));
-        reminderAdapter = new ReminderAdapter(reminderList);
+        reminderAdapter = new ReminderAdapter(reminderList, reminder -> {
+            if ("birthday".equals(reminder.type)) {
+                showEditBirthdayDialog(reminder);
+            } else {
+                showEditReminderDialog(reminder);
+            }
+        });
+
         rvCalendarTasks.setAdapter(reminderAdapter);
 
         rvCalendarTasks.setLayoutManager(new LinearLayoutManager(getContext()));
-        reminderAdapter = new ReminderAdapter(reminderList);
+        reminderAdapter = new ReminderAdapter(reminderList, reminder -> {
+            if ("birthday".equals(reminder.type)) {
+                showEditBirthdayDialog(reminder);
+            } else {
+                showEditReminderDialog(reminder);
+            }
+        });
+
         rvCalendarTasks.setAdapter(reminderAdapter);
         calendarView.setOnDateChangeListener((cv, year, month, dayOfMonth) -> {
             selectedDate = String.format(
@@ -123,6 +139,79 @@ public class CalendarFragment extends Fragment {
             popup.show();
         });
     }
+
+    private void showEditBirthdayDialog(Reminder reminder) {
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_birthday);
+
+        EditText edtName = dialog.findViewById(R.id.edtBirthdayName);
+        EditText edtDetail = dialog.findViewById(R.id.edtBirthdayDetail);
+        TimePicker timePicker = dialog.findViewById(R.id.timePicker);
+        Button btnCancel = dialog.findViewById(R.id.btnCancelBirthday);
+        Button btnSave = dialog.findViewById(R.id.btnCreateBirthday);
+
+        timePicker.setIs24HourView(true);
+
+        // ===== SET DỮ LIỆU CŨ =====
+        if (reminder.name != null)
+            edtName.setText(reminder.name);
+
+        if (reminder.detail != null)
+            edtDetail.setText(reminder.detail);
+
+        if (reminder.time != null && reminder.time.contains(":")) {
+            String[] parts = reminder.time.split(":");
+            int hour = Integer.parseInt(parts[0]);
+            int minute = Integer.parseInt(parts[1]);
+            timePicker.setHour(hour);
+            timePicker.setMinute(minute);
+        }
+
+        // ===== HUỶ =====
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        // ===== LƯU =====
+        btnSave.setOnClickListener(v -> {
+            String name = edtName.getText().toString().trim();
+            String detail = edtDetail.getText().toString().trim();
+
+            int hour = timePicker.getHour();
+            int minute = timePicker.getMinute();
+            String newTime = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
+
+            long newTimestamp = parseMillis(reminder.date, newTime);
+
+            if (newTimestamp <= System.currentTimeMillis()) {
+                Toast.makeText(getContext(), "Thời gian phải ở tương lai!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // ===== UPDATE FIREBASE =====
+            HashMap<String, Object> update = new HashMap<>();
+            update.put("name", name);
+            update.put("detail", detail);
+            update.put("time", newTime);
+            update.put("timestamp", newTimestamp);
+            update.put("message", "Sinh nhật " + name + " lúc " + newTime);
+
+            FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child(userId)
+                    .child("reminders")
+                    .child(reminder.id)
+                    .updateChildren(update)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Đã cập nhật sinh nhật", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        loadRemindersForDate();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(getContext(), "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        });
+
+        dialog.show();
+    }
+
 
     private void showBirthdayDialog() {
         if (selectedDate == null) {
@@ -304,41 +393,13 @@ public class CalendarFragment extends Fragment {
                 reminderList.clear();
 
                 for (DataSnapshot snap : snapshot.getChildren()) {
-                    String date = snap.child("date").getValue(String.class);
-                    String time = snap.child("time").getValue(String.class);
-                    String type = snap.child("type").getValue(String.class);
-                    String name = snap.child("name").getValue(String.class);
-                    String detail = snap.child("detail").getValue(String.class);
+                    Reminder r = snap.getValue(Reminder.class);
+                    if (r == null) continue;
 
-                    if (date != null && date.equals(selectedDate)) {
+                    r.id = snap.getKey();
 
-                        if ("birthday".equals(type)) {
-
-                            String shortDetail = "";
-                            if (detail != null && detail.length() > 30) {
-                                shortDetail = detail.substring(0, 30) + "...";
-                            } else if (detail != null) {
-                                shortDetail = detail;
-                            }
-
-                            String line = "🎂 " + time;
-                            if (name != null && !name.isEmpty()) {
-                                line += " - " + name;
-                            }
-                            if (!shortDetail.isEmpty()) {
-                                line += " - " + shortDetail;
-                            }
-
-                            reminderList.add(line);
-
-                        } else {
-                            // Nhắc hẹn bình thường
-                            String title = snap.child("title").getValue(String.class);
-                            if (title == null || title.isEmpty()) {
-                                title = "Nhắc hẹn";
-                            }
-                            reminderList.add("⏰ " + time + " - " + title);
-                        }
+                    if (selectedDate.equals(r.date)) {
+                        reminderList.add(r);
                     }
                 }
 
@@ -355,6 +416,48 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) { }
         });
+    }
+
+    private void showEditReminderDialog(Reminder r) {
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_set_reminder);
+
+        TimePicker timePicker = dialog.findViewById(R.id.timePicker);
+        EditText edtTitle = dialog.findViewById(R.id.edtReminderTitle);
+
+        // set dữ liệu cũ
+        edtTitle.setText(r.title);
+
+        // set giờ cũ
+        String[] parts = r.time.split(":");
+        timePicker.setHour(Integer.parseInt(parts[0]));
+        timePicker.setMinute(Integer.parseInt(parts[1]));
+
+        dialog.findViewById(R.id.btnCreateReminder).setOnClickListener(v -> {
+            int hour = timePicker.getHour();
+            int minute = timePicker.getMinute();
+
+            String newTime = String.format("%02d:%02d", hour, minute);
+            long newTs = parseMillis(r.date, newTime);
+
+            HashMap<String, Object> update = new HashMap<>();
+            update.put("time", newTime);
+            update.put("title", edtTitle.getText().toString().trim());
+            update.put("timestamp", newTs);
+
+            FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child(userId)
+                    .child("reminders")
+                    .child(r.id)
+                    .updateChildren(update)
+                    .addOnSuccessListener(a -> {
+                        loadRemindersForDate();
+                        dialog.dismiss();
+                    });
+        });
+
+        dialog.show();
     }
 
 
