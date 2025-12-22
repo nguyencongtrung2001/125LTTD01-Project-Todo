@@ -130,22 +130,34 @@ public class CalendarFragment extends Fragment {
         }
 
         Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.dialog_set_reminder);
+        dialog.setContentView(R.layout.dialog_birthday);
 
         TimePicker timePicker = dialog.findViewById(R.id.timePicker);
         timePicker.setIs24HourView(true);
 
         TextView tvSelectedDate = dialog.findViewById(R.id.tvSelectedDate);
-        Button btnCancel = dialog.findViewById(R.id.btnCancelReminder);
-        Button btnCreate = dialog.findViewById(R.id.btnCreateReminder);
+        Button btnCancel = dialog.findViewById(R.id.btnCancelBirthday);
+        Button btnCreate = dialog.findViewById(R.id.btnCreateBirthday);
 
-        tvSelectedDate.setText("Sinh nhật: " + toDisplayDate(selectedDate));
+        android.widget.EditText edtName = dialog.findViewById(R.id.edtBirthdayName);
+        android.widget.EditText edtDetail = dialog.findViewById(R.id.edtBirthdayDetail);
+
+        tvSelectedDate.setText("🎂 Sinh nhật: " + toDisplayDate(selectedDate)); // nếu bạn đã có toDisplayDate()
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
+
         btnCreate.setOnClickListener(v -> {
             int hour = timePicker.getHour();
             int minute = timePicker.getMinute();
             String time = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
+
+            String name = edtName.getText().toString().trim();
+            String detail = edtDetail.getText().toString().trim();
+
+            if (name.isEmpty()) {
+                Toast.makeText(getContext(), "Vui lòng nhập tên người sinh nhật!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             long timestamp = parseMillis(selectedDate, time);
 
@@ -155,26 +167,33 @@ public class CalendarFragment extends Fragment {
                     .child("reminders");
 
             String id = ref.push().getKey();
-            if (id == null) return;
+            if (id == null) {
+                Toast.makeText(getContext(), "Không thể tạo ID!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             HashMap<String, Object> data = new HashMap<>();
             data.put("date", selectedDate);
             data.put("time", time);
-            data.put("message", "🎂 Sinh nhật");
             data.put("type", "birthday");
+            data.put("name", name);
+            data.put("detail", detail);
+            data.put("message", "🎂 Sinh nhật " + name); // để notification/hiển thị nhanh
             data.put("timestamp", timestamp);
 
             ref.child(id).setValue(data)
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(getContext(), "🎂 Đã tạo nhắc sinh nhật!", Toast.LENGTH_SHORT).show();
-                        loadRemindersForDate();
+                        loadRemindersForDate(); // cập nhật list
                         dialog.dismiss();
-                    });
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(getContext(), "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         });
-
 
         dialog.show();
     }
+
 
     private void showReminderDialog() {
         if (selectedDate == null) {
@@ -273,24 +292,49 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 reminderList.clear();
+
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     String date = snap.child("date").getValue(String.class);
                     String time = snap.child("time").getValue(String.class);
                     String type = snap.child("type").getValue(String.class);
+                    String name = snap.child("name").getValue(String.class);
+                    String detail = snap.child("detail").getValue(String.class);
+
                     if (date != null && date.equals(selectedDate)) {
+
                         if ("birthday".equals(type)) {
-                            reminderList.add("🎂 " + time);
+                            // Cắt ngắn nội dung chi tiết cho gọn
+                            String shortDetail = "";
+                            if (detail != null && detail.length() > 30) {
+                                shortDetail = detail.substring(0, 30) + "...";
+                            } else if (detail != null) {
+                                shortDetail = detail;
+                            }
+
+                            String line = "🎂 " + time;
+                            if (name != null && !name.isEmpty()) {
+                                line += " - " + name;
+                            }
+                            if (!shortDetail.isEmpty()) {
+                                line += " - " + shortDetail;
+                            }
+
+                            reminderList.add(line);
+
                         } else {
+                            // Nhắc hẹn bình thường
                             reminderList.add("⏰ " + time);
                         }
                     }
                 }
+
                 int count = reminderList.size();
                 if (count > 0) {
                     tvDayInfo.setText("🔔 Ngày này có " + count + " nhắc hẹn");
                 } else {
                     tvDayInfo.setText("📅 Ngày này chưa có nhắc hẹn");
                 }
+
                 reminderAdapter.notifyDataSetChanged();
             }
 
@@ -298,6 +342,7 @@ public class CalendarFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) { }
         });
     }
+
 
     private void setAlarm(Context context, String reminderId, long timeMillis, String message) {
         Intent intent = new Intent(context, ReminderReceiver.class);
