@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -211,9 +212,13 @@ public class CalendarFragment extends Fragment {
         Button btnCancel = dialog.findViewById(R.id.btnCancelReminder);
         Button btnCreate = dialog.findViewById(R.id.btnCreateReminder);
 
+
+        EditText edtTitle = dialog.findViewById(R.id.edtReminderTitle);
+
         tvSelectedDate.setText("Ngày: " + toDisplayDate(selectedDate));
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
+
         btnCreate.setOnClickListener(v -> {
             try {
                 int hour = timePicker.getHour();
@@ -226,9 +231,14 @@ public class CalendarFragment extends Fragment {
                     return;
                 }
 
-                String message = "Nhắc nhở lúc " + time + " ngày " + selectedDate;
 
-                // Ghi Firebase
+                String title = edtTitle.getText().toString().trim();
+                if (title.isEmpty()) {
+                    title = "Nhắc hẹn";
+                }
+
+                String message = title + " lúc " + time;
+
                 DatabaseReference ref = FirebaseDatabase.getInstance()
                         .getReference("users")
                         .child(userId)
@@ -243,6 +253,7 @@ public class CalendarFragment extends Fragment {
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("date", selectedDate);
                 data.put("time", time);
+                data.put("title", title);
                 data.put("message", message);
                 data.put("timestamp", timestamp);
 
@@ -261,14 +272,13 @@ public class CalendarFragment extends Fragment {
                                 Toast.makeText(getContext(), "Lỗi lưu Firebase: " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
             } catch (Exception ex) {
-
                 Toast.makeText(getContext(), "Lỗi: " + ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
-
         dialog.show();
     }
+
 
     private long parseMillis(String yyyy_MM_dd, String HH_mm) {
         try {
@@ -303,7 +313,7 @@ public class CalendarFragment extends Fragment {
                     if (date != null && date.equals(selectedDate)) {
 
                         if ("birthday".equals(type)) {
-                            // Cắt ngắn nội dung chi tiết cho gọn
+
                             String shortDetail = "";
                             if (detail != null && detail.length() > 30) {
                                 shortDetail = detail.substring(0, 30) + "...";
@@ -323,7 +333,11 @@ public class CalendarFragment extends Fragment {
 
                         } else {
                             // Nhắc hẹn bình thường
-                            reminderList.add("⏰ " + time);
+                            String title = snap.child("title").getValue(String.class);
+                            if (title == null || title.isEmpty()) {
+                                title = "Nhắc hẹn";
+                            }
+                            reminderList.add("⏰ " + time + " - " + title);
                         }
                     }
                 }
