@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,11 +51,8 @@ public class CalendarFragment extends Fragment {
     private String selectedDate = null;
     private TextView tvDayInfo;
     private String userId = "";
-
     private final List<Reminder> reminderList = new ArrayList<>();
-
     private ReminderAdapter reminderAdapter;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -143,7 +141,7 @@ public class CalendarFragment extends Fragment {
     private void showEditBirthdayDialog(Reminder reminder) {
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_birthday);
-
+        Button btnDelete = dialog.findViewById(R.id.btnDeleteBirthday);
         EditText edtName = dialog.findViewById(R.id.edtBirthdayName);
         EditText edtDetail = dialog.findViewById(R.id.edtBirthdayDetail);
         TimePicker timePicker = dialog.findViewById(R.id.timePicker);
@@ -169,6 +167,28 @@ public class CalendarFragment extends Fragment {
 
         // ===== HUỶ =====
         btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnDelete.setOnClickListener(v -> {
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Xoá sinh nhật")
+                    .setMessage("Bạn có chắc muốn xoá sinh nhật này không?")
+                    .setPositiveButton("Xoá", (d, w) -> {
+
+                        FirebaseDatabase.getInstance()
+                                .getReference("users")
+                                .child(userId)
+                                .child("reminders")
+                                .child(reminder.id)
+                                .removeValue()
+                                .addOnSuccessListener(a -> {
+                                    Toast.makeText(getContext(),
+                                            "Đã xoá sinh nhật", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    loadRemindersForDate();
+                                });
+                    })
+                    .setNegativeButton("Huỷ", null)
+                    .show();
+        });
 
         // ===== LƯU =====
         btnSave.setOnClickListener(v -> {
@@ -185,7 +205,29 @@ public class CalendarFragment extends Fragment {
                 Toast.makeText(getContext(), "Thời gian phải ở tương lai!", Toast.LENGTH_SHORT).show();
                 return;
             }
+            //xóa
+            btnDelete.setOnClickListener(view -> {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Xoá sinh nhật")
+                        .setMessage("Bạn có chắc muốn xoá sinh nhật này không?")
+                        .setPositiveButton("Xoá", (d, w) -> {
 
+                            FirebaseDatabase.getInstance()
+                                    .getReference("users")
+                                    .child(userId)
+                                    .child("reminders")
+                                    .child(reminder.id)
+                                    .removeValue()
+                                    .addOnSuccessListener(a -> {
+                                        Toast.makeText(getContext(),
+                                                "Đã xoá sinh nhật", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                        loadRemindersForDate();
+                                    });
+                        })
+                        .setNegativeButton("Huỷ", null)
+                        .show();
+            });
             // ===== UPDATE FIREBASE =====
             HashMap<String, Object> update = new HashMap<>();
             update.put("name", name);
@@ -418,48 +460,86 @@ public class CalendarFragment extends Fragment {
         });
     }
 
-    private void showEditReminderDialog(Reminder r) {
-        Dialog dialog = new Dialog(getContext());
+    private void showEditReminderDialog(Reminder reminder) {
+        Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_set_reminder);
 
         TimePicker timePicker = dialog.findViewById(R.id.timePicker);
         EditText edtTitle = dialog.findViewById(R.id.edtReminderTitle);
+        Button btnSave = dialog.findViewById(R.id.btnCreateReminder);
+        Button btnCancel = dialog.findViewById(R.id.btnCancelReminder);
+        Button btnDelete = dialog.findViewById(R.id.btnDeleteReminder);
 
-        // set dữ liệu cũ
-        edtTitle.setText(r.title);
+        timePicker.setIs24HourView(true);
 
-        // set giờ cũ
-        String[] parts = r.time.split(":");
-        timePicker.setHour(Integer.parseInt(parts[0]));
-        timePicker.setMinute(Integer.parseInt(parts[1]));
+        // ===== SET DỮ LIỆU CŨ =====
+        if (reminder.title != null) {
+            edtTitle.setText(reminder.title);
+        }
 
-        dialog.findViewById(R.id.btnCreateReminder).setOnClickListener(v -> {
+        if (reminder.time != null && reminder.time.contains(":")) {
+            String[] parts = reminder.time.split(":");
+            timePicker.setHour(Integer.parseInt(parts[0]));
+            timePicker.setMinute(Integer.parseInt(parts[1]));
+        }
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        // ===== LƯU =====
+        btnSave.setOnClickListener(v -> {
             int hour = timePicker.getHour();
             int minute = timePicker.getMinute();
+            String newTime = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
 
-            String newTime = String.format("%02d:%02d", hour, minute);
-            long newTs = parseMillis(r.date, newTime);
+            long newTimestamp = parseMillis(reminder.date, newTime);
 
             HashMap<String, Object> update = new HashMap<>();
             update.put("time", newTime);
+            update.put("timestamp", newTimestamp);
             update.put("title", edtTitle.getText().toString().trim());
-            update.put("timestamp", newTs);
 
             FirebaseDatabase.getInstance()
                     .getReference("users")
                     .child(userId)
                     .child("reminders")
-                    .child(r.id)
+                    .child(reminder.id)
                     .updateChildren(update)
                     .addOnSuccessListener(a -> {
-                        loadRemindersForDate();
+                        Toast.makeText(getContext(), "Đã cập nhật nhắc hẹn", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+                        loadRemindersForDate();
                     });
+        });
+
+        // ===== XOÁ =====
+        btnDelete.setOnClickListener(view -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Xoá nhắc hẹn")
+                    .setMessage("Bạn có chắc muốn xoá nhắc hẹn này không?")
+                    .setPositiveButton("Xoá", (dialogInterface, which) -> {
+
+                        // ✅ reminder NẰM TRONG SCOPE
+                        cancelAlarm(requireContext(), reminder.id);
+
+                        FirebaseDatabase.getInstance()
+                                .getReference("users")
+                                .child(userId)
+                                .child("reminders")
+                                .child(reminder.id)
+                                .removeValue()
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(getContext(),
+                                            "Đã xoá nhắc hẹn", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    loadRemindersForDate();
+                                });
+                    })
+                    .setNegativeButton("Huỷ", null)
+                    .show();
         });
 
         dialog.show();
     }
-
 
     private void setAlarm(Context context, String reminderId, long timeMillis, String message) {
         Intent intent = new Intent(context, ReminderReceiver.class);
@@ -528,4 +608,21 @@ public class CalendarFragment extends Fragment {
             return storeDate;
         }
     }
+
+    private void cancelAlarm(Context context, String reminderId) {
+        Intent intent = new Intent(context, ReminderReceiver.class);
+
+        PendingIntent pi = PendingIntent.getBroadcast(
+                context,
+                reminderId.hashCode(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (am != null) {
+            am.cancel(pi);
+        }
+    }
+
 }

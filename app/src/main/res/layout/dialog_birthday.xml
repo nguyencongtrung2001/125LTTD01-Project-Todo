@@ -45,22 +45,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/btnDeleteBirthday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Xoá"
+                android:textColor="@color/colorBottomNavigationBar_Dark" />
 
             <Button
                 android:id="@+id/btnCancelBirthday"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Hủy"/>
+                android:layout_weight="1"
+                android:text="Huỷ" />
 
             <Button
                 android:id="@+id/btnCreateBirthday"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Tạo"
-                android:layout_marginStart="20dp"/>
+                android:layout_weight="1"
+                android:text="Tạo" />
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
