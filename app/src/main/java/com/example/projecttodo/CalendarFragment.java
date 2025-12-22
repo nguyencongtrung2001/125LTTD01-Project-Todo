@@ -46,7 +46,7 @@ public class CalendarFragment extends Fragment {
     private RecyclerView rvCalendarTasks;
 
     private String selectedDate = null;
-
+    private TextView tvDayInfo;
     private String userId = "";
 
     private final List<String> reminderList = new ArrayList<>();
@@ -66,6 +66,7 @@ public class CalendarFragment extends Fragment {
     }
 
     private void initViews(View view) {
+        tvDayInfo = view.findViewById(R.id.tvDayInfo);
         calendarView = view.findViewById(R.id.calendarView);
         calendarView.setDate(System.currentTimeMillis(), false, true);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -83,9 +84,19 @@ public class CalendarFragment extends Fragment {
         reminderAdapter = new ReminderAdapter(reminderList);
         rvCalendarTasks.setAdapter(reminderAdapter);
         calendarView.setOnDateChangeListener((cv, year, month, dayOfMonth) -> {
-            selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth);
-            Toast.makeText(getContext(), "Ngày đã chọn: " + selectedDate, Toast.LENGTH_SHORT).show();
-            loadRemindersForDate(); });
+            selectedDate = String.format(
+                    Locale.getDefault(),
+                    "%04d-%02d-%02d",
+                    year, month + 1, dayOfMonth
+            );
+            Toast.makeText(
+                    getContext(),
+                    "Ngày đã chọn: " + toDisplayDate(selectedDate),
+                    Toast.LENGTH_SHORT
+            ).show();
+            loadRemindersForDate();
+        });
+
 
         btnAdd.setOnClickListener(v -> {
             if (selectedDate == null) {
@@ -128,7 +139,7 @@ public class CalendarFragment extends Fragment {
         Button btnCancel = dialog.findViewById(R.id.btnCancelReminder);
         Button btnCreate = dialog.findViewById(R.id.btnCreateReminder);
 
-        tvSelectedDate.setText("Sinh nhật: " + selectedDate);
+        tvSelectedDate.setText("Sinh nhật: " + toDisplayDate(selectedDate));
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnCreate.setOnClickListener(v -> {
@@ -158,7 +169,7 @@ public class CalendarFragment extends Fragment {
         Button btnCancel = dialog.findViewById(R.id.btnCancelReminder);
         Button btnCreate = dialog.findViewById(R.id.btnCreateReminder);
 
-        tvSelectedDate.setText("Ngày: " + selectedDate);
+        tvSelectedDate.setText("Ngày: " + toDisplayDate(selectedDate));
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnCreate.setOnClickListener(v -> {
@@ -195,7 +206,7 @@ public class CalendarFragment extends Fragment {
 
                 ref.child(id).setValue(data)
                         .addOnSuccessListener(aVoid -> {
-                            // Đặt báo thức với applicationContext để an toàn vòng đời
+
                             Context appCtx = requireActivity().getApplicationContext();
                             setAlarm(appCtx, id, timestamp, message);
 
@@ -245,6 +256,12 @@ public class CalendarFragment extends Fragment {
                     if (date != null && date.equals(selectedDate)) {
                         reminderList.add("⏰ " + time);
                     }
+                }
+                int count = reminderList.size();
+                if (count > 0) {
+                    tvDayInfo.setText("🔔 Ngày này có " + count + " nhắc hẹn");
+                } else {
+                    tvDayInfo.setText("📅 Ngày này chưa có nhắc hẹn");
                 }
                 reminderAdapter.notifyDataSetChanged();
             }
@@ -304,5 +321,23 @@ public class CalendarFragment extends Fragment {
                 context.getResources().getDisplayMetrics()
         );
     }
+    private static final SimpleDateFormat STORE_FMT =
+            new SimpleDateFormat("yyyy-MM-dd", new Locale("vi", "VN"));
+    private static final SimpleDateFormat DISPLAY_FMT =
+            new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+
+    private String toDisplayDate(String storeDate) {
+        try {
+            SimpleDateFormat in =
+                    new SimpleDateFormat("yyyy-MM-dd", new Locale("vi", "VN"));
+            SimpleDateFormat out =
+                    new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+            Date d = in.parse(storeDate);
+            return d != null ? out.format(d) : storeDate;
+        } catch (Exception e) {
+            return storeDate;
+        }
+    }
+
 
 }
