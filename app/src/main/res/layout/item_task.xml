@@ -4,74 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:layout_marginBottom="12dp"
-    android:background="?attr/colorSurface"
-    android:elevation="3dp"
-    android:clipToOutline="true">
+    android:layout_marginBottom="8dp"
+    android:layout_marginHorizontal="8dp"
+    android:background="@android:color/white"
+    android:elevation="2dp">
 
     <ImageView
         android:id="@+id/ivSelect"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:src="@drawable/ic_circle_unchecked"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:padding="4dp"
-        android:contentDescription="Select task" />
-
-    <LinearLayout
-        android:id="@+id/layoutTaskContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/ivSelect"
-        android:layout_marginStart="16dp"
-        android:orientation="vertical"
-        android:layout_toStartOf="@+id/btnActionLayout"> <TextView
-        android:id="@+id/tvTaskTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nộp báo cáo đề tài"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="?attr/colorOnSurface" />
-
-        <TextView
-            android:id="@+id/tvTaskGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:layout_marginTop="8dp"
-            android:text="Học tập"
-            android:textSize="14sp"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_btn_primary" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="12dp">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/bg_color_square"
-                app:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Deadline icon"/>
-
-            <TextView
-                android:id="@+id/tvTaskDeadline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="16:45 20/09/2025"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </LinearLayout>
+        android:src="@drawable/ic_circle_unchecked" />
 
     <LinearLayout
         android:id="@+id/btnActionLayout"
@@ -86,20 +31,58 @@
             android:id="@+id/btnDeleteTaskItem"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:src="@drawable/ic_delete"
-            app:tint="?attr/colorOnSurfaceVariant"
-            android:contentDescription="Delete task"
+            android:layout_marginBottom="8dp"
             android:padding="4dp"
-            android:layout_marginBottom="8dp"/>
+            android:src="@drawable/ic_delete"
+            app:tint="@android:color/holo_red_light" />
 
         <ImageView
             android:id="@+id/btnCompleteTask"
             android:layout_width="28dp"
             android:layout_height="28dp"
+            android:padding="4dp"
             android:src="@drawable/ic_check_complete"
-            android:contentDescription="Complete task"
-            android:padding="4dp"/>
+            app:tint="@android:color/holo_green_dark" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/ivSelect"
+        android:layout_toStartOf="@id/btnActionLayout"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTaskTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên Task"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/tvTaskGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/holo_blue_dark"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="Nhóm"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvTaskDeadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="16:45 20/09/2025"
+            android:textSize="13sp"
+            android:textColor="#666666" />
     </LinearLayout>
 
 </RelativeLayout>
