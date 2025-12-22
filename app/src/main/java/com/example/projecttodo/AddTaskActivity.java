@@ -360,13 +360,44 @@ public class AddTaskActivity extends AppCompatActivity {
             String groupName = etGroupName.getText().toString().trim();
             if (groupName.isEmpty()) {
                 Toast.makeText(AddTaskActivity.this, "Vui lòng nhập tên nhóm", Toast.LENGTH_SHORT).show();
-            } else {
-                groupList.add(groupName);
-                groupAdapter.notifyDataSetChanged();
-                spinnerGroup.setSelection(groupAdapter.getPosition(groupName));
-                Toast.makeText(AddTaskActivity.this, "Đã tạo nhóm: " + groupName, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                return;
             }
+
+            SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+            String userId = prefs.getString("user_id", null);
+
+            if (userId == null || userId.isEmpty()) {
+                Toast.makeText(AddTaskActivity.this, "Vui lòng đăng nhập để tạo nhóm", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                return;
+            }
+
+            DatabaseReference groupsRef = mDatabase.child("users").child(userId).child("groups");
+
+            // Đọc số lượng group hiện tại để tạo key tăng dần
+            groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot groupsSnapshot) {
+                    long count = groupsSnapshot.getChildrenCount();
+                    String formattedCount = String.format("%03d", count + 1);
+                    String groupId = "group_" + formattedCount;
+
+                    groupsRef.child(groupId).setValue(groupName)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(AddTaskActivity.this, "Đã tạo nhóm: " + groupName, Toast.LENGTH_SHORT).show();
+                                groupList.add(groupName);
+                                groupAdapter.notifyDataSetChanged();
+                                spinnerGroup.setSelection(groupAdapter.getPosition(groupName));
+                                dialog.dismiss();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(AddTaskActivity.this, "Lỗi khi tạo nhóm: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(AddTaskActivity.this, "Lỗi đọc dữ liệu groups: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         dialog.show();
