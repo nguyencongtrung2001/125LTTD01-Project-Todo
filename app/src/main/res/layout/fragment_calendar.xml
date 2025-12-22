@@ -5,18 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?attr/colorBackground">
-
     <!-- Header: Title + Add Button -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical"
         android:layout_marginTop="16dp">
-
-        <TextView
-            android:id="@+id/tvCalendarTitle"
+        <TextView android:id="@+id/tvCalendarTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -24,18 +20,14 @@
             android:textColor="?attr/colorOnBackground"
             android:textSize="32sp"
             android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/btnAdd"
+        <ImageButton android:id="@+id/btnAdd"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_add"
             app:tint="?attr/colorPrimary"
             android:contentDescription="Add" />
-    </LinearLayout>
-
-    <!-- Calendar Card -->
+    </LinearLayout> <!-- Calendar Card -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,16 +35,12 @@
         app:cardBackgroundColor="?attr/colorSurface"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <LinearLayout android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
             <!-- Calendar Grid -->
-            <CalendarView
-                android:id="@+id/calendarView"
+            <CalendarView android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorSurface"
@@ -61,7 +49,6 @@
                 android:theme="@style/CalendarViewTheme" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
     <!-- Task List for Selected Date -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCalendarTasks"
@@ -71,5 +58,4 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="16dp" />
-
 </LinearLayout>
