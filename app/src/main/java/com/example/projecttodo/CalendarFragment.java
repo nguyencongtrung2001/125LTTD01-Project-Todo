@@ -171,7 +171,7 @@ public class CalendarFragment extends Fragment {
         Button btnSave = dialog.findViewById(R.id.btnCreateBirthday);
 
         timePicker.setIs24HourView(true);
-
+        btnSave.setText("Sửa");
         // ===== SET DỮ LIỆU CŨ =====
         if (reminder.name != null)
             edtName.setText(reminder.name);
@@ -469,11 +469,16 @@ public class CalendarFragment extends Fragment {
 
                 int count = reminderList.size();
                 if (count > 0) {
+                    tvDayInfo.setVisibility(View.VISIBLE);
                     tvDayInfo.setText("🔔 Ngày này có " + count + " nhắc hẹn");
+                    tvDayInfo.setBackgroundResource(R.drawable.bg_day_has_reminder);
+                    tvDayInfo.setTextColor(getResources().getColor(android.R.color.white));
                 } else {
+                    tvDayInfo.setVisibility(View.VISIBLE);
                     tvDayInfo.setText("📅 Ngày này chưa có nhắc hẹn");
+                    tvDayInfo.setBackgroundResource(R.drawable.bg_day_no_reminder);
+                    tvDayInfo.setTextColor(getResources().getColor(android.R.color.white));
                 }
-
                 reminderAdapter.notifyDataSetChanged();
             }
 
@@ -485,7 +490,6 @@ public class CalendarFragment extends Fragment {
     private void showEditReminderDialog(Reminder reminder) {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_set_reminder);
-
         TimePicker timePicker = dialog.findViewById(R.id.timePicker);
         EditText edtTitle = dialog.findViewById(R.id.edtReminderTitle);
         Button btnSave = dialog.findViewById(R.id.btnCreateReminder);
@@ -493,7 +497,7 @@ public class CalendarFragment extends Fragment {
         Button btnDelete = dialog.findViewById(R.id.btnDeleteReminder);
 
         timePicker.setIs24HourView(true);
-
+        btnSave.setText("Sửa");
         // ===== SET DỮ LIỆU CŨ =====
         if (reminder.title != null) {
             edtTitle.setText(reminder.title);
