@@ -3,86 +3,102 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="?attr/colorBackground">
-
-    <!-- Header: Title + Add Button -->
-    <LinearLayout
+    android:orientation="vertical">
+    <!-- ================= PHẦN TRÊN: ẢNH + MỜ ================= -->
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical"
-        android:layout_marginTop="16dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvCalendarTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/calendar_title"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="32sp"
-            android:textStyle="bold" />
+        <!-- ẢNH NỀN FULL -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_calendar_image"
+            android:scaleType="centerCrop" />
 
-        <ImageButton
-            android:id="@+id/btnAdd"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_add"
-            app:tint="?attr/colorPrimary"
-            android:contentDescription="Add" />
-    </LinearLayout>
+        <!-- LỚP PHỦ MỜ NHẸ (GIỮ ẢNH NHƯNG KHÔNG LOẠN) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#33FFFFFF" />
 
-    <!-- Calendar Card -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardBackgroundColor="?attr/colorSurface"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp">
-
+        <!-- Nội dung trên -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <!-- Calendar Grid -->
-            <CalendarView
-                android:id="@+id/calendarView"
+
+        <!-- Header -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorSurface"
-                android:dateTextAppearance="@style/CalendarDateTextStyle"
-                android:weekDayTextAppearance="@style/CalendarWeekDayTextStyle"
-                android:theme="@style/CalendarViewTheme" />
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical"
+                android:layout_marginTop="16dp">
 
-            <!-- ✅ Info text (thêm mới) -->
-            <TextView
-                android:id="@+id/tvDayInfo"
+                <TextView
+                    android:id="@+id/tvCalendarTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/calendar_title"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorOnBackground" />
+
+                <ImageButton
+                    android:id="@+id/btnAdd"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_add"
+                    app:tint="?attr/colorPrimary" />
+            </LinearLayout>
+
+            <!-- Calendar Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:layout_marginTop="8dp"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:background="@drawable/bg_day_has_reminder"
-                android:visibility="gone"/>
+                android:layout_margin="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="?attr/colorSurface">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <CalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tvDayInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:padding="12dp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCalendarTasks"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.45"
+                android:layout_margin="16dp"
+                android:background="@drawable/bg_list_card"
+                android:padding="12dp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Task List for Selected Date -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCalendarTasks"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp" />
-
+    </FrameLayout>
 </LinearLayout>

@@ -72,11 +72,8 @@ public class CalendarFragment extends Fragment {
         calendarView.setDate(System.currentTimeMillis(), false, true);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         selectedDate = sdf.format(new Date());
-        loadRemindersForDate();
-
         rvCalendarTasks = view.findViewById(R.id.rvCalendarTasks);
         ImageButton btnAdd = view.findViewById(R.id.btnAdd);
-
         rvCalendarTasks.setLayoutManager(new LinearLayoutManager(getContext()));
         reminderAdapter = new ReminderAdapter(reminderList, reminder -> {
             if ("birthday".equals(reminder.type)) {
@@ -87,17 +84,7 @@ public class CalendarFragment extends Fragment {
         });
 
         rvCalendarTasks.setAdapter(reminderAdapter);
-
-        rvCalendarTasks.setLayoutManager(new LinearLayoutManager(getContext()));
-        reminderAdapter = new ReminderAdapter(reminderList, reminder -> {
-            if ("birthday".equals(reminder.type)) {
-                showEditBirthdayDialog(reminder);
-            } else {
-                showEditReminderDialog(reminder);
-            }
-        });
-
-        rvCalendarTasks.setAdapter(reminderAdapter);
+        loadRemindersForDate();
         calendarView.setOnDateChangeListener((cv, year, month, dayOfMonth) -> {
 
             // ===== CHECK NGÀY QUÁ KHỨ =====
@@ -444,21 +431,18 @@ public class CalendarFragment extends Fragment {
     }
 
     private void loadRemindersForDate() {
-        if (selectedDate == null) return;
-
+        if (selectedDate == null || reminderAdapter == null) return;
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("users")
                 .child(userId)
                 .child("reminders");
-
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 reminderList.clear();
-
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     Reminder r = snap.getValue(Reminder.class);
-                    if (r == null) continue;
+                    if (r == null || r.date == null) continue;
 
                     r.id = snap.getKey();
 
@@ -466,26 +450,25 @@ public class CalendarFragment extends Fragment {
                         reminderList.add(r);
                     }
                 }
-
                 int count = reminderList.size();
+                tvDayInfo.setVisibility(View.VISIBLE);
                 if (count > 0) {
-                    tvDayInfo.setVisibility(View.VISIBLE);
                     tvDayInfo.setText("🔔 Ngày này có " + count + " nhắc hẹn");
                     tvDayInfo.setBackgroundResource(R.drawable.bg_day_has_reminder);
-                    tvDayInfo.setTextColor(getResources().getColor(android.R.color.white));
+                    rvCalendarTasks.setVisibility(View.VISIBLE);
                 } else {
-                    tvDayInfo.setVisibility(View.VISIBLE);
                     tvDayInfo.setText("📅 Ngày này chưa có nhắc hẹn");
                     tvDayInfo.setBackgroundResource(R.drawable.bg_day_no_reminder);
-                    tvDayInfo.setTextColor(getResources().getColor(android.R.color.white));
+                    rvCalendarTasks.setVisibility(View.INVISIBLE);
                 }
                 reminderAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) { }
         });
     }
+
+
 
     private void showEditReminderDialog(Reminder reminder) {
         Dialog dialog = new Dialog(requireContext());
