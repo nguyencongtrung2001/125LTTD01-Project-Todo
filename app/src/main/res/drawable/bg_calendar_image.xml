@@ -1,0 +1,17 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Ảnh nền -->
+    <item>
+        <bitmap
+            android:src="@drawable/img"
+            android:gravity="center"/>
+    </item>
+
+    <!-- Lớp phủ mờ -->
+    <item>
+        <shape>
+            <solid android:color="#90CCC0C0"/>
+        </shape>
+    </item>
+
+</layer-list>

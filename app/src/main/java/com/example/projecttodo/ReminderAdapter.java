@@ -1,5 +1,6 @@
 package com.example.projecttodo;
 
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,13 @@ import java.util.List;
 
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ViewHolder> {
 
+    // ===== Interface click =====
     public interface OnReminderClickListener {
         void onReminderClick(Reminder reminder);
     }
 
-    private List<Reminder> reminderList;
-    private OnReminderClickListener listener;
+    private final List<Reminder> reminderList;
+    private final OnReminderClickListener listener;
 
     // ===== Constructor =====
     public ReminderAdapter(List<Reminder> reminderList,
@@ -28,31 +30,44 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ViewHo
         this.listener = listener;
     }
 
+    // ===== Tạo ViewHolder =====
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.item_reminder, parent, false);
         return new ViewHolder(view);
     }
 
+    // ===== Bind dữ liệu =====
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Reminder r = reminderList.get(position);
-        if ("birthday".equals(r.type)) {
 
-            String text = "🎂 " + r.time;
-            if (r.name != null && !r.name.isEmpty()) {
-                text += " - " + r.name;
-            }
-            holder.textView.setText(text);
+        boolean isBirthday = "birthday".equals(r.type);
+
+        // ===== ICON =====
+        holder.tvIcon.setText(isBirthday ? "🎂" : "⏰");
+
+        // ===== TEXT =====
+        String text;
+        if (isBirthday) {
+            String name = (r.name == null) ? "" : r.name;
+            text = r.time + " - Sinh nhật " + name;
         } else {
-
             String title = (r.title == null || r.title.isEmpty())
                     ? "Nhắc hẹn"
                     : r.title;
-            holder.textView.setText("⏰ " + r.time + " - " + title);
+            text = r.time + " - " + title;
         }
+
+        holder.tvText.setText(text);
+
+        // ===== STYLE cho dễ nhìn =====
+        holder.tvText.setTextSize(16);
+        holder.tvText.setTypeface(null, Typeface.BOLD);
+
+        // ===== CLICK =====
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onReminderClick(r);
@@ -65,12 +80,15 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ViewHo
         return reminderList == null ? 0 : reminderList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+    // ===== ViewHolder =====
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvIcon;
+        TextView tvText;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(android.R.id.text1);
+            tvIcon = itemView.findViewById(R.id.tvIcon);
+            tvText = itemView.findViewById(R.id.tvText);
         }
     }
 }
