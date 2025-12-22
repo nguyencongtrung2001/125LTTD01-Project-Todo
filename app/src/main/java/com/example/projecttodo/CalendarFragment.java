@@ -146,9 +146,32 @@ public class CalendarFragment extends Fragment {
             int hour = timePicker.getHour();
             int minute = timePicker.getMinute();
             String time = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
-            Toast.makeText(getContext(), "Đã tạo nhắc sinh nhật!\nNgày: " + selectedDate + "\nGiờ: " + time, Toast.LENGTH_LONG).show();
-            dialog.dismiss();
+
+            long timestamp = parseMillis(selectedDate, time);
+
+            DatabaseReference ref = FirebaseDatabase.getInstance()
+                    .getReference("users")
+                    .child(userId)
+                    .child("reminders");
+
+            String id = ref.push().getKey();
+            if (id == null) return;
+
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("date", selectedDate);
+            data.put("time", time);
+            data.put("message", "🎂 Sinh nhật");
+            data.put("type", "birthday");
+            data.put("timestamp", timestamp);
+
+            ref.child(id).setValue(data)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "🎂 Đã tạo nhắc sinh nhật!", Toast.LENGTH_SHORT).show();
+                        loadRemindersForDate();
+                        dialog.dismiss();
+                    });
         });
+
 
         dialog.show();
     }
@@ -219,7 +242,7 @@ public class CalendarFragment extends Fragment {
                                 Toast.makeText(getContext(), "Lỗi lưu Firebase: " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
             } catch (Exception ex) {
-                // Bắt mọi exception bất chợt để tránh văng
+
                 Toast.makeText(getContext(), "Lỗi: " + ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -253,8 +276,13 @@ public class CalendarFragment extends Fragment {
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     String date = snap.child("date").getValue(String.class);
                     String time = snap.child("time").getValue(String.class);
+                    String type = snap.child("type").getValue(String.class);
                     if (date != null && date.equals(selectedDate)) {
-                        reminderList.add("⏰ " + time);
+                        if ("birthday".equals(type)) {
+                            reminderList.add("🎂 " + time);
+                        } else {
+                            reminderList.add("⏰ " + time);
+                        }
                     }
                 }
                 int count = reminderList.size();
@@ -338,6 +366,4 @@ public class CalendarFragment extends Fragment {
             return storeDate;
         }
     }
-
-
 }
