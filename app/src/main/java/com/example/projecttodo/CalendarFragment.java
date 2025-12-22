@@ -99,6 +99,30 @@ public class CalendarFragment extends Fragment {
 
         rvCalendarTasks.setAdapter(reminderAdapter);
         calendarView.setOnDateChangeListener((cv, year, month, dayOfMonth) -> {
+
+            // ===== CHECK NGÀY QUÁ KHỨ =====
+            java.util.Calendar selectedCal = java.util.Calendar.getInstance();
+            selectedCal.set(year, month, dayOfMonth, 0, 0, 0);
+            selectedCal.set(java.util.Calendar.MILLISECOND, 0);
+
+            java.util.Calendar today = java.util.Calendar.getInstance();
+            today.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            today.set(java.util.Calendar.MINUTE, 0);
+            today.set(java.util.Calendar.SECOND, 0);
+            today.set(java.util.Calendar.MILLISECOND, 0);
+
+            if (selectedCal.before(today)) {
+                Toast.makeText(
+                        getContext(),
+                        "Vui lòng chọn ngày trong tương lai",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                // quay lại ngày hôm nay
+                calendarView.setDate(System.currentTimeMillis(), false, true);
+                return;
+            }
+            // ✅ Ngày hợp lệ
             selectedDate = String.format(
                     Locale.getDefault(),
                     "%04d-%02d-%02d",
@@ -111,8 +135,6 @@ public class CalendarFragment extends Fragment {
             ).show();
             loadRemindersForDate();
         });
-
-
         btnAdd.setOnClickListener(v -> {
             if (selectedDate == null) {
                 Toast.makeText(getContext(), "Vui lòng chọn ngày trong lịch!", Toast.LENGTH_SHORT).show();
