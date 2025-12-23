@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/itemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:layout_margin="8dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginHorizontal="8dp"
     android:background="@android:color/white"
     android:elevation="2dp">
 
-    <!-- Checkbox hoàn thành -->
     <ImageView
         android:id="@+id/ivSelect"
         android:layout_width="32dp"
@@ -17,11 +16,8 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:padding="4dp"
-        android:src="@drawable/ic_circle_unchecked"
-        android:clickable="true"
-        android:focusable="true" />
+        android:src="@drawable/ic_circle_unchecked" />
 
-    <!-- Nút hành động -->
     <LinearLayout
         android:id="@+id/btnActionLayout"
         android:layout_width="wrap_content"
@@ -35,21 +31,20 @@
             android:id="@+id/btnDeleteTaskItem"
             android:layout_width="28dp"
             android:layout_height="28dp"
+            android:layout_marginBottom="8dp"
             android:padding="4dp"
             android:src="@drawable/ic_delete"
             app:tint="@android:color/holo_red_light" />
 
         <ImageView
-            android:id="@+id/btnEditOrComplete"
+            android:id="@+id/btnCompleteTask"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_marginTop="8dp"
             android:padding="4dp"
-            android:src="@drawable/ic_edit"
-            app:tint="@color/blue_ocean" />
+            android:src="@drawable/ic_check_complete"
+            app:tint="@android:color/holo_green_dark" />
     </LinearLayout>
 
-    <!-- Nội dung -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,7 +56,7 @@
 
         <TextView
             android:id="@+id/tvTaskTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tên Task"
             android:textSize="17sp"
@@ -77,7 +72,7 @@
             android:paddingHorizontal="8dp"
             android:paddingVertical="2dp"
             android:text="Nhóm"
-            android:textColor="@android:color/white"
+            android:textColor="#FFFFFF"
             android:textSize="12sp" />
 
         <TextView
