@@ -105,9 +105,6 @@ public class AddTaskActivity extends AppCompatActivity {
         groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, groupList);
         groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGroup.setAdapter(groupAdapter);
-
-        // Default selections
-        chipGroupReminder.check(R.id.chipNone);
     }
 
     private void loadUserGroups() {
@@ -214,6 +211,24 @@ public class AddTaskActivity extends AppCompatActivity {
         layoutDeadline.setOnClickListener(v -> showDateTimePicker());
         tvAddGroup.setOnClickListener(v -> showCreateGroupDialog());
 
+        chipGroupReminder.setOnCheckedChangeListener((group, checkedId) -> {
+            int colorPrimary = ContextCompat.getColor(this, R.color.button_purple);
+            int colorOnPrimary = Color.WHITE;
+            int colorSurfaceVariant = ContextCompat.getColor(this, R.color.colorChipBackground);
+            int colorOnSurface = ContextCompat.getColor(this, R.color.black);
+
+            for (int i = 0; i < group.getChildCount(); i++) {
+                Chip chip = (Chip) group.getChildAt(i);
+                if (chip.getId() == checkedId) {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(colorPrimary));
+                    chip.setTextColor(colorOnPrimary);
+                } else {
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(colorSurfaceVariant));
+                    chip.setTextColor(colorOnSurface);
+                }
+            }
+        });
+
         chipGroupPriority.setOnCheckedChangeListener((group, checkedId) -> {
             int colorPrimary = ContextCompat.getColor(this, R.color.button_purple);
             int colorOnPrimary = ContextCompat.getColor(this, R.color.white);
@@ -240,6 +255,7 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         });
 
+        chipGroupReminder.check(R.id.chipNone);
         chipGroupPriority.check(R.id.chipLow);
 
         Chip chipCustom = findViewById(R.id.chipCustom);
