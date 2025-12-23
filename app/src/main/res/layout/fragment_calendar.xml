@@ -4,10 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <!-- ================= PHẦN TRÊN: ẢNH + MỜ ================= -->
     <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -18,87 +17,105 @@
             android:src="@drawable/bg_calendar_image"
             android:scaleType="centerCrop" />
 
-        <!-- LỚP PHỦ MỜ NHẸ (GIỮ ẢNH NHƯNG KHÔNG LOẠN) -->
+        <!-- LỚP PHỦ MỜ NHẸ -->
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#33FFFFFF" />
 
-        <!-- Nội dung trên -->
-        <LinearLayout
+        <!-- Nội dung chính -->
+        <!-- Nội dung chính -->
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:fillViewport="true">
 
-
-        <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical"
-                android:layout_marginTop="16dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvCalendarTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/calendar_title"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnBackground" />
-
-                <ImageButton
-                    android:id="@+id/btnAdd"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_add"
-                    app:tint="?attr/colorPrimary" />
-            </LinearLayout>
-
-            <!-- Calendar Card -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="?attr/colorSurface">
-
+                <!-- Header -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
-                    <CalendarView
-                        android:id="@+id/calendarView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="16dp">
 
                     <TextView
-                        android:id="@+id/tvDayInfo"
+                        android:id="@+id/tvCalendarTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/calendar_title"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorOnBackground" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/btnAdd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        app:srcCompat="@drawable/ic_add"
+                        app:tint="?attr/colorOnPrimary"
+                        app:backgroundTint="?attr/colorPrimary"
+                        app:borderWidth="0dp"
+                        app:elevation="6dp"
+                        app:fabSize="mini"
+                        android:contentDescription="Thêm nhắc hẹn mới" />
+                </LinearLayout>
+
+                <!-- Calendar Card - chiều cao cố định -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    android:layout_gravity="center_horizontal">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:padding="12dp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/white"
-                        android:visibility="gone" />
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCalendarTasks"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.45"
-                android:layout_margin="16dp"
-                android:background="@drawable/bg_list_card"
-                android:padding="12dp" />
-        </LinearLayout>
+                        <CalendarView
+                            android:id="@+id/calendarView"
+                            android:layout_width="match_parent"
+                            android:layout_height="360dp" />
+
+                        <TextView
+                            android:id="@+id/tvDayInfo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCalendarTasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:minHeight="200dp"
+                android:clipToPadding="false"
+                android:padding="12dp"
+                android:nestedScrollingEnabled="true" />   <!-- Quan trọng để cuộn mượt -->
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </FrameLayout>
 </LinearLayout>
