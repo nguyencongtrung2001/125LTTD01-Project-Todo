@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-// TaskListFragment PHẢI implements TaskItemClickListener để nhận các sự kiện click
 public class TaskListFragment extends Fragment implements TaskItemClickListener {
 
     private static final String TAG = "TaskListFragment";
@@ -44,10 +42,6 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
     private LinearLayout emptyStateLayout;
     private RecyclerView taskRecyclerView;
     private FloatingActionButton fabAddTask;
-
-    // Khai báo các Views cho Multi-select Action Bar
-    private LinearLayout multiSelectActionBar;
-    private ImageView btnDeleteSelected, btnCompleteSelected;
 
     private String userId;
     private String currentFilter = "all";
@@ -67,13 +61,9 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
         loadUserSession();
-
         if (userId.isEmpty()) {
-            // Xử lý trường hợp không có userId (chưa đăng nhập)
             Toast.makeText(getContext(), "Lỗi phiên: Vui lòng đăng nhập lại.", Toast.LENGTH_LONG).show();
-            // Thiết lập databaseReference thành null hoặc xử lý lỗi khác
         } else {
-            // Trỏ vào Firebase tasks của user
             databaseReference = FirebaseDatabase.getInstance()
                     .getReference("users")
                     .child(userId)
@@ -81,19 +71,14 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
         }
 
         initViews(view);
-        setupActionBarListeners(); // Thiết lập listener cho các nút Multi-select
 
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // --- SỬA LỖI KHỞI TẠO TaskAdapter ---
-        // Phải truyền đủ 4 tham số: Context, List<Task>, userId, và Listener (this)
         taskAdapter = new TaskAdapter(getContext(), new ArrayList<>(), userId, this);
-
         taskRecyclerView.setAdapter(taskAdapter);
 
         setupChipListeners();
 
-        // Chỉ load data nếu userId hợp lệ
         if (!userId.isEmpty()) {
             loadAllTasksFromFirebase();
         }
@@ -113,20 +98,12 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
         taskRecyclerView = view.findViewById(R.id.taskRecyclerView);
         fabAddTask = view.findViewById(R.id.fabAddTask);
-
-        // Ánh xạ các Views Multi-select
-
-        // Đảm bảo Action Bar bị ẩn ban đầu
-        if (multiSelectActionBar != null) {
-            multiSelectActionBar.setVisibility(View.GONE);
-        }
     }
 
     private void loadUserSession() {
         Context context = getContext();
         if (context != null) {
-            SharedPreferences prefs = context
-                    .getSharedPreferences("user_session", Context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE);
             userId = prefs.getString("user_id", "");
         }
     }
@@ -147,24 +124,9 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
         });
     }
 
-    private void setupActionBarListeners() {
-        if (btnDeleteSelected != null) {
-            btnDeleteSelected.setOnClickListener(v -> showDeleteConfirmationDialog(taskAdapter.getSelectedTaskIds()));
-        }
-        if (btnCompleteSelected != null) {
-            btnCompleteSelected.setOnClickListener(v -> updateSelectedTasksStatus(taskAdapter.getSelectedTaskIds(), true));
-        }
-    }
-
     private void selectChip(String filter) {
         currentFilter = filter;
 
-        // Thoát khỏi chế độ chọn hàng loạt khi đổi bộ lọc
-        if (taskAdapter != null && taskAdapter.isSelectingMode()) {
-            taskAdapter.clearSelection();
-        }
-
-        // --- Cập nhật UI Chip ---
         TextView[] chips = {chipAll, chipToday, chipUpcoming, chipOverdue, chipCompleted};
         String[] filters = {"all", "today", "upcoming", "overdue", "completed"};
 
@@ -175,7 +137,6 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
                 chips[i].setBackgroundResource(R.drawable.chip_background);
             }
         }
-        // --- Kết thúc Cập nhật UI Chip ---
 
         updateTaskList();
     }
@@ -191,7 +152,7 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
                     for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
                         Task task = taskSnapshot.getValue(Task.class);
                         if (task != null) {
-                            task.setTaskId(taskSnapshot.getKey()); // Đảm bảo Task có ID
+                            task.setTaskId(taskSnapshot.getKey());
                             allTasks.add(task);
                         } else {
                             Log.e(TAG, "Task mapping failed for key: " + taskSnapshot.getKey());
@@ -199,11 +160,6 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
                     }
                 }
                 updateTaskList();
-
-                // Đảm bảo thoát khỏi chế độ chọn nếu không còn task nào
-                if (taskAdapter != null && taskAdapter.isSelectingMode() && allTasks.isEmpty()) {
-                    taskAdapter.clearSelection();
-                }
             }
 
             @Override
@@ -227,7 +183,6 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
                 taskDeadlineDate = DEADLINE_FORMAT.parse(task.getDeadline());
             } catch (ParseException e) {
                 Log.e(TAG, "Deadline parsing error for task: " + task.getTitle(), e);
-                // Nếu parse lỗi, chỉ hiển thị task đó trong filter 'all' và 'completed' (nếu task đã hoàn thành)
                 if (currentFilter.equals("all")) matchesFilter = true;
                 if (currentFilter.equals("completed") && task.isCompleted()) matchesFilter = true;
                 if (!matchesFilter) continue;
@@ -256,10 +211,11 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
                     break;
             }
 
-            if (matchesFilter) {
-                filteredTasks.add(task);
-            }
+            if (matchesFilter) filteredTasks.add(task);
         }
+
+        // Sắp xếp task hoàn thành xuống dưới
+        filteredTasks.sort((t1, t2) -> Boolean.compare(t1.isCompleted(), t2.isCompleted()));
 
         taskAdapter.updateTasks(filteredTasks);
 
@@ -272,11 +228,8 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
         }
     }
 
-    // --- IMPLEMENT TỪ TASKITEMCLICKLISTENER ---
-
     @Override
     public void onTaskClick(Task task) {
-        // Mở màn hình chi tiết Task
         Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
         intent.putExtra("TASK_OBJECT", task);
         startActivity(intent);
@@ -284,50 +237,6 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
 
     @Override
     public void onSelectionModeChange(boolean isSelecting) {
-        // Xử lý hiển thị/ẩn thanh Multi-select Action Bar
-        if (multiSelectActionBar != null) {
-            multiSelectActionBar.setVisibility(isSelecting ? View.VISIBLE : View.GONE);
-            fabAddTask.setVisibility(isSelecting ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    // Phương thức hoàn thành hàng loạt task đã chọn
-    private void updateSelectedTasksStatus(List<String> taskIds, boolean isCompleted) {
-        if (taskIds.isEmpty()) return;
-
-        for (String taskId : taskIds) {
-            if (databaseReference != null) {
-                databaseReference.child(taskId).child("completed").setValue(isCompleted);
-            }
-        }
-        Toast.makeText(getContext(), "Đã cập nhật trạng thái " + taskIds.size() + " task.", Toast.LENGTH_SHORT).show();
-        taskAdapter.clearSelection();
-    }
-
-    // Hiển thị dialog xác nhận xóa hàng loạt
-    private void showDeleteConfirmationDialog(List<String> taskIds) {
-        if (taskIds.isEmpty()) return;
-
-        new android.app.AlertDialog.Builder(getContext())
-                .setTitle("Xác nhận xóa")
-                .setMessage("Bạn có chắc muốn xóa " + taskIds.size() + " task đã chọn không?")
-                .setPositiveButton("CÓ, XÓA", (dialog, which) -> {
-                    deleteSelectedTasks(taskIds);
-                })
-                .setNegativeButton("HỦY", null)
-                .show();
-    }
-
-    // Thực hiện xóa hàng loạt task đã chọn
-    private void deleteSelectedTasks(List<String> taskIds) {
-        if (taskIds.isEmpty()) return;
-
-        for (String taskId : taskIds) {
-            if (databaseReference != null) {
-                databaseReference.child(taskId).removeValue();
-            }
-        }
-        Toast.makeText(getContext(), "Đã xóa " + taskIds.size() + " task.", Toast.LENGTH_SHORT).show();
-        taskAdapter.clearSelection();
+        // Không còn multi-select qua ivSelect → bỏ
     }
 }

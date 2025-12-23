@@ -1,13 +1,18 @@
 package com.example.projecttodo;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,8 +25,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private List<Task> tasks;
     private final TaskItemClickListener listener;
     private final String userId;
-    private boolean isSelecting = false;
-    private final List<String> selectedTaskIds = new ArrayList<>();
     private final DatabaseReference databaseReference;
 
     public TaskAdapter(Context context, List<Task> tasks, String userId, TaskItemClickListener listener) {
@@ -49,77 +52,73 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = tasks.get(position);
 
-        // Hiển thị dữ liệu
         holder.tvTitle.setText(task.getTitle());
         holder.tvDeadline.setText(task.getDeadline());
         holder.tvGroup.setText(task.getGroup());
 
-        // Xử lý UI Hoàn thành (Gạch ngang + mờ)
         if (task.isCompleted()) {
+            holder.btnCompleteTaskItem.setImageResource(R.drawable.ic_check_complete);
+            holder.btnCompleteTaskItem.setEnabled(false);
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.taskCompletedBg));
             holder.tvTitle.setPaintFlags(holder.tvTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.itemView.setAlpha(0.6f);
         } else {
-            holder.tvTitle.setPaintFlags(holder.tvTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            holder.itemView.setAlpha(1.0f);
+            holder.btnCompleteTaskItem.setImageResource(R.drawable.ic_edit);
+            holder.btnCompleteTaskItem.setEnabled(true);
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.taskPendingBg));
+            holder.btnCompleteTaskItem.setOnClickListener(v -> {
+                new AlertDialog.Builder(context)
+                        .setTitle("Hoàn thành Task?")
+                        .setMessage("Bạn có chắc muốn đánh dấu task này là hoàn thành?")
+                        .setPositiveButton("Xác nhận", (dialog, which) -> {
+                            task.setCompleted(true);
+                            databaseReference.child(task.getTaskId()).setValue(task);
+                            notifyItemChanged(position);
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
+            });
         }
 
-        // Xử lý Icon chọn (Multi-select)
-        holder.ivSelect.setImageResource(selectedTaskIds.contains(task.getTaskId())
-                ? R.drawable.ic_circle_checked : R.drawable.ic_circle_unchecked);
-
-        // --- SỰ KIỆN CLICK VÀO ITEM ---
-        holder.itemView.setOnClickListener(v -> {
-            if (isSelecting) {
-                toggleSelect(task.getTaskId());
-            } else {
-                // ĐÂY LÀ CHỖ MỞ CHI TIẾT
-                listener.onTaskClick(task);
-            }
-        });
-
-        // --- LONG CLICK ĐỂ BẬT CHẾ ĐỘ CHỌN ---
-        holder.itemView.setOnLongClickListener(v -> {
-            if (!isSelecting) {
-                toggleSelect(task.getTaskId());
-                return true;
-            }
-            return false;
-        });
+        holder.itemView.setOnClickListener(v -> listener.onTaskClick(task));
     }
 
-    private void toggleSelect(String taskId) {
-        if (selectedTaskIds.contains(taskId)) {
-            selectedTaskIds.remove(taskId);
-        } else {
-            selectedTaskIds.add(taskId);
-        }
-
-        isSelecting = !selectedTaskIds.isEmpty();
-        listener.onSelectionModeChange(isSelecting);
-        notifyDataSetChanged();
-    }
-
-    public void clearSelection() {
-        selectedTaskIds.clear();
-        isSelecting = false;
-        listener.onSelectionModeChange(false);
-        notifyDataSetChanged();
-    }
-
-    public List<String> getSelectedTaskIds() { return selectedTaskIds; }
-    public boolean isSelectingMode() { return isSelecting; }
     @Override
     public int getItemCount() { return tasks.size(); }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivSelect;
+        ImageView btnCompleteTaskItem;
         TextView tvTitle, tvDeadline, tvGroup;
+        LinearLayout btnActionLayout;
+        ImageView btnDeleteTaskItem;
+
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivSelect = itemView.findViewById(R.id.ivSelect);
+            btnCompleteTaskItem = itemView.findViewById(R.id.btnCompleteTaskItem);
             tvTitle = itemView.findViewById(R.id.tvTaskTitle);
             tvDeadline = itemView.findViewById(R.id.tvTaskDeadline);
             tvGroup = itemView.findViewById(R.id.tvTaskGroup);
+            btnActionLayout = itemView.findViewById(R.id.btnActionLayout);
+            btnDeleteTaskItem = itemView.findViewById(R.id.btnDeleteTaskItem);
+
+            btnDeleteTaskItem.setOnClickListener(v -> {
+                Task task = (Task) itemView.getTag();
+                if (task != null) {
+                    new AlertDialog.Builder(itemView.getContext())
+                            .setTitle("Xóa Task?")
+                            .setMessage("Bạn có chắc muốn xóa task này?")
+                            .setPositiveButton("Xóa", (dialog, which) -> {
+                                DatabaseReference ref = FirebaseDatabase.getInstance()
+                                        .getReference("users")
+                                        .child(((TaskAdapter) getBindingAdapter()).userId)
+                                        .child("tasks")
+                                        .child(task.getTaskId());
+                                ref.removeValue();
+                                Toast.makeText(((TaskAdapter) getBindingAdapter()).context, "Đã xóa task", Toast.LENGTH_SHORT).show();
+                            })
+                            .setNegativeButton("Hủy", null)
+                            .show();
+                }
+            });
         }
     }
 }
