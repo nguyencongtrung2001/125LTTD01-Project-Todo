@@ -52,7 +52,8 @@ public class AddTaskActivity extends AppCompatActivity {
         MEDIUM,
         HIGH
     }
-
+    private boolean isEditMode = false;
+    private String editTaskId = null; // Lưu lại ID để cập nhật đúng vị trí trên Firebase
     private EditText etTaskTitle, etTaskDescription;
     private Spinner spinnerGroup;
     private TextView tvDeadline, tvAddGroup;

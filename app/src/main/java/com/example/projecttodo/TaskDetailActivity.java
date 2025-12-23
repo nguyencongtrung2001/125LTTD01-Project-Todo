@@ -51,6 +51,7 @@ public class TaskDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AddTaskActivity.class);
                 intent.putExtra("TASK_OBJECT", task);
                 startActivity(intent);
+                finish(); // Kết thúc màn hình chi tiết cũ để tránh dữ liệu bị lỗi thời khi quay lại
             });
 
             btnToggleComplete.setOnClickListener(v -> {

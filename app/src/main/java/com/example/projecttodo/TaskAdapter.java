@@ -56,6 +56,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.tvDeadline.setText(task.getDeadline());
         holder.tvGroup.setText(task.getGroup());
 
+
+        // THÊM DÒNG NÀY: Gắn dữ liệu vào itemView để ViewHolder có thể lấy ra khi nhấn Xóa
+        holder.itemView.setTag(task);
+
+        holder.tvTitle.setText(task.getTitle());
+
         if (task.isCompleted()) {
             holder.btnCompleteTaskItem.setImageResource(R.drawable.ic_check_complete);
             holder.btnCompleteTaskItem.setEnabled(false);
@@ -101,24 +107,38 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             btnDeleteTaskItem = itemView.findViewById(R.id.btnDeleteTaskItem);
 
             btnDeleteTaskItem.setOnClickListener(v -> {
+                // Lấy task đã gắn ở bước 1
                 Task task = (Task) itemView.getTag();
+
                 if (task != null) {
-                    new AlertDialog.Builder(itemView.getContext())
+                    // Sử dụng Context từ itemView
+                    Context context = itemView.getContext();
+
+                    new AlertDialog.Builder(context)
                             .setTitle("Xóa Task?")
-                            .setMessage("Bạn có chắc muốn xóa task này?")
+                            .setMessage("Bạn có chắc muốn xóa '" + task.getTitle() + "'?")
                             .setPositiveButton("Xóa", (dialog, which) -> {
-                                DatabaseReference ref = FirebaseDatabase.getInstance()
-                                        .getReference("users")
-                                        .child(((TaskAdapter) getBindingAdapter()).userId)
-                                        .child("tasks")
-                                        .child(task.getTaskId());
-                                ref.removeValue();
-                                Toast.makeText(((TaskAdapter) getBindingAdapter()).context, "Đã xóa task", Toast.LENGTH_SHORT).show();
+                                // Gọi phương thức xóa thông qua Adapter
+                                TaskAdapter adapter = (TaskAdapter) getBindingAdapter();
+                                if (adapter != null) {
+                                    adapter.deleteTask(task.getTaskId());
+                                }
                             })
                             .setNegativeButton("Hủy", null)
                             .show();
                 }
             });
         }
+    }
+
+    // Thêm hàm này vào TaskAdapter
+    private void deleteTask(String taskId) {
+        databaseReference.child(taskId).removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Đã xóa task thành công", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Lỗi khi xóa: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }
