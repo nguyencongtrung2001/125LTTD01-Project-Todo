@@ -86,6 +86,7 @@ public class AddTaskActivity extends AppCompatActivity {
         loadUserGroups();
         setupListeners();
         populateColors();
+        updateDeadlineText();
     }
 
     private void initViews() {
