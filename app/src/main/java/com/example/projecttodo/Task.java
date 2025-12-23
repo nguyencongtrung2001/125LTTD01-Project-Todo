@@ -1,21 +1,17 @@
-// File: com.example.projecttodo.Task.java
-
 package com.example.projecttodo;
 
 import java.io.Serializable;
-// Task cần implements Serializable để truyền qua Intent
+
 public class Task implements Serializable {
     private String taskId;
     private String title;
-    private String deadline; // Định dạng: "HH:mm dd/MM/yyyy"
+    private String deadline;
     private String group;
     private boolean completed;
     private String description;
 
-    // Yêu cầu bắt buộc: Constructor mặc định cho Firebase
     public Task() {}
 
-    // Constructor đầy đủ
     public Task(String taskId, String title, String deadline, String group, boolean completed, String description) {
         this.taskId = taskId;
         this.title = title;
@@ -25,7 +21,6 @@ public class Task implements Serializable {
         this.description = description;
     }
 
-    // --- Getters và Setters (Bắt buộc cho Firebase) ---
     public String getTaskId() { return taskId; }
     public void setTaskId(String taskId) { this.taskId = taskId; }
 

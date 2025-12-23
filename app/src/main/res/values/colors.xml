@@ -17,6 +17,15 @@
     <color name="gray">#666666</color>
     <color name="purple">#7D7DF0</color>
 
+        <!-- Màu nền cho task đã hoàn thành -->
+        <color name="taskCompletedBg">#D3F9D8</color> <!-- xanh nhạt -->
+
+        <!-- Màu nền cho task chưa hoàn thành -->
+        <color name="taskPendingBg">#FFFFFF</color> <!-- trắng -->
+
+        <!-- Các màu khác nếu có -->
+
+
     <color name="colorBottomNavigationBar">#6363ED</color>
     <color name="colorBottomNavigationBar_Dark">#FFFFFF</color>
 
