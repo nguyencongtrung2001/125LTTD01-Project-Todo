@@ -1,6 +1,8 @@
 package com.example.projecttodo;
 
+
 public interface TaskItemClickListener {
-    void onTaskClick(Task task); // Sự kiện click để xem chi tiết
-    void onSelectionModeChange(boolean isSelecting); // Sự kiện khi chọn nhiều
+    void onTaskClick(Task task);
+    void onEditTask(Task task);
+    void onSelectionModeChange(boolean isSelecting);
 }

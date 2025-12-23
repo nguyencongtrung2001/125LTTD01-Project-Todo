@@ -19,9 +19,11 @@
 
     <color name="colorBottomNavigationBar">#6363ED</color>
     <color name="colorBottomNavigationBar_Dark">#FFFFFF</color>
-
+    <color name="task_completed_bg">#EEEEEE</color>
     <color name="colorChipBackground">#BEBEFF</color>
     <color name="colorChipBackground_Dark">#A4A4A4</color>
 
     <color name="purple_500">#3D6EE6</color>
+    <color name="blue_ocean">#2196F3</color>
+
 </resources>
