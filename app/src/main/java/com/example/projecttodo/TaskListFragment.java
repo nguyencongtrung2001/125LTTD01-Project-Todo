@@ -98,6 +98,19 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
         taskRecyclerView = view.findViewById(R.id.taskRecyclerView);
         fabAddTask = view.findViewById(R.id.fabAddTask);
+        searchEditText.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Mỗi khi chữ thay đổi, cập nhật lại danh sách hiển thị
+                updateTaskList();
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
     }
 
     private void loadUserSession() {
@@ -172,20 +185,25 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
 
     private void updateTaskList() {
         List<Task> filteredTasks = new ArrayList<>();
+        // Lấy từ khóa tìm kiếm và chuyển về chữ thường
+        String query = searchEditText.getText().toString().trim().toLowerCase();
+
         Date now = new Date();
         String todayDateString = DATE_ONLY_FORMAT.format(now);
 
         for (Task task : allTasks) {
+            // --- BƯỚC 1: LỌC THEO TỪ KHÓA (SEARCH) ---
+            boolean matchesSearch = task.getTitle().toLowerCase().contains(query);
+            if (!matchesSearch) continue; // Nếu không khớp tên thì bỏ qua luôn
+
+            // --- BƯỚC 2: LỌC THEO CHIP (FILTER) ---
             boolean matchesFilter = false;
             Date taskDeadlineDate = null;
-
             try {
                 taskDeadlineDate = DEADLINE_FORMAT.parse(task.getDeadline());
             } catch (ParseException e) {
-                Log.e(TAG, "Deadline parsing error for task: " + task.getTitle(), e);
+                // Nếu lỗi ngày tháng, chỉ hiện ở tab "Tất cả" hoặc "Hoàn thành"
                 if (currentFilter.equals("all")) matchesFilter = true;
-                if (currentFilter.equals("completed") && task.isCompleted()) matchesFilter = true;
-                if (!matchesFilter) continue;
             }
 
             String taskDateStr = (taskDeadlineDate != null) ? DATE_ONLY_FORMAT.format(taskDeadlineDate) : "";
@@ -198,27 +216,29 @@ public class TaskListFragment extends Fragment implements TaskItemClickListener 
                     matchesFilter = taskDeadlineDate != null && taskDateStr.equals(todayDateString) && !task.isCompleted();
                     break;
                 case "upcoming":
-                    matchesFilter = !task.isCompleted() &&
-                            taskDeadlineDate != null &&
-                            taskDeadlineDate.after(now) &&
-                            !taskDateStr.equals(todayDateString);
+                    matchesFilter = !task.isCompleted() && taskDeadlineDate != null && taskDeadlineDate.after(now) && !taskDateStr.equals(todayDateString);
                     break;
                 case "overdue":
-                    matchesFilter = !task.isCompleted() && taskDeadlineDate != null && taskDeadlineDate.before(now);
+                    matchesFilter = !task.isCompleted() && taskDeadlineDate != null && taskDeadlineDate.before(now) && !taskDateStr.equals(todayDateString);
                     break;
                 case "completed":
                     matchesFilter = task.isCompleted();
                     break;
             }
 
-            if (matchesFilter) filteredTasks.add(task);
+            if (matchesFilter) {
+                filteredTasks.add(task);
+            }
         }
 
-        // Sắp xếp task hoàn thành xuống dưới
+        // --- BƯỚC 3: SẮP XẾP ---
+        // Task chưa xong lên đầu, xong rồi xuống dưới
         filteredTasks.sort((t1, t2) -> Boolean.compare(t1.isCompleted(), t2.isCompleted()));
 
+        // Cập nhật lên giao diện
         taskAdapter.updateTasks(filteredTasks);
 
+        // Hiển thị trạng thái trống nếu không tìm thấy gì
         if (filteredTasks.isEmpty()) {
             emptyStateLayout.setVisibility(View.VISIBLE);
             taskRecyclerView.setVisibility(View.GONE);
