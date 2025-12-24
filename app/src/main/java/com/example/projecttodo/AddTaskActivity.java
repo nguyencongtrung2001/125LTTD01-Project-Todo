@@ -1,37 +1,31 @@
 package com.example.projecttodo;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.shape.CornerFamily;
-import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
@@ -45,7 +39,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-public class AddTaskActivity extends AppCompatActivity {
+public class AddTaskActivity extends AppCompatActivity implements GroupSpinnerAdapter.GroupActionListener {
 
     public enum Priority {
         LOW, MEDIUM, HIGH
@@ -57,15 +51,11 @@ public class AddTaskActivity extends AppCompatActivity {
     private Spinner spinnerGroup;
     private TextView tvDeadline, tvAddGroup;
     private ChipGroup chipGroupReminder, chipGroupPriority;
-    private LinearLayout layoutDeadline, layoutTaskColors;
     private Button btnCancel, btnCreate;
     private ImageButton btnBack;
     private DatabaseReference mDatabase;
     private List<String> groupList = new ArrayList<>();
-    private ArrayAdapter<String> groupAdapter;
-    private int[] colors = {Color.RED, Color.rgb(255, 165, 0), Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA};
-    private List<Button> colorButtons = new ArrayList<>();
-    private int selectedColorIndex = -1;
+    private GroupSpinnerAdapter groupAdapter;
     private Calendar selectedDateTime = Calendar.getInstance();
     private Priority selectedPriority;
 
@@ -79,14 +69,13 @@ public class AddTaskActivity extends AppCompatActivity {
         initViews();
         loadUserGroups();
         setupListeners();
-        populateColors();
 
         if (getIntent().hasExtra("TASK_OBJECT")) {
             isEditMode = true;
             Task taskToEdit = (Task) getIntent().getSerializableExtra("TASK_OBJECT");
             editTaskId = taskToEdit.getTaskId();
 
-            setTitle("Chỉnh sửa công việc"); // ĐÃ SỬA LỖI
+            setTitle("Chỉnh sửa công việc");
             btnCreate.setText("Lưu thay đổi");
 
             populateTaskData(taskToEdit);
@@ -107,7 +96,6 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         }
 
-        // Giả định task.getPriority() tồn tại và trả về String: "Cao", "Trung bình", "Thấp"
         String priority = task.getPriority();
         if (priority != null) {
             switch (priority) {
@@ -132,16 +120,13 @@ public class AddTaskActivity extends AppCompatActivity {
         tvAddGroup = findViewById(R.id.tvAddGroup);
         chipGroupReminder = findViewById(R.id.chipGroupReminder);
         chipGroupPriority = findViewById(R.id.chipGroupPriority);
-        layoutDeadline = findViewById(R.id.layoutDeadline);
-        layoutTaskColors = findViewById(R.id.layoutTaskColors);
         btnCancel = findViewById(R.id.btnCancel);
         btnCreate = findViewById(R.id.btnCreate);
         btnBack = findViewById(R.id.btnBack);
 
         updateDeadlineText();
 
-        groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, groupList);
-        groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        groupAdapter = new GroupSpinnerAdapter(this, groupList, this);
         spinnerGroup.setAdapter(groupAdapter);
     }
 
@@ -160,44 +145,38 @@ public class AddTaskActivity extends AppCompatActivity {
                     String groupName = groupSnapshot.getValue(String.class);
                     if (groupName != null) uniqueGroups.add(groupName);
                 }
-                userRef.child("tasks").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot tasksSnapshot) {
-                        for (DataSnapshot taskSnapshot : tasksSnapshot.getChildren()) {
-                            String taskGroup = taskSnapshot.child("Group").getValue(String.class);
-                            if (taskGroup != null) uniqueGroups.add(taskGroup);
-                        }
-                        groupList.clear();
-                        groupList.addAll(uniqueGroups);
-                        groupAdapter.notifyDataSetChanged();
 
-                        if (isEditMode) {
-                            Task taskToEdit = (Task) getIntent().getSerializableExtra("TASK_OBJECT");
-                            if (taskToEdit != null && taskToEdit.getGroup() != null) {
-                                int pos = groupAdapter.getPosition(taskToEdit.getGroup());
-                                if (pos >= 0) spinnerGroup.setSelection(pos);
-                            }
-                        }
+                groupList.clear();
+                groupList.addAll(uniqueGroups);
+                groupAdapter.notifyDataSetChanged();
+
+                if (isEditMode) {
+                    Task taskToEdit = (Task) getIntent().getSerializableExtra("TASK_OBJECT");
+                    if (taskToEdit != null && taskToEdit.getGroup() != null) {
+                        int pos = groupAdapter.getPosition(taskToEdit.getGroup());
+                        if (pos >= 0) spinnerGroup.setSelection(pos);
                     }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) { }
-                });
+                }
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AddTaskActivity.this, "Lỗi tải danh sách nhóm", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
         btnCancel.setOnClickListener(v -> finish());
-        layoutDeadline.setOnClickListener(v -> showDateTimePicker());
         tvAddGroup.setOnClickListener(v -> showCreateGroupDialog());
         btnCreate.setOnClickListener(v -> saveTask());
 
+        if (findViewById(R.id.layoutDeadline) != null) {
+            findViewById(R.id.layoutDeadline).setOnClickListener(v -> showDateTimePicker());
+        }
+
         chipGroupPriority.setOnCheckedChangeListener((group, checkedId) -> {
-            Chip chip = group.findViewById(checkedId);
-            if (chip == null) return;
             if (checkedId == R.id.chipLow) selectedPriority = Priority.LOW;
             else if (checkedId == R.id.chipMedium) selectedPriority = Priority.MEDIUM;
             else if (checkedId == R.id.chipHigh) selectedPriority = Priority.HIGH;
@@ -207,8 +186,8 @@ public class AddTaskActivity extends AppCompatActivity {
         chipGroupPriority.check(R.id.chipLow);
 
         Chip chipCustom = findViewById(R.id.chipCustom);
-        if(chipCustom != null) {
-             chipCustom.setOnClickListener(v -> showCustomReminderDialog());
+        if (chipCustom != null) {
+            chipCustom.setOnClickListener(v -> showCustomReminderDialog());
         }
     }
 
@@ -222,7 +201,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
         String title = etTaskTitle.getText().toString().trim();
         if (title.isEmpty()) {
-            Toast.makeText(this, getString(R.string.error_empty_task_title), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập tiêu đề", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -253,8 +232,8 @@ public class AddTaskActivity extends AppCompatActivity {
 
         if (isEditMode) {
             Task originalTask = (Task) getIntent().getSerializableExtra("TASK_OBJECT");
-            if(originalTask != null) {
-                 taskValues.put("completed", originalTask.isCompleted()); // Giữ nguyên trạng thái hoàn thành
+            if (originalTask != null) {
+                taskValues.put("completed", originalTask.isCompleted());
             }
             taskRef.updateChildren(taskValues).addOnSuccessListener(aVoid -> {
                 Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
@@ -268,6 +247,52 @@ public class AddTaskActivity extends AppCompatActivity {
                 finish();
             });
         }
+    }
+
+    @Override
+    public void onDeleteGroup(String groupName, int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận xóa nhóm")
+                .setMessage("Bạn có chắc chắn muốn xóa nhóm \"" + groupName + "\"?\n\nCông việc thuộc nhóm này sẽ không bị xóa.")
+                .setPositiveButton("Xóa", (dialog, which) -> performDeleteGroup(groupName))
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void performDeleteGroup(String groupName) {
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
+        if (userId == null) {
+            Toast.makeText(this, "Không thể xác định người dùng.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        DatabaseReference groupsRef = mDatabase.child("users").child(userId).child("groups");
+        Query groupQuery = groupsRef.orderByValue().equalTo(groupName);
+
+        groupQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    Toast.makeText(AddTaskActivity.this, "Không tìm thấy nhóm để xóa.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().removeValue().addOnSuccessListener(aVoid -> {
+                        Toast.makeText(AddTaskActivity.this, "Đã xóa nhóm: " + groupName, Toast.LENGTH_SHORT).show();
+                        groupList.remove(groupName);
+                        groupAdapter.notifyDataSetChanged();
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(AddTaskActivity.this, "Lỗi khi xóa nhóm.", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(AddTaskActivity.this, "Lỗi: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void showDateTimePicker() {
@@ -289,45 +314,6 @@ public class AddTaskActivity extends AppCompatActivity {
 
     private String getCurrentTime() {
         return new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.US).format(Calendar.getInstance().getTime());
-    }
-
-    private void populateColors() {
-        layoutTaskColors.removeAllViews();
-        colorButtons.clear();
-
-        for (int i = 0; i < colors.length; i++) {
-            final int color = colors[i];
-            final int index = i;
-
-            Button colorBtn = new Button(this);
-            colorBtn.setLayoutParams(new LinearLayout.LayoutParams(60, 60));
-            colorBtn.setPadding(0, 0, 0, 0);
-
-            ShapeAppearanceModel shapeModel = ShapeAppearanceModel.builder()
-                    .setAllCorners(CornerFamily.ROUNDED, 30f)
-                    .build();
-            GradientDrawable drawable = new GradientDrawable();
-            drawable.setShape(GradientDrawable.OVAL);
-            drawable.setColor(color);
-            colorBtn.setBackground(drawable);
-
-            colorBtn.setText("");
-            colorBtn.setId(View.generateViewId());
-
-            colorBtn.setOnClickListener(v -> {
-                if (selectedColorIndex != -1) {
-                    GradientDrawable oldDrawable = (GradientDrawable) colorButtons.get(selectedColorIndex).getBackground();
-                    oldDrawable.setStroke(0, Color.TRANSPARENT);
-                }
-                selectedColorIndex = index;
-                GradientDrawable newDrawable = (GradientDrawable) colorBtn.getBackground();
-                newDrawable.setStroke(3, Color.WHITE);
-                Toast.makeText(this, "Chọn màu " + (index + 1), Toast.LENGTH_SHORT).show();
-            });
-
-            layoutTaskColors.addView(colorBtn);
-            colorButtons.add(colorBtn);
-        }
     }
 
     private void showCreateGroupDialog() {
@@ -359,8 +345,7 @@ public class AddTaskActivity extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
             String userId = prefs.getString("user_id", null);
 
-            if (userId == null || userId.isEmpty()) {
-                Toast.makeText(AddTaskActivity.this, "Vui lòng đăng nhập để tạo nhóm", Toast.LENGTH_SHORT).show();
+            if (userId == null) {
                 dialog.dismiss();
                 return;
             }
@@ -381,13 +366,11 @@ public class AddTaskActivity extends AppCompatActivity {
                                 groupAdapter.notifyDataSetChanged();
                                 spinnerGroup.setSelection(groupAdapter.getPosition(groupName));
                                 dialog.dismiss();
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(AddTaskActivity.this, "Lỗi khi tạo nhóm: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            });
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(AddTaskActivity.this, "Lỗi đọc dữ liệu groups: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -396,14 +379,6 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void showCustomReminderDialog() {
-        CustomReminderDialog dialog = new CustomReminderDialog(this, (days, hours, minutes) -> {
-            Chip chipCustom = findViewById(R.id.chipCustom);
-            if (chipCustom != null) {
-                String customText = String.format("%d ngày %d giờ %d phút", days, hours, minutes);
-                chipCustom.setText("Tùy chỉnh: " + customText);
-                chipGroupReminder.check(R.id.chipCustom);
-            }
-        });
-        dialog.show();
+        // Logic cho dialog nhắc nhở tùy chỉnh
     }
 }
