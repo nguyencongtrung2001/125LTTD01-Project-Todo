@@ -178,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_none"
-                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
+                    app:chipBackgroundColor="?attr/colorChipBackground" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip5p"
@@ -186,7 +186,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_5p"
-                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
+                    app:chipBackgroundColor="?attr/colorChipBackground" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip10p"
@@ -194,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_10p"
-                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
+                    app:chipBackgroundColor="?attr/colorChipBackground" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip1h"
@@ -202,7 +202,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_1h"
-                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
+                    app:chipBackgroundColor="?attr/colorChipBackground" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCustom"
@@ -210,7 +210,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/reminder_custom"
-                    app:chipBackgroundColor="?attr/colorSurfaceVariant" />
+                    app:chipBackgroundColor="?attr/colorChipBackground" />
             </com.google.android.material.chip.ChipGroup>
 
             <!-- Priority Label -->
