@@ -145,7 +145,6 @@ public class AddTaskActivity extends AppCompatActivity implements GroupSpinnerAd
                     String groupName = groupSnapshot.getValue(String.class);
                     if (groupName != null) uniqueGroups.add(groupName);
                 }
-
                 groupList.clear();
                 groupList.addAll(uniqueGroups);
                 groupAdapter.notifyDataSetChanged();
@@ -282,8 +281,6 @@ public class AddTaskActivity extends AppCompatActivity implements GroupSpinnerAd
                         Toast.makeText(AddTaskActivity.this, "Đã xóa nhóm: " + groupName, Toast.LENGTH_SHORT).show();
                         groupList.remove(groupName);
                         groupAdapter.notifyDataSetChanged();
-                    }).addOnFailureListener(e -> {
-                        Toast.makeText(AddTaskActivity.this, "Lỗi khi xóa nhóm.", Toast.LENGTH_SHORT).show();
                     });
                 }
             }
@@ -292,6 +289,54 @@ public class AddTaskActivity extends AppCompatActivity implements GroupSpinnerAd
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(AddTaskActivity.this, "Lỗi: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
+    }
+
+    @Override
+    public void onEditGroup(String oldGroupName, int position) {
+        final EditText input = new EditText(this);
+        input.setText(oldGroupName);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Chỉnh sửa tên nhóm")
+                .setView(input)
+                .setPositiveButton("Lưu", (dialog, which) -> {
+                    String newGroupName = input.getText().toString().trim();
+                    if (!newGroupName.isEmpty() && !newGroupName.equals(oldGroupName)) {
+                        performEditGroup(oldGroupName, newGroupName, position);
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
+    }
+
+    private void performEditGroup(String oldGroupName, String newGroupName, int position) {
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String userId = prefs.getString("user_id", null);
+        if (userId == null) return;
+
+        DatabaseReference groupsRef = mDatabase.child("users").child(userId).child("groups");
+        Query groupQuery = groupsRef.orderByValue().equalTo(oldGroupName);
+
+        groupQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    Toast.makeText(AddTaskActivity.this, "Không tìm thấy nhóm để sửa.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().setValue(newGroupName).addOnSuccessListener(aVoid -> {
+                        Toast.makeText(AddTaskActivity.this, "Đã cập nhật nhóm", Toast.LENGTH_SHORT).show();
+                        groupList.set(position, newGroupName);
+                        groupAdapter.notifyDataSetChanged();
+                        spinnerGroup.setSelection(position);
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
@@ -370,8 +415,7 @@ public class AddTaskActivity extends AppCompatActivity implements GroupSpinnerAd
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
+                public void onCancelled(@NonNull DatabaseError error) { }
             });
         });
 

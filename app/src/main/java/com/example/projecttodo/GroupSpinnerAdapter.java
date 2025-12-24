@@ -22,6 +22,7 @@ public class GroupSpinnerAdapter extends ArrayAdapter<String> {
 
     // Interface để gửi sự kiện click ra bên ngoài
     public interface GroupActionListener {
+        void onEditGroup(String groupName, int position);
         void onDeleteGroup(String groupName, int position);
     }
 
@@ -35,7 +36,6 @@ public class GroupSpinnerAdapter extends ArrayAdapter<String> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // Giao diện cho mục được chọn (khi spinner đóng)
         View view = convertView;
         if (view == null) {
             view = inflater.inflate(android.R.layout.simple_spinner_item, parent, false);
@@ -49,7 +49,6 @@ public class GroupSpinnerAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // Giao diện cho các mục trong danh sách thả xuống
         View view = convertView;
         if (view == null) {
             view = inflater.inflate(R.layout.spinner_item, parent, false);
@@ -58,15 +57,21 @@ public class GroupSpinnerAdapter extends ArrayAdapter<String> {
         String group = getItem(position);
 
         TextView groupName = view.findViewById(android.R.id.text1);
+        ImageView editIcon = view.findViewById(R.id.icon_edit_group);
         ImageView deleteIcon = view.findViewById(R.id.icon_delete_group);
 
         groupName.setText(group);
 
-        // Tô màu cho icon
-        int iconColor = ContextCompat.getColor(context, R.color.button_purple); // Bạn có thể đổi màu ở đây
+        int iconColor = ContextCompat.getColor(context, R.color.button_purple);
+        editIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         deleteIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
 
-        // Xử lý sự kiện click
+        editIcon.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEditGroup(group, position);
+            }
+        });
+
         deleteIcon.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onDeleteGroup(group, position);
