@@ -102,6 +102,8 @@ public class AddTaskActivity extends AppCompatActivity {
         btnCreate = findViewById(R.id.btnCreate);
         btnBack = findViewById(R.id.btnBack);
 
+        updateDeadlineText();
+
         // Setup Spinner
         groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, groupList);
         groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
