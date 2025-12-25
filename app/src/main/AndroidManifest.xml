@@ -22,9 +22,7 @@
         <activity
             android:name=".TaskDetailActivity"
             android:exported="false" />
-        <activity
-            android:name=".TaskAdapter"
-            android:exported="false" />
+
         <activity
             android:name=".ForgetPassword.ResetPasswordActivity"
             android:exported="false" />
