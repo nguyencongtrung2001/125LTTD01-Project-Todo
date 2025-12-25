@@ -56,21 +56,27 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.tvDeadline.setText(task.getDeadline());
         holder.tvGroup.setText(task.getGroup());
 
+        // ✅ QUAN TRỌNG: LUÔN RESET GẠCH NGANG
+        holder.tvTitle.setPaintFlags(
+                holder.tvTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG)
+        );
 
-        // THÊM DÒNG NÀY: Gắn dữ liệu vào itemView để ViewHolder có thể lấy ra khi nhấn Xóa
+        // Gắn task cho delete
         holder.itemView.setTag(task);
-
-        holder.tvTitle.setText(task.getTitle());
 
         if (task.isCompleted()) {
             holder.btnCompleteTaskItem.setImageResource(R.drawable.ic_check_complete);
             holder.btnCompleteTaskItem.setEnabled(false);
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.taskCompletedBg));
-            holder.tvTitle.setPaintFlags(holder.tvTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.itemView.setBackgroundColor(
+                    ContextCompat.getColor(context, R.color.taskCompletedBg)
+            );
         } else {
             holder.btnCompleteTaskItem.setImageResource(R.drawable.ic_edit);
             holder.btnCompleteTaskItem.setEnabled(true);
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.taskPendingBg));
+            holder.itemView.setBackgroundColor(
+                    ContextCompat.getColor(context, R.color.taskPendingBg)
+            );
+
             holder.btnCompleteTaskItem.setOnClickListener(v -> {
                 new AlertDialog.Builder(context)
                         .setTitle("Hoàn thành Task?")
@@ -87,6 +93,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         holder.itemView.setOnClickListener(v -> listener.onTaskClick(task));
     }
+
 
     @Override
     public int getItemCount() { return tasks.size(); }
