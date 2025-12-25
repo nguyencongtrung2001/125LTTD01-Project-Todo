@@ -2,83 +2,104 @@ package com.example.projecttodo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Paint;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class TaskDetailActivity extends AppCompatActivity {
 
-    private TextView titleTextView, deadlineTextView, descriptionTextView, statusTextView;
-    private Button btnEdit, btnToggleComplete;
-    private ImageButton btnBack;
+    private static final int REQ_EDIT = 1001;
+
+    private TextView tvTitle, tvDeadline, tvDesc, tvStatus;
+    private Button btnEdit, btnComplete;
+
     private Task task;
     private DatabaseReference taskRef;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
 
-        titleTextView = findViewById(R.id.detailTitle);
-        deadlineTextView = findViewById(R.id.detailDeadline);
-        descriptionTextView = findViewById(R.id.detailDescription);
-        statusTextView = findViewById(R.id.detailStatus);
+        initViews();
+        getUserId();
+        getTask();
+        setupFirebase();
+        setupListeners();
+        updateUI();
+    }
+
+    private void initViews() {
+        tvTitle = findViewById(R.id.detailTitle);
+        tvDeadline = findViewById(R.id.detailDeadline);
+        tvDesc = findViewById(R.id.detailDescription);
+        tvStatus = findViewById(R.id.detailStatus);
         btnEdit = findViewById(R.id.btnEdit);
-        btnToggleComplete = findViewById(R.id.btnToggleComplete);
-        btnBack = findViewById(R.id.btnBack);
+        btnComplete = findViewById(R.id.btnToggleComplete);
+    }
 
-        btnBack.setOnClickListener(v -> finish());
+    private void getTask() {
+        task = (Task) getIntent().getSerializableExtra("TASK_OBJECT");
+    }
 
-        if (getIntent().hasExtra("TASK_OBJECT")) {
-            task = (Task) getIntent().getSerializableExtra("TASK_OBJECT");
+    private void setupFirebase() {
+        taskRef = FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(userId)
+                .child("tasks")
+                .child(task.getTaskId());
+    }
 
-            String userId = getSharedPreferences("user_session", MODE_PRIVATE)
-                    .getString("user_id", "");
-            taskRef = FirebaseDatabase.getInstance().getReference("users")
-                    .child(userId)
-                    .child("tasks")
-                    .child(task.getTaskId());
+    private void setupListeners() {
+        btnEdit.setOnClickListener(v -> {
+            Intent i = new Intent(this, AddTaskActivity.class);
+            i.putExtra("TASK_OBJECT", task);
+            startActivityForResult(i, REQ_EDIT);
+        });
 
-            updateUI(task);
+        btnComplete.setOnClickListener(v ->
+                taskRef.child("completed").setValue(true)
+                        .addOnSuccessListener(a -> reload())
+        );
+    }
 
-            btnEdit.setOnClickListener(v -> {
-                Intent intent = new Intent(this, AddTaskActivity.class);
-                intent.putExtra("TASK_OBJECT", task);
-                startActivity(intent);
-                finish(); // Kết thúc màn hình chi tiết cũ để tránh dữ liệu bị lỗi thời khi quay lại
-            });
+    private void reload() {
+        taskRef.get().addOnSuccessListener(snap -> {
+            task = snap.getValue(Task.class);
+            updateUI();
+        });
+    }
 
-            btnToggleComplete.setOnClickListener(v -> {
-                task.setCompleted(true);
-                taskRef.setValue(task).addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Task đã hoàn thành", Toast.LENGTH_SHORT).show();
-                    updateUI(task);
-                });
-            });
+    private void updateUI() {
+        tvTitle.setText(task.getTitle());
+        tvDeadline.setText(task.getDeadline());
+        tvDesc.setText(task.getDescription());
+
+        if (task.isCompleted()) {
+            tvStatus.setText("HOÀN THÀNH");
+            tvStatus.setTextColor(Color.GREEN);
+            btnEdit.setVisibility(View.GONE);
+            btnComplete.setVisibility(View.GONE);
+        } else {
+            tvStatus.setText("ĐANG THỰC HIỆN");
+            tvStatus.setTextColor(Color.RED);
         }
     }
 
-    private void updateUI(Task task) {
-        titleTextView.setText(task.getTitle());
-        descriptionTextView.setText(task.getDescription());
-        deadlineTextView.setText(task.getDeadline());
+    private void getUserId() {
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        userId = prefs.getString("user_id", null);
+    }
 
-        if (task.isCompleted()) {
-            statusTextView.setText("HOÀN THÀNH");
-            titleTextView.setPaintFlags(titleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            btnEdit.setVisibility(Button.GONE);
-            btnToggleComplete.setVisibility(Button.GONE);
-        } else {
-            statusTextView.setText("ĐANG THỰC HIỆN");
-            titleTextView.setPaintFlags(titleTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            btnEdit.setVisibility(Button.VISIBLE);
-            btnToggleComplete.setVisibility(Button.VISIBLE);
-        }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_EDIT && resultCode == RESULT_OK) reload();
     }
 }
